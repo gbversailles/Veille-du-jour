@@ -2,4 +2,4 @@
 ville = Asnières-sur-Seine
 equipes_foot = Paris Saint-Germain; France
 themes_actu = jeux vidéo
-modele_ia = claude-sonnet-5-5
+modele_ia = mistral-large-latest
