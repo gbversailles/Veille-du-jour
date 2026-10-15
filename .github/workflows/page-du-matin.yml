@@ -1,4 +1,4 @@
-name: Page du matin
+name: Veille du jour
 
 on:
   schedule:
@@ -32,6 +32,8 @@ jobs:
             any::whisker
 
       - name: Generer la page
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: Rscript page_du_matin.R
 
       - uses: actions/upload-pages-artifact@v3
@@ -45,5 +47,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
       - id: deployment
         uses: actions/deploy-pages@v4
