@@ -6,6 +6,10 @@ suppressPackageStartupMessages({
   library(whisker)
 })
 
+if (!requireNamespace("jsonlite", quietly = TRUE)) {
+     install.packages("jsonlite", repos = "https://cloud.r-project.org")
+   }
+
 # ---------- Utilitaires ----------
 
 jours <- c("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi")
