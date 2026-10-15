@@ -41,6 +41,8 @@ get_json <- function(url, query = list()) {
 }
 
 # ---------- Météo (Open-Meteo, sans clé) ----------
+# Valeur de secours (Asnières) : si le navigateur autorise la localisation,
+# la page recharge elle-même la météo pour l'endroit où tu te trouves.
 
 libelle_meteo <- function(code) {
   if (is.null(code) || is.na(code)) return("conditions inconnues")
@@ -58,42 +60,67 @@ libelle_meteo <- function(code) {
   "conditions variables"
 }
 
+nuage <- '<path d="M7 18h10a4 4 0 0 0 0-8 5.5 5.5 0 0 0-10.6 1.6A3.2 3.2 0 0 0 7 18z"></path>'
+icones <- list(
+  soleil = '<circle cx="12" cy="12" r="4"></circle><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"></path>',
+  eclaircies = '<circle cx="9" cy="9" r="3.5"></circle><path d="M9 2.5v1.5M2.5 9H4M4.4 4.4l1 1M13.6 4.4l-1 1"></path><path d="M10.5 20.5h7a3.5 3.5 0 0 0 0-7 4.5 4.5 0 0 0-8.6 1.6A2.7 2.7 0 0 0 10.5 20.5z"></path>',
+  nuages = nuage,
+  pluie = paste0(nuage, '<path d="M9 20.5l-1 2M13 20.5l-1 2M17 20.5l-1 2"></path>'),
+  neige = paste0(nuage, '<path d="M9 21.5h.01M13 21.5h.01M17 21.5h.01"></path>'),
+  orage = paste0(nuage, '<path d="M12.5 18.5l-2 3h3l-2 3"></path>'),
+  brouillard = '<path d="M4 9h16M3 13h18M5 17h14"></path>'
+)
+icone_meteo <- function(code) {
+  nom <- if (is.null(code) || is.na(code)) "nuages"
+    else if (code <= 1) "soleil"
+    else if (code == 2) "eclaircies"
+    else if (code == 3) "nuages"
+    else if (code %in% c(45, 48)) "brouillard"
+    else if (code %in% c(71:77, 85:86)) "neige"
+    else if (code %in% 95:99) "orage"
+    else "pluie"
+  paste0('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" ',
+         'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">', icones[[nom]], '</svg>')
+}
+
+valeurs <- function(x) unlist(lapply(x, function(v) if (is.null(v)) NA else v))
+jours_courts <- c("dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam.")
+
 meteo <- tryCatch({
   m <- get_json("https://api.open-meteo.com/v1/forecast", list(
     latitude = 48.914, longitude = 2.285,
     current = "temperature_2m,weather_code",
-    hourly = "temperature_2m,precipitation_probability",
-    daily = "temperature_2m_min,temperature_2m_max,precipitation_probability_max",
-    timezone = "Europe/Paris", forecast_days = 1
+    daily = "weather_code,temperature_2m_min,temperature_2m_max,precipitation_probability_max",
+    timezone = "Europe/Paris", forecast_days = 5
   ))
-  heures_voulues <- c(8, 12, 17, 21)
-  heures_api <- as.integer(substr(unlist(m$hourly$time), 12, 13))
-  temp_h  <- unlist(lapply(m$hourly$temperature_2m, function(v) if (is.null(v)) NA else v))
-  pluie_h <- unlist(lapply(m$hourly$precipitation_probability, function(v) if (is.null(v)) NA else v))
-  heures <- lapply(heures_voulues, function(h) {
-    i <- match(h, heures_api)
-    list(time = paste0(h, "h"),
-         temp = if (is.na(i)) "–" else paste0(round(temp_h[i]), "°"),
-         rain = if (is.na(i) || is.na(pluie_h[i])) "–" else paste0("pluie ", pluie_h[i], " %"))
+  dates <- as.Date(valeurs(m$daily$time))
+  codes <- valeurs(m$daily$weather_code)
+  tmin  <- valeurs(m$daily$temperature_2m_min)
+  tmax  <- valeurs(m$daily$temperature_2m_max)
+  pluie <- valeurs(m$daily$precipitation_probability_max)
+  jours_prevus <- lapply(seq_along(dates), function(i) {
+    lt <- as.POSIXlt(dates[i])
+    list(day = if (i == 1) "Auj." else paste(jours_courts[lt$wday + 1], lt$mday),
+         icon = icone_meteo(codes[i]),
+         max = paste0(round(tmax[i]), "°"),
+         min = paste0(round(tmin[i]), "°"),
+         rain = if (is.na(pluie[i])) "–" else paste0(pluie[i], " %"))
   })
-  pluie_max <- unlist(m$daily$precipitation_probability_max)[1]
-  tmin <- round(unlist(m$daily$temperature_2m_min)[1])
-  tmax <- round(unlist(m$daily$temperature_2m_max)[1])
-  conseil <- if (!is.na(pluie_max) && pluie_max >= 50) {
-    sprintf("Entre %d° et %d°. Risque de pluie jusqu'à %d %% : prends un parapluie.", tmin, tmax, pluie_max)
+  conseil <- if (!is.na(pluie[1]) && pluie[1] >= 50) {
+    sprintf("Aujourd'hui entre %d° et %d°, risque de pluie jusqu'à %d %% : prends un parapluie.",
+            round(tmin[1]), round(tmax[1]), pluie[1])
   } else {
-    sprintf("Entre %d° et %d°. Faible risque de pluie, pas besoin de parapluie.", tmin, tmax)
+    sprintf("Aujourd'hui entre %d° et %d°, faible risque de pluie.", round(tmin[1]), round(tmax[1]))
   }
-  list(
-    now_temp = paste0(round(m$current$temperature_2m), "°"),
-    now_label = libelle_meteo(m$current$weather_code),
-    hours = heures,
-    advice = conseil
-  )
+  list(now_temp = paste0(round(m$current$temperature_2m), "°"),
+       now_label = paste0("Asnières, ", libelle_meteo(m$current$weather_code)),
+       now_icon = icone_meteo(m$current$weather_code),
+       days = jours_prevus,
+       advice = conseil)
 }, error = function(e) {
   message("Météo indisponible : ", conditionMessage(e))
-  list(now_temp = "–", now_label = "météo indisponible", hours = list(),
-       advice = "La météo n'a pas pu être récupérée ce matin.")
+  list(now_temp = "–", now_label = "météo indisponible", now_icon = icone_meteo(NA),
+       days = list(), advice = "La météo n'a pas pu être récupérée ce matin.")
 })
 
 # ---------- Bourse (cours de clôture) ----------
@@ -132,7 +159,8 @@ donnees <- list(
   date = date_fr,
   now_temp = meteo$now_temp,
   now_label = meteo$now_label,
-  hours = meteo$hours,
+  now_icon = meteo$now_icon,
+  days = meteo$days,
   advice = meteo$advice,
   markets = marches,
   updated = format(as.POSIXct(Sys.time(), tz = "Europe/Paris"), "%H:%M", tz = "Europe/Paris")
