@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Veille du jour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#F2F3EF; --card:#FFFFFF; --ink:#16181D; --muted:#4A4F59;
+  --rule:#DADDD6; --accent:#2D4FC4; --dark:#16181D; --dark-2:#262A33; --dark-muted:#C3C7CF;
+  --up:#1F6F4A; --down:#A3321F;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ground:#121419; --card:#1B1E25; --ink:#ECEDE8; --muted:#A9AEB8;
+    --rule:#2C313B; --accent:#8EA6FF; --dark:#0B0D11; --dark-2:#1F232B; --dark-muted:#A9AEB8;
+    --up:#6FCF9B; --down:#FF9A85;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:'IBM Plex Sans',system-ui,sans-serif}
+.wrap{max-width:1320px;margin:0 auto;padding:32px 20px 56px;display:flex;flex-direction:column;gap:24px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px;padding-bottom:24px;border-bottom:2px solid var(--ink)}
+.date{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{margin:6px 0;font-family:'Space Grotesk',sans-serif;font-size:clamp(36px,6vw,52px);line-height:1;font-weight:700;letter-spacing:-.02em}
+.now{display:flex;align-items:center;gap:16px;background:var(--card);border-radius:16px;padding:14px 20px}
+.now-temp{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:600;line-height:1}
+.now-label{font-size:14px;color:var(--muted)}
+.cols{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+main{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:24px}
+aside{flex:1 1 340px;min-width:0;display:flex;flex-direction:column;gap:24px}
+.card{background:var(--card);border-radius:18px;padding:20px 24px;display:flex;flex-direction:column;gap:10px}
+h2{margin:0;font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700}
+.soon{font-size:15px;line-height:1.5;color:var(--muted);padding-top:12px;border-top:1px solid var(--rule)}
+.weather{background:var(--dark);color:#F2F3EF}
+.days{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.day{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 2px;border-radius:12px;background:var(--dark-2);text-align:center}
+.day-name{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--dark-muted);white-space:nowrap}
+.day-icon svg{width:24px;height:24px;display:block}
+.day-max{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600}
+.day-min{font-size:13px;color:var(--dark-muted)}
+.day-rain{font-size:11px;color:var(--dark-muted)}
+.now-icon{color:var(--accent);display:flex}
+.now-icon svg{width:40px;height:40px}
+.advice{font-size:14px;line-height:1.5;color:var(--dark-muted)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--rule)}
+.row-name{font-size:15px;font-weight:500;white-space:nowrap}
+.row-vals{display:flex;align-items:baseline;gap:12px}
+.mono{font-family:'IBM Plex Mono',monospace;font-size:15px}
+.chg{min-width:72px;text-align:right;font-size:14px}
+.chg.up{color:var(--up)} .chg.down{color:var(--down)} .chg.flat{color:var(--muted)}
+.news{display:flex;gap:16px;align-items:flex-start;padding-top:14px;border-top:1px solid var(--rule);text-decoration:none;color:inherit}
+.news:hover .news-title{color:var(--accent)}
+.news-tag{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);min-width:92px;padding-top:3px;text-transform:uppercase;letter-spacing:.04em}
+.news-title{font-size:17px;font-weight:600;line-height:1.35}
+.news-sum{font-size:14px;line-height:1.5;color:var(--muted);margin-top:4px}
+.match{display:flex;flex-direction:column;gap:4px;padding:12px 0;border-top:1px solid var(--rule)}
+.match-comp{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.match-line{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:15px;font-weight:500}
+.subhead{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;margin-top:12px}
+.rank{display:flex;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--rule);font-size:15px}
+.rank-n{font-family:'IBM Plex Mono',monospace;color:var(--muted);min-width:20px}
+.rank-team{flex:1;font-weight:500}
+@media (max-width:560px){.news{flex-direction:column;gap:4px}.news-tag{min-width:0}}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.toggle{flex:none;width:32px;height:32px;border-radius:999px;border:1px solid var(--rule);background:transparent;color:inherit;font-family:'IBM Plex Mono',monospace;font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.toggle:hover{border-color:currentColor}
+.toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.weather .toggle{border-color:#3A3F4A}
+.card.collapsed{gap:0}
+.card.collapsed > :not(.card-head){display:none}
+.note{font-size:13px;color:var(--muted);padding-top:12px;border-top:1px solid var(--rule)}
+.head-links{display:flex;flex-wrap:wrap;align-items:center;gap:16px}
+.date-btn{background:none;border:none;padding:0 0 2px;margin:0;cursor:pointer;color:var(--muted);border-bottom:1px dashed currentColor;display:inline-flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.date-btn:hover{color:var(--accent)}
+.date-btn svg{width:14px;height:14px}
+.date-btn.has-note::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.outlook{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);text-decoration:none}
+.outlook:hover{text-decoration:underline}
+dialog{border:none;border-radius:20px;padding:24px;width:min(520px,calc(100vw - 32px));background:var(--card);color:var(--ink)}
+dialog::backdrop{background:rgba(10,12,16,.45)}
+.ag-head{display:flex;align-items:center;gap:8px}
+.ag-head h2{flex:1;text-align:center;font-size:20px}
+.ag-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin:16px 0}
+.ag-dow{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);text-align:center;padding:4px 0}
+.ag-day{aspect-ratio:1;border:none;border-radius:10px;background:transparent;color:inherit;font:inherit;font-size:15px;cursor:pointer;position:relative}
+.ag-day:hover{background:var(--ground)}
+.ag-day.is-today{font-weight:700;color:var(--accent)}
+.ag-day.is-sel{background:var(--ink);color:var(--card)}
+.ag-day.has-note::after{content:"";position:absolute;bottom:5px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--accent)}
+.ag-day.is-sel.has-note::after{background:var(--card)}
+.ag-label{display:block;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;margin-bottom:8px}
+#ag-note{width:100%;border:1px solid var(--rule);border-radius:12px;padding:12px;font:inherit;font-size:15px;line-height:1.5;background:var(--ground);color:var(--ink);resize:vertical}
+.ag-foot{font-size:12px;color:var(--muted);margin-top:8px}
+.favs{display:flex;flex-wrap:wrap;gap:8px}
+.fav{padding:8px 14px;border-radius:999px;background:var(--ground);color:var(--ink);text-decoration:none;font-size:14px;font-weight:500}
+.fav:hover{color:var(--accent)}
+.note-top{font-size:14px;color:var(--muted)}
+.top{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:14px;background:var(--ground)}
+.top-link{font-size:15px;font-weight:600;line-height:1.35;color:var(--ink);text-decoration:none}
+.top-link:hover{color:var(--accent)}
+.paper{display:flex;flex-direction:column;gap:8px;padding-top:18px;border-top:1px solid var(--rule)}
+.paper-meta{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.badge{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;padding:4px 10px;border-radius:999px}
+.badge.p3{background:var(--ink);color:var(--card)}
+.badge.p2{background:#E4E8F7;color:#1F3FA8}
+.badge.p1{background:var(--ground);color:var(--muted)}
+@media (prefers-color-scheme: dark){.badge.p2{background:#26305A;color:#C9D4FF}}
+.paper-theme{font-size:13px;color:var(--muted)}
+.paper-title{font-size:18px;font-weight:600;line-height:1.35;color:var(--ink);text-decoration:none}
+.paper-title:hover{color:var(--accent)}
+.paper-src{font-size:13px;color:var(--muted)}
+.paper-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.lbl{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.lbl.acc{color:var(--accent)}
+.txt{font-size:15px;line-height:1.5;margin-top:4px}
+@media (max-width:560px){.paper-grid{grid-template-columns:1fr}}
+.team{display:flex;flex-direction:column}
+.match.next .match-comp{color:var(--accent)}
+.rank-side{font-size:13px;color:var(--muted)}
+a.row{color:inherit;text-decoration:none}
+a.row:hover .row-name{color:var(--accent)}
+.card-link{align-self:flex-start;font-size:14px;font-weight:500;color:var(--accent);text-decoration:none;margin-top:4px}
+.card-link:hover{text-decoration:underline}
+.weather .card-link{color:#C9D4FF}
+.as-btn{background:none;border:none;padding:0;cursor:pointer;font:inherit}
+.reg-form{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.reg-form label,.reg-l{font-size:13px;font-weight:600;color:var(--muted);margin-top:8px}
+.reg-form input{width:100%;border:1px solid var(--rule);border-radius:10px;padding:10px 12px;font:inherit;font-size:15px;background:var(--ground);color:var(--ink)}
+.reg-fav{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) minmax(0,1fr) auto;gap:6px;align-items:center}
+@media (max-width:560px){.reg-fav{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto}.reg-fav input:nth-child(2){grid-column:1 / -1;grid-row:2}}
+.reg-btn{border:1px solid var(--rule);background:transparent;color:inherit;border-radius:10px;padding:10px 14px;font:inherit;font-size:14px;cursor:pointer}
+.reg-btn:hover{border-color:currentColor}
+.reg-save{background:var(--ink);color:var(--card);border-color:var(--ink);font-weight:600;margin-top:12px}
+.reg-token{font-size:14px;color:var(--muted);margin-top:8px}
+.reg-token summary{cursor:pointer;font-weight:600}
+.reg-token p{line-height:1.5}
+.reg-status{font-size:14px;line-height:1.5;min-height:1.5em}
+.rank.is-suivi .rank-team,.rank.is-suivi .rank-n{color:var(--accent);font-weight:700}
+.paper-grid.solo{grid-template-columns:1fr}
+.fav-cat{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+.subhead.first{margin-top:0}
+.sport-title{font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;margin-top:16px;padding-top:14px;border-top:2px solid var(--ink)}
+.sport-title.first{margin-top:0;padding-top:0;border-top:none}
+.txt.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
+.txt.clamp.ouvert{display:block;-webkit-line-clamp:unset}
+.more{border-top:1px solid var(--rule);padding-top:12px}
+.more > summary{cursor:pointer;font-size:14px;font-weight:600;color:var(--accent);list-style:none}
+.more > summary::-webkit-details-marker{display:none}
+.more[open] > summary{margin-bottom:4px}
+.paper{gap:6px;padding-top:14px}
+.paper-title{font-size:16px}
+.paper-meta .paper-src{margin-left:auto}
+.txt{font-size:14px}
+footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <div class="head-links">
+      <button class="date-btn" id="date-btn" type="button" aria-haspopup="dialog">{{date}}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path></svg></button>
+      <a class="outlook" href="https://outlook.office.com/calendar/" target="_blank" rel="noopener">Mon agenda Outlook ↗</a>
+      <button type="button" class="outlook as-btn" data-open-reglages>Réglages</button>
+    </div>
+    <h1>Veille du jour</h1>
+  </div>
+  <div class="now">
+    <span class="now-icon" id="now-icon">{{{now_icon}}}</span>
+    <div>
+      <div class="now-temp" id="now-temp">{{now_temp}}</div>
+      <div class="now-label" id="now-label">{{now_label}}</div>
+    </div>
+  </div>
+</header>
+
+<div class="cols">
+  <main>
+    
+    <section class="card" data-section="veille" data-open>
+      <div class="card-head"><h2>Veille scientifique · pharmacologie</h2><button class="toggle" type="button">−</button></div>
+      {{#has_veille_note}}<div class="note-top">{{veille_note}}</div>{{/has_veille_note}}
+      {{#has_top}}
+      <div class="top">
+        <div class="lbl">À lire en priorité</div>
+        {{#top}}<a class="top-link" href="{{lien}}" target="_blank" rel="noopener">{{titre}}</a>{{/top}}
+      </div>
+      {{/has_top}}
+      {{#veille}}
+        <article class="paper">
+          <div class="paper-meta">{{#has_badge}}<span class="badge p{{prio}}">{{badge}}</span>{{/has_badge}}<span class="paper-theme">{{theme}}</span><span class="paper-src">{{source}}</span></div>
+          <a class="paper-title" href="{{lien}}" target="_blank" rel="noopener">{{titre}}</a>
+          {{#has_brief}}
+          <div class="paper-grid{{^has_pour_toi}} solo{{/has_pour_toi}}">
+            <div><div class="lbl">{{brief_label}}</div><div class="txt clamp" title="Cliquer pour tout lire">{{brief}}</div></div>
+            {{#has_pour_toi}}<div><div class="lbl acc">Pour toi</div><div class="txt clamp">{{pour_toi}}</div></div>{{/has_pour_toi}}
+          </div>
+          {{/has_brief}}
+        </article>
+      {{/veille}}
+      {{^veille}}<div class="soon">Aucun nouvel article trouvé ces 7 derniers jours.</div>{{/veille}}
+      {{#has_suite}}
+      <details class="more">
+        <summary>Afficher les {{n_suite}} autres articles</summary>
+        {{#veille_suite}}
+        <article class="paper">
+          <div class="paper-meta">{{#has_badge}}<span class="badge p{{prio}}">{{badge}}</span>{{/has_badge}}<span class="paper-theme">{{theme}}</span><span class="paper-src">{{source}}</span></div>
+          <a class="paper-title" href="{{lien}}" target="_blank" rel="noopener">{{titre}}</a>
+          {{#has_brief}}
+          <div class="paper-grid{{^has_pour_toi}} solo{{/has_pour_toi}}">
+            <div><div class="lbl">{{brief_label}}</div><div class="txt clamp" title="Cliquer pour tout lire">{{brief}}</div></div>
+            {{#has_pour_toi}}<div><div class="lbl acc">Pour toi</div><div class="txt clamp">{{pour_toi}}</div></div>{{/has_pour_toi}}
+          </div>
+          {{/has_brief}}
+        </article>
+        {{/veille_suite}}
+      </details>
+      {{/has_suite}}
+    </section>
+    <section class="card" data-section="actu">
+      <div class="card-head"><h2>Actualité</h2><button class="toggle" type="button">−</button></div>
+      {{#news}}
+      <a class="news" href="{{link}}" target="_blank" rel="noopener">
+        <span class="news-tag">{{tag}}</span>
+        <div>
+          <div class="news-title">{{title}}</div>
+          <div class="news-sum">{{summary}}</div>
+        </div>
+      </a>
+      {{/news}}
+      {{^news}}<div class="soon">Les actualités n'ont pas pu être récupérées ce matin.</div>{{/news}}
+    </section>
+
+    </main>
+
+  <aside>
+    <section class="card weather" data-section="meteo">
+      <div class="card-head"><h2>Météo des prochains jours</h2><button class="toggle" type="button">−</button></div>
+      <div class="days" id="days">
+        {{#days}}
+        <div class="day">
+          <div class="day-name">{{day}}</div>
+          <div class="day-icon">{{{icon}}}</div>
+          <div class="day-max">{{max}}</div>
+          <div class="day-min">{{min}}</div>
+          <div class="day-rain">{{rain}}</div>
+        </div>
+        {{/days}}
+      </div>
+      <div class="advice" id="advice">{{advice}}</div>
+      <a class="card-link" id="meteo-lien" href="{{meteo_lien}}" target="_blank" rel="noopener">Météo détaillée ↗</a>
+    </section>
+
+    <section class="card" data-section="favoris">
+      <div class="card-head"><h2>Favoris</h2><button class="toggle" type="button">−</button></div>
+      {{#favoris_groupes}}
+      <div class="fav-cat">{{categorie}}</div>
+      <div class="favs">
+        {{#liens}}<a class="fav" href="{{lien}}" target="_blank" rel="noopener">{{nom}}</a>
+        {{/liens}}
+      </div>
+      {{/favoris_groupes}}
+      {{^favoris_groupes}}<div class="soon">Aucun favori pour l'instant.</div>{{/favoris_groupes}}
+      <button type="button" class="card-link as-btn" data-open-reglages>Modifier mes favoris</button>
+    </section>
+
+    <section class="card" data-section="invest">
+      <div class="card-head"><h2>Investissement</h2><button class="toggle" type="button">−</button></div>
+      <div class="subhead first">Bourse</div>
+      {{#markets}}
+      <a class="row" href="{{lien}}" target="_blank" rel="noopener">
+        <span class="row-name">{{name}}</span>
+        <span class="row-vals"><span class="mono">{{value}}</span><span class="mono chg {{dir}}">{{change}}</span></span>
+      </a>
+      {{/markets}}
+      <div class="note">Cours de clôture de la veille</div>
+      <div class="subhead">Cryptos</div>
+      {{#cryptos}}
+      <a class="row" href="{{lien}}" target="_blank" rel="noopener">
+        <span class="row-name">{{name}}</span>
+        <span class="row-vals"><span class="mono">{{value}}</span><span class="mono chg {{dir}}">{{change}}</span></span>
+      </a>
+      {{/cryptos}}
+      <div class="note">Variation sur un jour, en euros</div>
+      <div class="subhead">Taux immobiliers · Île-de-France</div>
+      {{#has_taux}}
+      {{#taux}}
+      <div class="row"><span class="row-name">{{profil}}</span><span class="mono">{{taux}}</span></div>
+      {{/taux}}
+      {{#has_moyenne}}<div class="row"><span class="row-name">Moyenne France, 25 ans</span><span class="mono">{{taux_moyenne}}</span></div>{{/has_moyenne}}
+      <div class="note">Meilleurs taux obtenus en Île-de-France, baromètre CAFPI de {{taux_mois}}. Les courtiers actualisent leurs barèmes chaque mois.</div>
+      {{/has_taux}}
+      {{^has_taux}}<div class="soon">Le baromètre n'a pas pu être lu ce matin.</div>{{/has_taux}}
+      <a class="card-link" href="{{taux_lien}}" target="_blank" rel="noopener">Voir le baromètre ↗</a>
+    </section>
+<section class="card" data-section="sport">
+      <div class="card-head"><h2>Sport</h2><button class="toggle" type="button">−</button></div>
+      <div class="sport-title first">Football</div>
+      {{#foot}}
+      <div class="team">
+        <div class="subhead">{{equipe}}</div>
+        {{#resultats}}
+        <div class="match">
+          <div class="match-comp">{{comp}} · {{quand}}</div>
+          <div class="match-line"><span>{{affiche}}</span><span class="mono">{{score}}</span></div>
+        </div>
+        {{/resultats}}
+        {{#prochain}}
+        <div class="match next">
+          <div class="match-comp">Prochain match · {{comp}} · {{quand}}</div>
+          <div class="match-line"><span>{{affiche}}</span></div>
+        </div>
+        {{/prochain}}
+        {{#rien}}<div class="soon">Aucun match trouvé sur les 7 derniers et 10 prochains jours.</div>{{/rien}}
+      </div>
+      {{/foot}}
+      {{#has_standings}}<div class="subhead">Classement Ligue des champions</div>{{/has_standings}}
+      {{#standings}}
+      <div class="rank{{#suivi}} is-suivi{{/suivi}}"><span class="rank-n">{{rank}}</span><span class="rank-team">{{team}}</span><span class="mono">{{pts}}</span></div>
+      {{/standings}}
+      <a class="card-link" href="https://www.lequipe.fr/Football/" target="_blank" rel="noopener">Toute l'actualité du football ↗</a>
+      <div class="sport-title">Formule 1</div>
+      {{#has_f1_dernier}}
+      <div class="subhead">Dernier Grand Prix · {{f1_dernier_gp}}</div>
+      {{#f1_podium}}
+      <div class="rank"><span class="rank-n">{{pos}}</span><span class="rank-team">{{pilote}}</span><span class="rank-side">{{ecurie}}</span></div>
+      {{/f1_podium}}
+      {{/has_f1_dernier}}
+      {{#has_f1_pilotes}}
+      <div class="subhead">Championnat pilotes</div>
+      {{#f1_pilotes}}
+      <div class="rank"><span class="rank-n">{{pos}}</span><span class="rank-team">{{nom}}</span><span class="mono">{{pts}}</span></div>
+      {{/f1_pilotes}}
+      {{/has_f1_pilotes}}
+      {{#has_f1_ecuries}}
+      <div class="subhead">Championnat constructeurs</div>
+      {{#f1_ecuries}}
+      <div class="rank"><span class="rank-n">{{pos}}</span><span class="rank-team">{{nom}}</span><span class="mono">{{pts}}</span></div>
+      {{/f1_ecuries}}
+      {{/has_f1_ecuries}}
+      {{#has_f1_calendrier}}
+      <div class="subhead">Prochains Grands Prix</div>
+      {{#f1_calendrier}}
+      <div class="match">
+        <div class="match-comp">{{quand}}</div>
+        <div class="match-line"><span>{{gp}}</span></div>
+        <div class="rank-side">{{lieu}}</div>
+      </div>
+      {{/f1_calendrier}}
+      {{/has_f1_calendrier}}
+      {{^has_f1}}<div class="soon">Les données de Formule 1 n'ont pas pu être récupérées ce matin.</div>{{/has_f1}}
+      <a class="card-link" href="https://www.lequipe.fr/Formule-1/" target="_blank" rel="noopener">Toute l'actualité de la F1 ↗</a>
+    </section>
+</aside>
+</div>
+
+<footer>
+  <span>Dernière mise à jour à {{updated}}</span>
+  <span>Sources : PubMed, Google Actualités, Le Monde, Open-Meteo, Yahoo Finance, ESPN, Jolpica-F1</span>
+</footer>
+
+</div>
+<dialog id="agenda" aria-labelledby="agenda-titre">
+  <div class="ag-head">
+    <button type="button" class="toggle" id="ag-prev" aria-label="Mois précédent">‹</button>
+    <h2 id="agenda-titre">Agenda</h2>
+    <button type="button" class="toggle" id="ag-next" aria-label="Mois suivant">›</button>
+    <button type="button" class="toggle" id="ag-close" aria-label="Fermer">×</button>
+  </div>
+  <div class="ag-grid" id="ag-grid"></div>
+  <label class="ag-label" for="ag-note" id="ag-jour">Notes du jour</label>
+  <textarea id="ag-note" rows="6" placeholder="Écris tes notes pour ce jour…"></textarea>
+  <div class="ag-foot">Enregistré automatiquement, uniquement sur cet appareil. Rien n'est publié en ligne.</div>
+</dialog>
+<dialog id="reglages" aria-labelledby="reg-titre">
+  <div class="ag-head">
+    <h2 id="reg-titre" style="text-align:left">Réglages</h2>
+    <button type="button" class="toggle" id="reg-close" aria-label="Fermer">×</button>
+  </div>
+  <div class="reg-form">
+    <label for="reg-ville">Ville (actualité locale et météo de secours)</label>
+    <input id="reg-ville" type="text">
+    <label for="reg-equipes">Équipes de football, séparées par un point-virgule</label>
+    <input id="reg-equipes" type="text" placeholder="Paris Saint-Germain; France">
+    <label for="reg-themes">Thèmes d'actualité, séparés par un point-virgule</label>
+    <input id="reg-themes" type="text" placeholder="jeux vidéo; intelligence artificielle">
+    <div class="reg-l">Favoris (nom, adresse et catégorie, par exemple Pro, Perso, Pharmaco)</div>
+    <datalist id="reg-cats"></datalist>
+    <div id="reg-favs" style="display:flex;flex-direction:column;gap:6px"></div>
+    <button type="button" class="reg-btn" id="reg-add">+ Ajouter un favori</button>
+    <details class="reg-token" id="reg-token-zone">
+      <summary>Connexion à GitHub</summary>
+      <p>Pour enregistrer depuis cette page, colle ici ton jeton d'accès GitHub. Il est gardé uniquement sur cet appareil.</p>
+      <input id="reg-token" type="password" autocomplete="off" placeholder="github_pat_…">
+    </details>
+    <button type="button" class="reg-btn reg-save" id="reg-save">Enregistrer</button>
+    <div class="reg-status" id="reg-status" role="status"></div>
+  </div>
+</dialog>
+<script type="application/json" id="config">{{{config_json}}}</script>
+<script>
+(function () {
+  var sections = document.querySelectorAll('[data-section]');
+  for (var i = 0; i < sections.length; i++) (function (sec) {
+    var cle = 'veille-du-jour:' + sec.getAttribute('data-section');
+    var btn = sec.querySelector('.toggle');
+    var titre = sec.querySelector('h2').textContent;
+    var etat = null;
+    try { etat = localStorage.getItem(cle); } catch (e) {}
+    if (etat === 'masque' || (etat === null && !sec.hasAttribute('data-open'))) sec.classList.add('collapsed');
+    function maj() {
+      var ferme = sec.classList.contains('collapsed');
+      btn.textContent = ferme ? '+' : '−';
+      btn.setAttribute('aria-expanded', ferme ? 'false' : 'true');
+      btn.setAttribute('aria-label', (ferme ? 'Afficher ' : 'Masquer ') + titre);
+    }
+    maj();
+    btn.addEventListener('click', function () {
+      sec.classList.toggle('collapsed');
+      try { localStorage.setItem(cle, sec.classList.contains('collapsed') ? 'masque' : 'visible'); } catch (e) {}
+      maj();
+    });
+  })(sections[i]);
+})();
+</script>
+<script>
+(function () {
+  var NUAGE = '<path d="M7 18h10a4 4 0 0 0 0-8 5.5 5.5 0 0 0-10.6 1.6A3.2 3.2 0 0 0 7 18z"></path>';
+  var ICONES = {
+    soleil: '<circle cx="12" cy="12" r="4"></circle><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"></path>',
+    eclaircies: '<circle cx="9" cy="9" r="3.5"></circle><path d="M9 2.5v1.5M2.5 9H4M4.4 4.4l1 1M13.6 4.4l-1 1"></path><path d="M10.5 20.5h7a3.5 3.5 0 0 0 0-7 4.5 4.5 0 0 0-8.6 1.6A2.7 2.7 0 0 0 10.5 20.5z"></path>',
+    nuages: NUAGE,
+    pluie: NUAGE + '<path d="M9 20.5l-1 2M13 20.5l-1 2M17 20.5l-1 2"></path>',
+    neige: NUAGE + '<path d="M9 21.5h.01M13 21.5h.01M17 21.5h.01"></path>',
+    orage: NUAGE + '<path d="M12.5 18.5l-2 3h3l-2 3"></path>',
+    brouillard: '<path d="M4 9h16M3 13h18M5 17h14"></path>'
+  };
+  function icone(c) {
+    var n = c == null ? 'nuages' : c <= 1 ? 'soleil' : c === 2 ? 'eclaircies' : c === 3 ? 'nuages'
+      : (c === 45 || c === 48) ? 'brouillard' : ((c >= 71 && c <= 77) || c === 85 || c === 86) ? 'neige'
+      : c >= 95 ? 'orage' : 'pluie';
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONES[n] + '</svg>';
+  }
+  function libelle(c) {
+    if (c === 0) return 'ciel dégagé'; if (c === 1) return 'plutôt dégagé';
+    if (c === 2) return 'partiellement nuageux'; if (c === 3) return 'couvert';
+    if (c === 45 || c === 48) return 'brouillard'; if (c >= 51 && c <= 57) return 'bruine';
+    if (c >= 61 && c <= 67) return 'pluie'; if (c >= 71 && c <= 77) return 'neige';
+    if (c >= 80 && c <= 82) return 'averses'; if (c === 85 || c === 86) return 'averses de neige';
+    if (c >= 95) return 'orage'; return 'conditions variables';
+  }
+  var JOURS = ['dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.'];
+  function afficher(m, lieu) {
+    var d = m.daily, html = '';
+    for (var i = 0; i < d.time.length; i++) {
+      var dt = new Date(d.time[i] + 'T12:00:00');
+      var nom = i === 0 ? 'Auj.' : JOURS[dt.getDay()] + ' ' + dt.getDate();
+      var p = d.precipitation_probability_max[i];
+      html += '<div class="day"><div class="day-name">' + nom + '</div><div class="day-icon">' + icone(d.weather_code[i]) +
+        '</div><div class="day-max">' + Math.round(d.temperature_2m_max[i]) + '°</div><div class="day-min">' +
+        Math.round(d.temperature_2m_min[i]) + '°</div><div class="day-rain">' + (p == null ? '–' : p + ' %') + '</div></div>';
+    }
+    document.getElementById('days').innerHTML = html;
+    document.getElementById('now-temp').textContent = Math.round(m.current.temperature_2m) + '°';
+    document.getElementById('now-label').textContent = lieu + ', ' + libelle(m.current.weather_code);
+    document.getElementById('now-icon').innerHTML = icone(m.current.weather_code);
+    var lienMeteo = document.getElementById('meteo-lien');
+    if (lienMeteo) lienMeteo.href = 'https://www.google.com/search?q=' + encodeURIComponent('météo ' + lieu);
+    var p0 = d.precipitation_probability_max[0];
+    var base = "Aujourd'hui entre " + Math.round(d.temperature_2m_min[0]) + '° et ' + Math.round(d.temperature_2m_max[0]) + '°';
+    document.getElementById('advice').textContent = (p0 != null && p0 >= 50)
+      ? base + ', risque de pluie jusqu\'à ' + p0 + ' % : prends un parapluie.'
+      : base + ', faible risque de pluie.';
+  }
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(function (pos) {
+    var lat = pos.coords.latitude.toFixed(3), lon = pos.coords.longitude.toFixed(3);
+    var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon +
+      '&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_min,temperature_2m_max,precipitation_probability_max&timezone=auto&forecast_days=5';
+    fetch(url).then(function (r) { return r.json(); }).then(function (m) {
+      fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=' + lat + '&longitude=' + lon + '&localityLanguage=fr')
+        .then(function (r) { return r.json(); })
+        .then(function (g) { afficher(m, g.city || g.locality || 'Ta position'); })
+        .catch(function () { afficher(m, 'Ta position'); });
+    }).catch(function () {});
+  }, function () {}, { timeout: 8000, maximumAge: 600000 });
+})();
+</script>
+<script>
+(function () {
+  var dlg = document.getElementById('agenda');
+  var bouton = document.getElementById('date-btn');
+  if (!dlg || !bouton) return;
+  var CLE = 'veille-du-jour:notes';
+  var MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+  var JOURS = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
+  function lire() { try { return JSON.parse(localStorage.getItem(CLE) || '{}'); } catch (e) { return {}; } }
+  function ecrire(n) { try { localStorage.setItem(CLE, JSON.stringify(n)); } catch (e) {} }
+  function cle(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  var auj = new Date();
+  var vue = new Date(auj.getFullYear(), auj.getMonth(), 1);
+  var sel = new Date(auj.getFullYear(), auj.getMonth(), auj.getDate());
+  var grille = document.getElementById('ag-grid');
+  var note = document.getElementById('ag-note');
+  var titre = document.getElementById('agenda-titre');
+  var etiquette = document.getElementById('ag-jour');
+  function marquerBouton() { bouton.classList.toggle('has-note', !!lire()[cle(auj)]); }
+  function rendre() {
+    var notes = lire();
+    var m = MOIS[vue.getMonth()];
+    titre.textContent = m.charAt(0).toUpperCase() + m.slice(1) + ' ' + vue.getFullYear();
+    var html = '';
+    ['L', 'M', 'M', 'J', 'V', 'S', 'D'].forEach(function (j) { html += '<div class="ag-dow" aria-hidden="true">' + j + '</div>'; });
+    var decalage = (vue.getDay() + 6) % 7;
+    for (var i = 0; i < decalage; i++) html += '<div></div>';
+    var nb = new Date(vue.getFullYear(), vue.getMonth() + 1, 0).getDate();
+    for (var d = 1; d <= nb; d++) {
+      var k = cle(new Date(vue.getFullYear(), vue.getMonth(), d));
+      var cls = 'ag-day' + (k === cle(auj) ? ' is-today' : '') + (k === cle(sel) ? ' is-sel' : '') + (notes[k] ? ' has-note' : '');
+      html += '<button type="button" class="' + cls + '" data-k="' + k + '" aria-label="' + d + ' ' + m + (notes[k] ? ', avec une note' : '') + '">' + d + '</button>';
+    }
+    grille.innerHTML = html;
+    etiquette.textContent = 'Notes du ' + JOURS[(sel.getDay() + 6) % 7] + ' ' + sel.getDate() + ' ' + MOIS[sel.getMonth()];
+    note.value = notes[cle(sel)] || '';
+  }
+  grille.addEventListener('click', function (e) {
+    var b = e.target.closest('.ag-day');
+    if (!b) return;
+    var p = b.getAttribute('data-k').split('-');
+    sel = new Date(+p[0], +p[1] - 1, +p[2]);
+    rendre();
+    note.focus();
+  });
+  note.addEventListener('input', function () {
+    var n = lire(), k = cle(sel);
+    if (note.value.trim()) n[k] = note.value; else delete n[k];
+    ecrire(n);
+    var b = grille.querySelector('[data-k="' + k + '"]');
+    if (b) b.classList.toggle('has-note', !!note.value.trim());
+    marquerBouton();
+  });
+  document.getElementById('ag-prev').addEventListener('click', function () { vue = new Date(vue.getFullYear(), vue.getMonth() - 1, 1); rendre(); });
+  document.getElementById('ag-next').addEventListener('click', function () { vue = new Date(vue.getFullYear(), vue.getMonth() + 1, 1); rendre(); });
+  document.getElementById('ag-close').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+  bouton.addEventListener('click', function () {
+    auj = new Date();
+    sel = new Date(auj.getFullYear(), auj.getMonth(), auj.getDate());
+    vue = new Date(auj.getFullYear(), auj.getMonth(), 1);
+    rendre();
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+  });
+  marquerBouton();
+})();
+</script>
+<script>
+(function () {
+  var dlg = document.getElementById('reglages');
+  if (!dlg) return;
+  var CLE_JETON = 'veille-du-jour:jeton';
+  var conf = {};
+  try { conf = JSON.parse(document.getElementById('config').textContent); } catch (e) {}
+  var zoneFavs = document.getElementById('reg-favs');
+  var statut = document.getElementById('reg-status');
+  var champJeton = document.getElementById('reg-token');
+
+  function ligneFavori(nom, lien, categorie) {
+    var div = document.createElement('div');
+    div.className = 'reg-fav';
+    var a = document.createElement('input'); a.type = 'text'; a.placeholder = 'Nom'; a.value = nom || ''; a.setAttribute('aria-label', 'Nom du favori');
+    var b = document.createElement('input'); b.type = 'url'; b.placeholder = 'https://…'; b.value = lien || ''; b.setAttribute('aria-label', 'Adresse du favori');
+    var c = document.createElement('input'); c.type = 'text'; c.placeholder = 'Catégorie'; c.value = categorie || ''; c.setAttribute('list', 'reg-cats'); c.setAttribute('aria-label', 'Catégorie du favori');
+    var x = document.createElement('button'); x.type = 'button'; x.className = 'reg-btn'; x.textContent = '×'; x.setAttribute('aria-label', 'Supprimer ce favori');
+    x.addEventListener('click', function () { div.remove(); });
+    div.appendChild(a); div.appendChild(b); div.appendChild(c); div.appendChild(x);
+    zoneFavs.appendChild(div);
+  }
+  function remplir() {
+    document.getElementById('reg-ville').value = conf.ville || '';
+    document.getElementById('reg-equipes').value = conf.equipes_foot || '';
+    document.getElementById('reg-themes').value = conf.themes_actu || '';
+    zoneFavs.innerHTML = '';
+    var cats = [];
+    (conf.favoris || []).forEach(function (f) {
+      ligneFavori(f.nom, f.lien, f.categorie === 'Favoris' ? '' : f.categorie);
+      if (f.categorie && cats.indexOf(f.categorie) < 0) cats.push(f.categorie);
+    });
+    ['Pro', 'Perso', 'Pharmaco'].forEach(function (c) { if (cats.indexOf(c) < 0) cats.push(c); });
+    document.getElementById('reg-cats').innerHTML = cats.map(function (c) { return '<option value="' + c.replace(/"/g, '&quot;') + '"></option>'; }).join('');
+    var jeton = '';
+    try { jeton = localStorage.getItem(CLE_JETON) || ''; } catch (e) {}
+    champJeton.value = jeton;
+    document.getElementById('reg-token-zone').open = !jeton;
+    statut.textContent = '';
+  }
+  function ouvrir() { remplir(); if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', ''); }
+  var boutons = document.querySelectorAll('[data-open-reglages]');
+  for (var i = 0; i < boutons.length; i++) boutons[i].addEventListener('click', ouvrir);
+  document.getElementById('reg-close').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+  document.getElementById('reg-add').addEventListener('click', function () { ligneFavori('', ''); });
+
+  function b64(txt) { return btoa(unescape(encodeURIComponent(txt))); }
+  function csv(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }
+
+  document.getElementById('reg-save').addEventListener('click', async function () {
+    var jeton = champJeton.value.trim();
+    if (!jeton) { statut.textContent = 'Colle d\'abord ton jeton GitHub dans « Connexion à GitHub ».'; document.getElementById('reg-token-zone').open = true; return; }
+    try { localStorage.setItem(CLE_JETON, jeton); } catch (e) {}
+    var hote = location.hostname;
+    if (!/\.github\.io$/.test(hote)) { statut.textContent = 'L\'enregistrement fonctionne uniquement depuis ta page en ligne.'; return; }
+    var proprio = hote.split('.')[0];
+    var depot = location.pathname.split('/')[1] || (proprio + '.github.io');
+    var base = 'https://api.github.com/repos/' + proprio + '/' + depot;
+    var entetes = { 'Authorization': 'Bearer ' + jeton, 'Accept': 'application/vnd.github+json' };
+    async function api(url, options) {
+      var opts = options || {};
+      opts.headers = entetes;
+      var r = await fetch(url, opts);
+      if (!r.ok) { var err = new Error('HTTP ' + r.status); err.status = r.status; throw err; }
+      return r.status === 204 ? null : r.json();
+    }
+    async function ecrire(chemin, contenu, branche) {
+      var sha;
+      try { sha = (await api(base + '/contents/' + chemin + '?ref=' + branche)).sha; } catch (e) { if (e.status !== 404) throw e; }
+      await api(base + '/contents/' + chemin, { method: 'PUT', body: JSON.stringify({ message: 'Réglages modifiés depuis la page', content: b64(contenu), sha: sha, branch: branche }) });
+    }
+    var ville = document.getElementById('reg-ville').value.trim() || 'Asnières-sur-Seine';
+    var reglagesTxt = [
+      '# Réglages de ta Veille du jour (modifiables aussi depuis la page)',
+      'ville = ' + ville,
+      'equipes_foot = ' + document.getElementById('reg-equipes').value.trim(),
+      'themes_actu = ' + document.getElementById('reg-themes').value.trim(),
+      'modele_ia = mistral-large-latest',
+      ''
+    ].join('\n');
+    var lignes = ['nom,lien,categorie'];
+    zoneFavs.querySelectorAll('.reg-fav').forEach(function (div) {
+      var champs = div.querySelectorAll('input');
+      var nom = champs[0].value.trim(), lien = champs[1].value.trim(), cat = champs[2].value.trim();
+      if (!nom || !lien) return;
+      if (!/^https?:\/\//i.test(lien)) lien = 'https://' + lien;
+      lignes.push(csv(nom) + ',' + csv(lien) + ',' + csv(cat));
+    });
+    var bouton = this;
+    bouton.disabled = true;
+    statut.textContent = 'Enregistrement en cours…';
+    var etape = 'accès au dépôt';
+    try {
+      var branche = (await api(base)).default_branch;
+      etape = 'écriture de reglages.txt';
+      await ecrire('reglages.txt', reglagesTxt, branche);
+      etape = 'écriture de favoris.csv';
+      await ecrire('favoris.csv', lignes.join('\n') + '\n', branche);
+      etape = 'lancement de la mise à jour';
+      await api(base + '/actions/workflows/page-du-matin.yml/dispatches', { method: 'POST', body: JSON.stringify({ ref: branche }) });
+      statut.textContent = 'C\'est enregistré. La page se met à jour : recharge-la dans 3 à 5 minutes.';
+    } catch (e) {
+      var detail = ' [étape : ' + etape + ', code ' + (e.status || e.message) + ', dépôt : ' + proprio + '/' + depot + ']';
+      statut.textContent = ((e.status === 401)
+        ? 'Le jeton est refusé : il est peut-être expiré ou mal copié.'
+        : (e.status === 403 || e.status === 404)
+          ? 'Le jeton n\'a pas les droits nécessaires pour cette étape.'
+          : 'L\'enregistrement a échoué. Réessaie dans un instant.') + detail;
+    }
+    bouton.disabled = false;
+  });
+})();
+</script>
+<script>
+document.addEventListener('click', function (e) {
+  var t = e.target.closest('.txt.clamp');
+  if (t) t.classList.toggle('ouvert');
+});
+</script>
+</body>
+</html>
