@@ -1,15 +1,5 @@
-# Réglages de ta Veille du jour (modifiables aussi depuis la page, bouton Réglages)
-# Une ligne par réglage, au format : nom = valeur
-# Pour plusieurs valeurs, sépare-les par un point-virgule.
-
-# Ville pour l'actualité locale et la météo de secours
+# Réglages de ta Veille du jour (modifiables aussi depuis la page)
 ville = Asnières-sur-Seine
-
-# Équipes de football suivies (nom exact, par exemple : Olympique de Marseille ; Lyon ; Spain)
 equipes_foot = Paris Saint-Germain; France
-
-# Thèmes d'actualité en plus (un article par thème), par exemple : jeux vidéo; intelligence artificielle
 themes_actu = jeux vidéo
-
-# Modèle d'IA utilisé pour la veille scientifique
 modele_ia = claude-sonnet-5-5
