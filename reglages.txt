@@ -1,5 +1,12 @@
-# Réglages de ta Veille du jour (modifiables aussi depuis la page)
+# Réglages de ta Veille du jour (modifiables depuis la page, bouton Réglages)
 ville = Asnières-sur-Seine
+ville_travail = Versailles
+specialites = pharmacologie; toxicologie; infectiologie; reanimation; orthopedie
+mots_cles_veille = 
+revues_veille = 
+rubriques_actu = france; monde; ville; sciences; economie
+themes_actu = 
+sports = foot; f1
 equipes_foot = Paris Saint-Germain; France
-themes_actu = jeux vidéo
+carburant = E10
 modele_ia = mistral-large-latest
