@@ -15,7 +15,8 @@ page_du_matin.R : script principal. Récupère les données, construit une liste
 template.html : toute la page (HTML, CSS, JavaScript). Le JavaScript gère : météo selon la position, repli des blocs, réglages, avis, bibliothèque, tâches, outils, apparence.
 reglages.txt : réglages au format cle = valeur, valeurs multiples séparées par ;. Modifiable depuis la page.
 favoris.csv (nom,lien,categorie), avis.csv (pmid,avis,date), bibliotheque.csv (pmid,titre,source,lien,theme,ajoute) : écrits par la page via l'API GitHub.
-.github/workflows/page-du-matin.yml : génère et publie la page toutes les 30 minutes (4 h–21 h UTC) et à la demande. Ne pas renommer ce fichier : la page déclenche ce workflow par son nom après un enregistrement des réglages.
+referentiel.html et referentiel.json : référentiel STP (fiches par molécule : cibles, PK, interprétation). Page statique indépendante, publiée à l'adresse https://guiome93.github.io/Veille-du-jour/referentiel.html. Elle charge referentiel.json en relatif et enregistre les modifications dans referentiel.json via l'API GitHub, avec le même jeton que la page principale (localStorage veille-du-jour:jeton) ; un brouillon est gardé 15 minutes dans localStorage (referentiel:brouillon). Ces deux fichiers ne passent pas par whisker : ils sont copiés tels quels dans public/ par l'étape « Copier le referentiel » du workflow, juste après « Generer la page ».
+.github/workflows/page-du-matin.yml : génère et publie la page toutes les 30 minutes (4 h–21 h UTC) et à la demande. Ne pas renommer ce fichier : la page et le référentiel déclenchent ce workflow par son nom après un enregistrement (réglages ou referentiel.json).
 Blocs de la page et sources
 Bloc	Source	Remarque
 Veille scientifique	PubMed (E-utilities)	Tri par mots-clés selon les spécialités choisies, apprentissage à partir de avis.csv. Calculée une fois par jour puis mise en cache (cache/veille.rds, via actions/cache, clé = date + hash de reglages.txt).
