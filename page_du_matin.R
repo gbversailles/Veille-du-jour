@@ -60,23 +60,23 @@ nombre_fr <- function(x, decimales = 2) {
   formatC(x, format = "f", digits = decimales, big.mark = " ", decimal.mark = ",")
 }
 
-get_json <- function(url, query = list()) {
+preparer <- function(url, query = list(), delai = 30) {
   request(url) |>
     req_url_query(!!!query) |>
     req_user_agent("Mozilla/5.0 (veille-du-jour)") |>
     req_retry(max_tries = 3) |>
-    req_timeout(30) |>
+    req_timeout(delai)
+}
+
+get_json <- function(url, query = list()) {
+  preparer(url, query) |>
     req_perform() |>
     resp_body_string() |>
     jsonlite::fromJSON(simplifyVector = FALSE)
 }
 
 get_texte <- function(url, query = list()) {
-  request(url) |>
-    req_url_query(!!!query) |>
-    req_user_agent("Mozilla/5.0 (veille-du-jour)") |>
-    req_retry(max_tries = 3) |>
-    req_timeout(60) |>
+  preparer(url, query, 60) |>
     req_perform() |>
     resp_body_string()
 }
@@ -380,33 +380,45 @@ evenements <- list()
 erreurs_espn <- character()
 message("Équipes suivies : ", if (length(equipes)) paste(equipes, collapse = " | ") else "aucune")
 if (length(equipes)) {
+  # Environ 230 jours à interroger : les requêtes partent en parallèle (10 à la fois)
+  # au lieu de l'une après l'autre, ce qui raccourcit nettement la génération de la page.
+  demandes <- list(); ligues_demandes <- character()
   for (lg in names(competitions)) {
     fenetre <- if (lg %in% c("uefa.nations", "fifa.worldq.uefa", "fifa.friendly")) -21:30 else -7:10
     for (k in fenetre) {
-      jour <- format(Sys.Date() + k, "%Y%m%d")
-      j <- tryCatch(get_json(sprintf("https://site.api.espn.com/apis/site/v2/sports/soccer/%s/scoreboard", lg),
-                             list(dates = jour)), error = function(e) {
-        erreurs_espn <<- c(erreurs_espn, paste(lg, ":", conditionMessage(e)))
-        NULL
-      })
-      if (is.null(j)) next
-      for (e in si_null(j$events, list())) {
-        cs <- e$competitions[[1]]$competitors
-        dom <- Filter(function(x) identical(x$homeAway, "home"), cs)
-        ext <- Filter(function(x) identical(x$homeAway, "away"), cs)
-        if (!length(dom) || !length(ext)) next
-        dom <- dom[[1]]; ext <- ext[[1]]
-        noms <- tolower(c(dom$team$displayName, dom$team$shortDisplayName, dom$team$name,
-                          ext$team$displayName, ext$team$shortDisplayName, ext$team$name))
-        evenements[[as.character(e$id)]] <- list(
-          comp = competitions[[lg]],
-          t = as.POSIXct(substr(e$date, 1, 16), format = "%Y-%m-%dT%H:%M", tz = "UTC"),
-          termine = isTRUE(e$status$type$completed),
-          affiche = paste(nom_equipe(dom), "–", nom_equipe(ext)),
-          score = paste0(score_equipe(dom), "–", score_equipe(ext)),
-          noms = noms
-        )
-      }
+      demandes[[length(demandes) + 1]] <- preparer(
+        sprintf("https://site.api.espn.com/apis/site/v2/sports/soccer/%s/scoreboard", lg),
+        list(dates = format(Sys.Date() + k, "%Y%m%d")))
+      ligues_demandes <- c(ligues_demandes, lg)
+    }
+  }
+  reponses <- req_perform_parallel(demandes, on_error = "continue", progress = FALSE)
+  for (i in seq_along(reponses)) {
+    lg <- ligues_demandes[i]
+    j <- tryCatch({
+      if (inherits(reponses[[i]], "error")) stop(reponses[[i]])
+      jsonlite::fromJSON(resp_body_string(reponses[[i]]), simplifyVector = FALSE)
+    }, error = function(e) {
+      erreurs_espn <<- c(erreurs_espn, paste(lg, ":", conditionMessage(e)))
+      NULL
+    })
+    if (is.null(j)) next
+    for (e in si_null(j$events, list())) {
+      cs <- e$competitions[[1]]$competitors
+      dom <- Filter(function(x) identical(x$homeAway, "home"), cs)
+      ext <- Filter(function(x) identical(x$homeAway, "away"), cs)
+      if (!length(dom) || !length(ext)) next
+      dom <- dom[[1]]; ext <- ext[[1]]
+      noms <- tolower(c(dom$team$displayName, dom$team$shortDisplayName, dom$team$name,
+                        ext$team$displayName, ext$team$shortDisplayName, ext$team$name))
+      evenements[[as.character(e$id)]] <- list(
+        comp = competitions[[lg]],
+        t = as.POSIXct(substr(e$date, 1, 16), format = "%Y-%m-%dT%H:%M", tz = "UTC"),
+        termine = isTRUE(e$status$type$completed),
+        affiche = paste(nom_equipe(dom), "–", nom_equipe(ext)),
+        score = paste0(score_equipe(dom), "–", score_equipe(ext)),
+        noms = noms
+      )
     }
   }
 }
@@ -755,8 +767,9 @@ if (reprendre_veille) {
                collapse = " ")))
       })
     }
-  }, error = function(e) { message("PubMed indisponible : ", conditionMessage(e)); list() })
-  articles <- Filter(function(a) nzchar(a$pmid) && nzchar(a$titre), articles)
+  }, error = function(e) { message("PubMed indisponible : ", conditionMessage(e)); NULL })
+  pubmed_ok <- !is.null(articles)
+  articles <- Filter(function(a) nzchar(a$pmid) && nzchar(a$titre), si_null(articles, list()))
   message(length(articles), " articles PubMed trouvés")
 
   consigne <- paste(
@@ -963,11 +976,15 @@ if (reprendre_veille) {
   veille_suite <- Filter(function(v) isTRUE(v$nouveau), reste)
   veille_anciens <- Filter(function(v) !isTRUE(v$nouveau), reste)
   n_nouveaux <- sum(vapply(veille, function(v) isTRUE(v$nouveau), FALSE))
-  dir.create("cache", showWarnings = FALSE)
-  saveRDS(list(jour = format(Sys.Date()), version = 2, heure = format(Sys.time(), "%Hh%M", tz = "Europe/Paris"),
-               donnees = list(veille_principal = veille_principal, veille_suite = veille_suite, veille_anciens = veille_anciens,
-                              veille_top = veille_top, veille_note = veille_note)), fichier_cache)
-  message("Veille du jour calculée et mise en cache")
+  # Si PubMed n'a pas répondu, on ne garde rien en cache : la mise à jour suivante réessaiera
+  # au lieu d'afficher une veille vide toute la journée.
+  if (pubmed_ok) {
+    dir.create("cache", showWarnings = FALSE)
+    saveRDS(list(jour = format(Sys.Date()), version = 2, heure = format(Sys.time(), "%Hh%M", tz = "Europe/Paris"),
+                 donnees = list(veille_principal = veille_principal, veille_suite = veille_suite, veille_anciens = veille_anciens,
+                                veille_top = veille_top, veille_note = veille_note)), fichier_cache)
+    message("Veille du jour calculée et mise en cache")
+  } else message("Veille non mise en cache (PubMed indisponible) : nouvel essai à la prochaine mise à jour")
 }
 
 # ---------- Favoris (fichier favoris.csv du dépôt, avec catégories) ----------
