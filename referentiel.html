@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Référentiel STP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#F2F3EF; --card:#FFFFFF; --ink:#16181D; --muted:#4A4F59; --rule:#DADDD6; --accent:#2D4FC4;
+  --ok:#1F6F4A; --ok-bg:#E3F2EA; --warn:#9A5B00; --warn-bg:#FBF0DD; --bad:#A3321F; --bad-bg:#FBE6E2; --info-bg:#E8ECF9;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ground:#121419; --card:#1B1E25; --ink:#ECEDE8; --muted:#A9AEB8; --rule:#2C313B; --accent:#8EA6FF;
+    --ok:#6FCF9B; --ok-bg:#16301F; --warn:#F2C26B; --warn-bg:#33270F; --bad:#FF9A85; --bad-bg:#3A1C17; --info-bg:#222A44;
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:15px;line-height:1.5}
+.wrap{max-width:1320px;margin:0 auto;padding:28px 20px 56px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;padding-bottom:20px;border-bottom:2px solid var(--ink);margin-bottom:24px}
+.retour{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);text-decoration:none}
+h1{margin:6px 0 0;font-family:'Space Grotesk',sans-serif;font-size:clamp(32px,5vw,46px);line-height:1;letter-spacing:-.02em}
+.sous-titre{color:var(--muted);font-size:14px;margin-top:6px}
+.recherche{flex:1 1 320px;max-width:520px}
+.recherche input{width:100%;border:1px solid var(--rule);border-radius:12px;padding:12px 14px;font:inherit;font-size:16px;background:var(--card);color:var(--ink)}
+.cols{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+nav{flex:1 1 280px;max-width:340px;background:var(--card);border-radius:18px;padding:16px;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto}
+main{flex:999 1 520px;min-width:0}
+.classe{margin-bottom:10px}
+.classe-titre{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:8px 8px 4px}
+.mol{display:block;width:100%;text-align:left;border:none;background:none;color:var(--ink);font:inherit;padding:7px 10px;border-radius:10px;cursor:pointer}
+.mol small{color:var(--muted);margin-left:6px}
+.mol:hover{background:var(--ground)}
+.mol.actif{background:var(--ink);color:var(--card)}
+.mol.actif small{color:var(--card);opacity:.7}
+.vide{color:var(--muted);padding:10px}
+.fiche{background:var(--card);border-radius:18px;padding:24px 26px;display:flex;flex-direction:column;gap:16px}
+.fiche-tete{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:flex-start}
+.fiche h2{margin:0;font-family:'Space Grotesk',sans-serif;font-size:32px;line-height:1.1}
+.marques{color:var(--muted);margin-top:4px}
+.etiquette{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:var(--ground);color:var(--muted)}
+.bouton{border:1px solid var(--rule);background:transparent;color:var(--ink);border-radius:10px;padding:8px 14px;font:inherit;font-size:14px;cursor:pointer}
+.bouton:hover{border-color:currentColor}
+.bouton.plein{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.cible{border-radius:14px;background:var(--info-bg);padding:16px 18px}
+.cible h3,.interp h3{margin:0 0 8px;font-family:'Space Grotesk',sans-serif;font-size:18px}
+.cible ul{margin:0;padding-left:18px}
+.cible li{margin:2px 0}
+.tableau{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+td,th{border:1px solid var(--rule);padding:6px 8px;text-align:left;vertical-align:top}
+.interp{border:1px solid var(--rule);border-radius:14px;padding:16px 18px}
+.interp-saisie{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.interp-saisie input{width:160px;border:1px solid var(--rule);border-radius:10px;padding:9px 12px;font:inherit;font-size:16px;background:var(--ground);color:var(--ink)}
+.regles{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.regle{display:flex;justify-content:space-between;gap:12px;padding:8px 12px;border-radius:10px;background:var(--ground);font-size:14px}
+.regle .etat{font-weight:600;white-space:nowrap}
+.regle.ok{background:var(--ok-bg)} .regle.ok .etat{color:var(--ok)}
+.regle.bas,.regle.haut{background:var(--warn-bg)} .regle.bas .etat,.regle.haut .etat{color:var(--warn)}
+.regle.tox{background:var(--bad-bg)} .regle.tox .etat{color:var(--bad)}
+.note{font-size:13px;color:var(--muted)}
+details.section{border-top:1px solid var(--rule)}
+details.section > summary{list-style:none;cursor:pointer;padding:12px 28px 12px 0;position:relative;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600}
+details.section > summary::-webkit-details-marker{display:none}
+details.section > summary::after{content:"+";position:absolute;right:0;top:12px;font-family:'IBM Plex Mono',monospace;color:var(--muted)}
+details.section[open] > summary::after{content:"−"}
+.contenu{padding:0 0 14px}
+.contenu p{margin:0 0 6px}
+.contenu h4{margin:10px 0 4px;font-size:13px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+textarea{width:100%;min-height:90px;border:1px solid var(--rule);border-radius:10px;padding:10px 12px;font:inherit;font-size:14px;background:var(--ground);color:var(--ink);resize:vertical}
+.edition label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:10px 0 4px}
+.edition input[type=text]{width:100%;border:1px solid var(--rule);border-radius:10px;padding:9px 12px;font:inherit;background:var(--ground);color:var(--ink)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.statut{font-size:14px;color:var(--muted)}
+mark{background:transparent;color:var(--accent);font-weight:600}
+@media (max-width:760px){nav{position:static;max-width:none;max-height:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <a class="retour" href="./">← Veille du jour</a>
+      <h1>Référentiel STP</h1>
+      <div class="sous-titre" id="compte">Chargement…</div>
+    </div>
+    <div class="recherche">
+      <input type="search" id="recherche" placeholder="Rechercher une molécule, une spécialité, une classe…" aria-label="Rechercher une molécule" autocomplete="off">
+    </div>
+  </header>
+  <div class="cols">
+    <nav id="liste" aria-label="Molécules"></nav>
+    <main id="fiche"></main>
+  </div>
+</div>
+
+<script>
+(function () {
+  var donnees = { molecules: [] };
+  var actuelle = null;
+  var enEdition = false;
+  var liste = document.getElementById('liste');
+  var zone = document.getElementById('fiche');
+  var recherche = document.getElementById('recherche');
+  var ORDRE_SECTIONS = ['Indications', "Mécanisme d'action", 'Posologie', 'Absorption', 'Distribution', 'Métabolisation', 'Élimination',
+                        'Facteurs de variabilité', 'Toxicités si surdosage', 'Interprétation', 'Informations', 'Notes'];
+  var PK = ['Absorption', 'Distribution', 'Métabolisation', 'Élimination'];
+
+  function el(tag, cls, texte) { var e = document.createElement(tag); if (cls) e.className = cls; if (texte != null) e.textContent = texte; return e; }
+  function sansAccent(s) { return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); }
+  function texteRecherche(m) { return sansAccent([m.nom].concat(m.marques || [], [m.classe]).join(' ')); }
+
+  // ---------- Liste ----------
+  function afficherListe() {
+    var q = sansAccent(recherche.value.trim());
+    liste.innerHTML = '';
+    var classes = [];
+    donnees.molecules.forEach(function (m) { if (classes.indexOf(m.classe) < 0) classes.push(m.classe); });
+    var total = 0;
+    classes.forEach(function (c) {
+      var mols = donnees.molecules.filter(function (m) { return m.classe === c && (!q || texteRecherche(m).indexOf(q) >= 0); });
+      if (!mols.length) return;
+      total += mols.length;
+      var bloc = el('div', 'classe');
+      bloc.appendChild(el('div', 'classe-titre', c));
+      mols.forEach(function (m) {
+        var b = el('button', 'mol' + (actuelle && actuelle.id === m.id ? ' actif' : ''));
+        b.type = 'button'; b.textContent = m.nom;
+        if (m.marques && m.marques.length) b.appendChild(el('small', null, m.marques[0]));
+        b.addEventListener('click', function () { ouvrir(m.id); });
+        bloc.appendChild(b);
+      });
+      liste.appendChild(bloc);
+    });
+    if (!total) liste.appendChild(el('div', 'vide', 'Aucune molécule ne correspond.'));
+    var ajout = el('button', 'bouton'); ajout.type = 'button'; ajout.textContent = '+ Ajouter une molécule'; ajout.style.marginTop = '8px';
+    ajout.addEventListener('click', nouvelleMolecule);
+    liste.appendChild(ajout);
+    return total;
+  }
+
+  // ---------- Lecture des cibles pour l'aide à l'interprétation ----------
+  function nombre(s) { return parseFloat(String(s).replace(/\s/g, '').replace(',', '.')); }
+  function reglesDepuis(lignes) {
+    var regles = [];
+    lignes.forEach(function (ligne) {
+      var t = ligne.replace(/\u2013|\u2014/g, '-');
+      if (/cmi/i.test(t)) return; // dépend de la CMI : affiché mais non évalué automatiquement
+      var unite = (t.match(/(mg\/l|µg\/ml|ug\/ml|ng\/ml|mmol\/l|µmol\/l|mg\/ml|µg\/l)/i) || [''])[0];
+      var tox = /tox|fatal|neuro|cristaux|risque/i.test(t);
+      var m;
+      var intervalle = /(\d+(?:[.,]\d+)?)\s*-\s*(\d+(?:[.,]\d+)?)/g;
+      var trouve = false;
+      while ((m = intervalle.exec(t))) {
+        var a = nombre(m[1]), b = nombre(m[2]);
+        if (!isNaN(a) && !isNaN(b) && b > a) { regles.push({ type: 'intervalle', min: a, max: b, texte: ligne, unite: unite, tox: false }); trouve = true; }
+      }
+      if (trouve) return;
+      var sup = t.match(/(>|≥|supérieure? à)\s*(\d+(?:[.,]\d+)?)/i);
+      var inf = t.match(/(<|≤|inférieure? à)\s*(\d+(?:[.,]\d+)?)/i);
+      if (sup) regles.push({ type: 'sup', seuil: nombre(sup[2]), texte: ligne, unite: unite, tox: tox });
+      else if (inf) regles.push({ type: 'inf', seuil: nombre(inf[2]), texte: ligne, unite: unite, tox: tox });
+    });
+    return regles;
+  }
+  function evaluer(r, v) {
+    if (r.type === 'intervalle') {
+      if (v < r.min) return ['bas', 'En dessous'];
+      if (v > r.max) return ['haut', 'Au-dessus'];
+      return ['ok', 'Dans l’intervalle'];
+    }
+    if (r.type === 'sup') {
+      if (v > r.seuil) return r.tox ? ['tox', 'Seuil dépassé'] : ['ok', 'Atteint'];
+      return r.tox ? ['ok', 'Sous le seuil'] : ['bas', 'Non atteint'];
+    }
+    if (v < r.seuil) return ['ok', 'Respecté'];
+    return ['haut', 'Dépassé'];
+  }
+
+  // ---------- Fiche ----------
+  function lignesCible(m) { return (m.cible || []).map(function (l) { return l.filter(Boolean).join(' : '); }); }
+  function rendreCible(m) {
+    var bloc = el('div', 'cible');
+    bloc.appendChild(el('h3', null, 'Cible thérapeutique et seuils'));
+    var lignes = m.cible || [];
+    if (!lignes.length) { bloc.appendChild(el('div', 'note', 'Aucune cible renseignée.')); return bloc; }
+    var enTableau = lignes.filter(function (l) { return l.filter(Boolean).length >= 3; }).length >= 2;
+    if (enTableau) {
+      var largeur = Math.max.apply(null, lignes.map(function (l) { return l.length; }));
+      var utiles = [];
+      for (var c = 0; c < largeur; c++) if (lignes.some(function (l) { return l[c]; })) utiles.push(c);
+      var tw = el('div', 'tableau'); var tb = el('table');
+      lignes.forEach(function (l) {
+        var tr = el('tr');
+        utiles.forEach(function (i) { tr.appendChild(el('td', null, l[i] || '')); });
+        tb.appendChild(tr);
+      });
+      tw.appendChild(tb); bloc.appendChild(tw);
+    } else {
+      var ul = el('ul');
+      lignes.forEach(function (l) { ul.appendChild(el('li', null, l.filter(Boolean).join(' : '))); });
+      bloc.appendChild(ul);
+    }
+    return bloc;
+  }
+  function rendreInterpretation(m) {
+    var lignes = lignesCible(m).concat((m.sections && m.sections['Toxicités si surdosage']) || []);
+    var regles = reglesDepuis(lignes);
+    var bloc = el('div', 'interp');
+    bloc.appendChild(el('h3', null, 'Situer un résultat'));
+    if (!regles.length) { bloc.appendChild(el('div', 'note', 'Pas de seuil chiffré exploitable automatiquement pour cette molécule.')); return bloc; }
+    var saisie = el('div', 'interp-saisie');
+    var champ = el('input'); champ.type = 'text'; champ.inputMode = 'decimal'; champ.placeholder = 'Concentration mesurée'; champ.setAttribute('aria-label', 'Concentration mesurée');
+    saisie.appendChild(champ);
+    saisie.appendChild(el('span', 'note', 'dans la même unité que la cible'));
+    bloc.appendChild(saisie);
+    var zoneRegles = el('div', 'regles'); bloc.appendChild(zoneRegles);
+    function maj() {
+      var v = nombre(champ.value);
+      zoneRegles.innerHTML = '';
+      regles.forEach(function (r) {
+        var d = el('div', 'regle'); var etat = ['', '—'];
+        if (!isNaN(v)) etat = evaluer(r, v);
+        if (etat[0]) d.className = 'regle ' + etat[0];
+        d.appendChild(el('span', null, r.texte));
+        d.appendChild(el('span', 'etat', etat[1]));
+        zoneRegles.appendChild(d);
+      });
+    }
+    champ.addEventListener('input', maj); maj();
+    bloc.appendChild(el('div', 'note', 'Seuils lus automatiquement dans la fiche : vérifie toujours l’unité, le type de prélèvement (résiduelle, pic, Css) et le contexte. Les cibles exprimées en multiples de CMI ne sont pas évaluées.'));
+    return bloc;
+  }
+  function rendreSection(titre, lignes, ouverte) {
+    var d = el('details', 'section'); if (ouverte) d.open = true;
+    d.appendChild(el('summary', null, titre));
+    var c = el('div', 'contenu');
+    lignes.forEach(function (l) { c.appendChild(el('p', null, l)); });
+    d.appendChild(c);
+    return d;
+  }
+  function afficherFiche() {
+    zone.innerHTML = '';
+    var m = actuelle;
+    if (!m) { var v = el('div', 'fiche'); v.appendChild(el('div', 'note', 'Choisis une molécule dans la liste ou cherche-la en haut de la page.')); zone.appendChild(v); return; }
+    if (enEdition) { zone.appendChild(formulaire(m)); return; }
+    var f = el('article', 'fiche');
+    var tete = el('div', 'fiche-tete');
+    var gauche = el('div');
+    gauche.appendChild(el('span', 'etiquette', m.classe));
+    gauche.appendChild(el('h2', null, m.nom));
+    if (m.marques && m.marques.length) gauche.appendChild(el('div', 'marques', m.marques.join(' · ')));
+    tete.appendChild(gauche);
+    var b = el('button', 'bouton'); b.type = 'button'; b.textContent = 'Modifier la fiche';
+    b.addEventListener('click', function () { enEdition = true; afficherFiche(); });
+    tete.appendChild(b);
+    f.appendChild(tete);
+    if (m.tableau && m.tableau.length) {
+      var tw = el('div', 'tableau'); var tb = el('table');
+      m.tableau.forEach(function (kv) { var tr = el('tr'); tr.appendChild(el('th', null, kv[0])); tr.appendChild(el('td', null, kv[1])); tb.appendChild(tr); });
+      tw.appendChild(tb); f.appendChild(tw);
+    } else {
+      f.appendChild(rendreCible(m));
+      f.appendChild(rendreInterpretation(m));
+    }
+    var s = m.sections || {};
+    var pkFait = false;
+    ORDRE_SECTIONS.concat(Object.keys(s).filter(function (k) { return ORDRE_SECTIONS.indexOf(k) < 0; })).forEach(function (titre) {
+      if (PK.indexOf(titre) >= 0) {
+        if (pkFait) return; pkFait = true;
+        var parties = PK.filter(function (p) { return s[p] && s[p].length; });
+        if (!parties.length) return;
+        var d = el('details', 'section'); d.appendChild(el('summary', null, 'Pharmacocinétique'));
+        var c = el('div', 'contenu');
+        parties.forEach(function (p) { c.appendChild(el('h4', null, p)); s[p].forEach(function (l) { c.appendChild(el('p', null, l)); }); });
+        d.appendChild(c); f.appendChild(d); return;
+      }
+      if (s[titre] && s[titre].length) f.appendChild(rendreSection(titre, s[titre], titre === 'Interprétation'));
+    });
+    f.appendChild(el('div', 'note', 'Source : ' + (donnees.source || 'référentiel') + ' · onglet « ' + (m.onglet || '—') + ' »'));
+    zone.appendChild(f);
+  }
+
+  // ---------- Édition ----------
+  function formulaire(m) {
+    var f = el('article', 'fiche edition');
+    f.appendChild(el('h2', null, 'Modifier : ' + (m.nom || 'nouvelle molécule')));
+    function champTexte(lab, val) { f.appendChild(el('label', null, lab)); var i = el('input'); i.type = 'text'; i.value = val || ''; f.appendChild(i); return i; }
+    function zoneTexte(lab, val, aide) { f.appendChild(el('label', null, lab)); var t = el('textarea'); t.value = val || ''; if (aide) t.placeholder = aide; f.appendChild(t); return t; }
+    var cNom = champTexte('Nom (DCI)', m.nom);
+    var cMarques = champTexte('Spécialités, séparées par des virgules', (m.marques || []).join(', '));
+    var cClasse = champTexte('Classe', m.classe);
+    var cCible = zoneTexte('Cible thérapeutique et seuils (une ligne par ligne du tableau, colonnes séparées par « | »)',
+      (m.cible || []).map(function (l) { return l.join(' | '); }).join('\n'), 'Résiduelle recommandée\n40 - 80 mg/L');
+    var champs = {};
+    ORDRE_SECTIONS.forEach(function (t) { champs[t] = zoneTexte(t + ' (un élément par ligne)', ((m.sections || {})[t] || []).join('\n')); });
+    var actions = el('div', 'actions'); actions.style.marginTop = '14px';
+    var ok = el('button', 'bouton plein'); ok.type = 'button'; ok.textContent = 'Enregistrer';
+    var annuler = el('button', 'bouton'); annuler.type = 'button'; annuler.textContent = 'Annuler';
+    var suppr = el('button', 'bouton'); suppr.type = 'button'; suppr.textContent = 'Supprimer la fiche';
+    var statut = el('span', 'statut');
+    actions.appendChild(ok); actions.appendChild(annuler); actions.appendChild(suppr); actions.appendChild(statut);
+    f.appendChild(actions);
+    annuler.addEventListener('click', function () {
+      enEdition = false;
+      if (m._nouvelle) { donnees.molecules = donnees.molecules.filter(function (x) { return x !== m; }); actuelle = null; afficherListe(); }
+      afficherFiche();
+    });
+    suppr.addEventListener('click', function () {
+      if (!confirm('Supprimer définitivement la fiche « ' + m.nom + ' » ?')) return;
+      donnees.molecules = donnees.molecules.filter(function (x) { return x !== m; });
+      sauvegarder(statut, 'Fiche supprimée : ' + m.nom, function () { actuelle = null; enEdition = false; afficherListe(); afficherFiche(); });
+    });
+    ok.addEventListener('click', function () {
+      var nom = cNom.value.trim(); if (!nom) { statut.textContent = 'Le nom est obligatoire.'; return; }
+      m.nom = nom;
+      m.marques = cMarques.value.split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+      m.classe = cClasse.value.trim() || 'Autres';
+      m.cible = cCible.value.split('\n').map(function (l) { return l.split('|').map(function (x) { return x.trim(); }); })
+        .filter(function (l) { return l.some(Boolean); });
+      m.sections = {};
+      ORDRE_SECTIONS.forEach(function (t) {
+        var v = champs[t].value.split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
+        if (v.length) m.sections[t] = v;
+      });
+      if (!m.id) m.id = sansAccent(nom).replace(/[^a-z0-9]+/g, '-') + '-' + Date.now().toString(36);
+      delete m._nouvelle;
+      sauvegarder(statut, 'Fiche modifiée : ' + m.nom, function () { enEdition = false; afficherListe(); afficherFiche(); location.hash = m.id; });
+    });
+    return f;
+  }
+  function nouvelleMolecule() {
+    var m = { id: '', nom: '', marques: [], classe: actuelle ? actuelle.classe : 'Autres', onglet: 'Ajout depuis la page', sections: {}, cible: [], _nouvelle: true };
+    donnees.molecules.push(m); actuelle = m; enEdition = true; afficherFiche();
+  }
+
+  // ---------- Enregistrement dans le dépôt GitHub (même jeton que la Veille du jour) ----------
+  function jeton() { try { return localStorage.getItem('veille-du-jour:jeton') || ''; } catch (e) { return ''; } }
+  function b64(txt) { return btoa(unescape(encodeURIComponent(txt))); }
+  async function sauvegarder(statut, message, ensuite) {
+    var tok = jeton();
+    var hote = location.hostname;
+    if (!tok || !/\.github\.io$/.test(hote)) {
+      statut.textContent = 'Modification gardée sur cette page seulement : pour l’enregistrer, ouvre le référentiel en ligne avec ton jeton GitHub configuré dans la Veille du jour.';
+      ensuite(); return;
+    }
+    var proprio = hote.split('.')[0];
+    var depot = location.pathname.split('/')[1];
+    var base = 'https://api.github.com/repos/' + proprio + '/' + depot;
+    var entetes = { 'Authorization': 'Bearer ' + tok, 'Accept': 'application/vnd.github+json' };
+    statut.textContent = 'Enregistrement…';
+    try {
+      var info = await (await fetch(base, { headers: entetes })).json();
+      var branche = info.default_branch;
+      var r = await fetch(base + '/contents/referentiel.json?ref=' + branche, { headers: entetes });
+      var sha = r.ok ? (await r.json()).sha : undefined;
+      var propre = JSON.parse(JSON.stringify(donnees, function (k, v) { return k === '_nouvelle' ? undefined : v; }));
+      var p = await fetch(base + '/contents/referentiel.json', { method: 'PUT', headers: entetes,
+        body: JSON.stringify({ message: message, content: b64(JSON.stringify(propre)), sha: sha, branch: branche }) });
+      if (!p.ok) throw new Error('HTTP ' + p.status);
+      fetch(base + '/actions/workflows/page-du-matin.yml/dispatches', { method: 'POST', headers: entetes, body: JSON.stringify({ ref: branche }) }).catch(function () {});
+      try { localStorage.setItem('referentiel:brouillon', JSON.stringify({ t: Date.now(), donnees: propre })); } catch (e) {}
+      ensuite();
+      alert('Enregistré. La version en ligne sera à jour dans quelques minutes.');
+    } catch (e) {
+      statut.textContent = 'L’enregistrement a échoué (' + e.message + ').';
+    }
+  }
+
+  // ---------- Navigation ----------
+  function ouvrir(id) {
+    var m = donnees.molecules.filter(function (x) { return x.id === id; })[0];
+    if (!m) return;
+    actuelle = m; enEdition = false;
+    if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
+    afficherListe(); afficherFiche();
+    if (window.innerWidth < 760) zone.scrollIntoView({ behavior: 'smooth' });
+  }
+  recherche.addEventListener('input', function () {
+    var n = afficherListe();
+    var q = sansAccent(recherche.value.trim());
+    if (q && n === 1) { var m = donnees.molecules.filter(function (x) { return texteRecherche(x).indexOf(q) >= 0; })[0]; if (m && (!actuelle || actuelle.id !== m.id)) ouvrir(m.id); }
+  });
+  window.addEventListener('hashchange', function () { ouvrir(location.hash.slice(1)); });
+
+  fetch('referentiel.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (d) {
+    donnees = d;
+    try {
+      var b = JSON.parse(localStorage.getItem('referentiel:brouillon') || 'null');
+      if (b && Date.now() - b.t < 15 * 60000) donnees = b.donnees;
+    } catch (e) {}
+    document.getElementById('compte').textContent = donnees.molecules.length + ' molécules · source : ' + (donnees.source || '');
+    afficherListe();
+    if (location.hash) ouvrir(location.hash.slice(1)); else afficherFiche();
+  }).catch(function () {
+    zone.innerHTML = '';
+    var v = el('div', 'fiche'); v.appendChild(el('div', 'note', 'Impossible de charger le référentiel (fichier referentiel.json introuvable).')); zone.appendChild(v);
+  });
+})();
+</script>
+</body>
+</html>
