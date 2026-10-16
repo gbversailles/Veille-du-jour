@@ -215,6 +215,14 @@ a.tile:hover{outline:1px solid var(--accent)}
 .biblio-texte{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
 .biblio-titre{font-size:15px;font-weight:600;line-height:1.35;color:var(--ink);text-decoration:none}
 .biblio-titre:hover{color:var(--accent)}
+.ref-resultats:empty{display:none}
+.ref-item{display:block;padding:8px 0;border-top:1px solid var(--rule);text-decoration:none;color:var(--ink)}
+.ref-item:hover .ref-nom{color:var(--accent)}
+.ref-nom{font-size:15px;font-weight:600;line-height:1.35}
+.ref-info{font-size:13px;color:var(--muted)}
+.ref-vide{font-size:14px;color:var(--muted)}
+.ref-complet{font-size:14px;color:var(--accent);text-decoration:none;align-self:flex-start}
+.ref-complet:hover{text-decoration:underline}
 .biblio-suppr{border:none;background:none;color:var(--muted);font-size:18px;cursor:pointer;padding:0 4px}
 .recherche{display:flex;flex-direction:column;gap:8px;margin-top:14px;max-width:640px}
 .recherche input{border:1px solid var(--rule);border-radius:12px;padding:11px 14px;font:inherit;font-size:16px;background:var(--card);color:var(--ink)}
@@ -347,6 +355,14 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
         {{/veille_anciens}}
       </details>
       {{/has_suite}}
+    </section>
+    <section class="card" data-section="referentiel" data-open>
+      <div class="card-head"><h2>Référentiel STP</h2><button class="toggle" type="button">−</button></div>
+      <div class="biblio-outils">
+        <input type="search" id="ref-recherche" placeholder="Rechercher une molécule…" aria-label="Rechercher une molécule dans le référentiel" autocomplete="off">
+      </div>
+      <div id="ref-resultats" class="ref-resultats" aria-live="polite"></div>
+      <a class="ref-complet" href="referentiel.html">Ouvrir le référentiel complet ↗</a>
     </section>
     <section class="card" data-section="actu">
       <div class="card-head"><h2>Actualité</h2><button class="toggle" type="button">−</button></div>
@@ -1193,6 +1209,52 @@ document.addEventListener('click', function (e) {
       if (m && Number(m[1]) > actuelle) location.reload();
     })
     .catch(function () {});
+})();
+</script>
+<script>
+(function () {
+  // Référentiel STP : recherche rapide d'une molécule (referentiel.json chargé au premier usage)
+  var champ = document.getElementById('ref-recherche');
+  var zone = document.getElementById('ref-resultats');
+  if (!champ || !zone) return;
+  var molecules = null, chargement = null, echec = false;
+  function sansAccent(t) { return String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); }
+  function charger() {
+    if (!chargement) chargement = fetch('referentiel.json', { cache: 'no-cache' })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (d) {
+        molecules = (d.molecules || []).map(function (m) {
+          var marques = [].concat(m.marques || []).join(', ');
+          return { id: m.id, nom: m.nom || m.id, marques: marques, classe: m.classe || '',
+                   cle: sansAccent([m.nom, marques, m.classe].join(' ')) };
+        });
+        afficher();
+      })
+      .catch(function () { echec = true; afficher(); });
+    return chargement;
+  }
+  function message(txt) {
+    zone.innerHTML = '';
+    var d = document.createElement('div'); d.className = 'ref-vide'; d.textContent = txt; zone.appendChild(d);
+  }
+  function afficher() {
+    var q = sansAccent(champ.value.trim());
+    if (!q) { zone.innerHTML = ''; return; }
+    if (echec) { message('Le référentiel n\'a pas pu être chargé.'); return; }
+    if (!molecules) { message('Chargement…'); return; }
+    var trouvees = molecules.filter(function (m) { return m.cle.indexOf(q) >= 0; }).slice(0, 8);
+    if (!trouvees.length) { message('Aucune molécule trouvée.'); return; }
+    zone.innerHTML = '';
+    trouvees.forEach(function (m) {
+      var a = document.createElement('a'); a.className = 'ref-item'; a.href = 'referentiel.html#' + encodeURIComponent(m.id);
+      var n = document.createElement('div'); n.className = 'ref-nom'; n.textContent = m.nom;
+      var i = document.createElement('div'); i.className = 'ref-info'; i.textContent = [m.marques, m.classe].filter(Boolean).join(' · ');
+      a.appendChild(n); if (i.textContent) a.appendChild(i);
+      zone.appendChild(a);
+    });
+  }
+  champ.addEventListener('focus', charger);
+  champ.addEventListener('input', function () { charger(); afficher(); });
 })();
 </script>
 <script>
