@@ -1,0 +1,2999 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Adaptation posologique</title>
+<style>
+:root{--bleu:#0066cc;--fond:#fafafa;--carte:#fff;--bord:#e0e0e0;--gris:#f8f9fa;--texte:#212529;--doux:#6c757d;--vert:#28a745;--rouge:#dc3545;--jaune:#fff3cd;--jaune-b:#ffc107}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;font-family:"Segoe UI",system-ui,sans-serif;background:var(--fond);color:var(--texte);font-size:14px}
+.entete{background:#fff;border-bottom:2px solid #f0f0f0;padding:12px 16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;z-index:20}
+.entete h1{margin:0;font-size:20px;color:var(--bleu)}
+.entete a{color:var(--bleu);font-size:13px;text-decoration:none;margin-left:14px}
+.entete-liens{display:flex;align-items:center;flex-wrap:wrap;gap:4px}
+.entete-choix{display:flex;gap:10px;flex:1 1 440px;max-width:760px}
+.entete-choix .champ{flex:1;margin:0;min-width:0}
+@media (max-width:700px){.entete{padding:8px 10px;gap:6px}.entete h1{font-size:16px}.entete-choix label{display:none}}
+details.plie>summary{list-style:none;cursor:pointer;color:var(--bleu);font-weight:600;font-size:13px;margin-top:10px;user-select:none}
+details.plie>summary::-webkit-details-marker{display:none}
+details.plie>summary::before{content:"+";display:inline-block;width:18px;height:18px;line-height:16px;text-align:center;border:1px solid var(--bleu);border-radius:4px;margin-right:6px;font-weight:700}
+details.plie[open]>summary::before{content:"−"}
+details.plie>.details{margin-top:8px}
+.contenu{padding:16px;max-width:1500px;margin:0 auto 70px}
+.ligne{display:grid;gap:16px}
+.l2{grid-template-columns:1fr 1fr}
+.l84{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
+.l444{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:1000px){.l2,.l84,.l444{grid-template-columns:1fr}}
+.carte{background:var(--carte);border:1px solid var(--bord);border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.05);margin-bottom:16px;overflow:hidden}
+.carte>.titre{background:var(--gris);border-bottom:1px solid var(--bord);padding:10px 16px;color:var(--bleu);font-weight:600}
+.carte>.corps{padding:14px 16px}
+label{display:block;font-size:12px;font-weight:600;margin-bottom:3px}
+input,select{width:100%;border:1px solid #ced4da;border-radius:4px;padding:6px 8px;font:inherit;font-size:14px;background:#fff;color:var(--texte)}
+input.date,input.heure{border:2px solid #000;font-weight:600}
+.requis input:placeholder-shown,.requis.vide input{border:2px solid var(--rouge);background:#fff5f5}
+.champ{margin-bottom:8px}
+.cote{display:flex;gap:8px}.cote>*{flex:1}
+#carte-patient .cote>*{flex:0 1 25%;min-width:0}
+@media (max-width:700px){#carte-patient .cote{flex-wrap:wrap}#carte-patient .cote>*{flex:1 1 45%}}
+.encadre{background:var(--gris);border:1px solid #dee2e6;border-radius:6px;padding:10px;margin-bottom:12px}
+.section{border:1px solid #dee2e6;border-radius:4px;padding:8px;background:#fafafa}
+.section h4{margin:0 0 8px;font-size:11px;text-align:center;border-bottom:1px solid #dee2e6;padding-bottom:4px;color:#495057}
+.btn{border:1px solid var(--bleu);background:var(--bleu);color:#fff;border-radius:4px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
+.btn.vert{background:var(--vert);border-color:var(--vert)}
+.btn.contour{background:#fff;color:var(--bleu)}
+.btn.contour-rouge{background:#fff;color:var(--rouge);border-color:var(--rouge)}
+.btn.contour-jaune{background:#fff;color:#b8860b;border-color:var(--jaune-b);font-weight:600}
+.btn.gris{background:#6c757d;border-color:#6c757d}
+.btn.petit{padding:3px 8px;font-size:12px}
+.groupe{display:flex;justify-content:center;gap:5px;margin:4px 0 8px}
+.bascule{padding:7px 14px;font-size:12px;border:1px solid var(--bleu);background:#fff;color:var(--bleu);border-radius:4px;cursor:pointer}
+.bascule.actif{background:var(--bleu);color:#fff}
+.centre{text-align:center}
+.onglets{display:flex;gap:4px;border-bottom:2px solid var(--bleu);margin:6px 0 16px}
+.onglet{border:1px solid var(--bleu);border-bottom:none;background:#fff;color:var(--bleu);font-weight:700;padding:8px 18px;border-radius:6px 6px 0 0;cursor:pointer}
+.onglet.actif{background:var(--bleu);color:#fff}
+.tableau{overflow-x:auto;background:var(--gris);padding:10px;border:1px solid var(--bord);border-radius:4px}
+table{border-collapse:collapse;width:100%;background:#fff}
+th,td{border:1px solid #dee2e6;padding:0}
+th{font-size:12px;padding:6px;background:#fff;text-align:left;font-weight:600}
+td input{border:none;border-radius:0;padding:6px;min-width:70px}
+td.action{width:32px;text-align:center}
+td.action button{border:none;background:none;color:var(--rouge);cursor:pointer;font-size:16px}
+tr.equilibre td{background:#fff8e1}
+.instructions{background:var(--gris);border:1px solid #dee2e6;border-radius:6px;padding:12px;margin-top:10px;font-size:11px;color:var(--doux);display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.instructions b{color:#495057;font-size:11px}
+.zone-eq{background:var(--jaune);border:1px solid var(--jaune-b);border-radius:6px;padding:10px;margin-bottom:12px}
+.details{background:var(--gris);border:1px solid #e9ecef;border-radius:4px;padding:8px;font-family:"Courier New",monospace;font-size:12px;line-height:1.45;min-height:260px;max-height:460px;overflow:auto}
+.details .t{text-align:center;font-weight:bold;text-decoration:underline;margin:8px 0}
+.details .demi{font-size:14px;font-weight:bold;color:var(--bleu)}
+.reco{background:#fff;border:2px solid var(--vert);border-radius:8px;padding:14px;margin-top:10px;text-align:center;box-shadow:0 3px 10px rgba(40,167,69,.1)}
+.reco h5{margin:0 0 8px;color:var(--bleu);font-size:14px}
+.reco .dose{font-size:20px;font-weight:bold;color:var(--vert);margin:6px 0}
+.perime{background:var(--jaune);border:1px solid var(--jaune-b);border-radius:6px;padding:12px;color:#856404;text-align:center}
+.note{font-size:11px;color:var(--doux);line-height:1.4}
+.info-prob{background:#e3f2fd;padding:6px;border-radius:4px;border-left:3px solid var(--bleu);font-size:11px}
+.graphe{position:relative}
+.graphe svg{width:100%;height:auto;display:block}
+.graphe svg text{font-family:"Segoe UI",sans-serif;font-size:11px;fill:#495057}
+.bulle{position:absolute;pointer-events:none;background:#fff;border:1px solid #ccc;border-radius:4px;padding:4px 8px;font-size:12px;box-shadow:0 2px 6px rgba(0,0,0,.15);display:none;white-space:nowrap}
+.legende{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:#495057;margin-top:6px}
+.legende span::before{content:"";display:inline-block;width:16px;height:3px;margin-right:5px;vertical-align:middle;background:var(--c)}
+.commandes-graphe{display:flex;justify-content:flex-end;gap:10px;align-items:center;font-size:12px;margin-top:6px}
+.commandes-graphe label{display:flex;align-items:center;gap:4px;margin:0;font-weight:400}
+.commandes-graphe input{width:auto}
+.alerte{border-radius:4px;padding:6px 10px;font-size:12px;margin-top:6px;font-family:"Segoe UI",sans-serif}
+.alerte.ok{background:#d4edda;color:#155724}.alerte.warn{background:var(--jaune);color:#856404}.alerte.bad{background:#f8d7da;color:#721c24}
+details.avance{margin-top:10px}
+details.avance summary{cursor:pointer;color:var(--bleu);font-weight:600;font-size:13px}
+.pied{position:fixed;bottom:0;left:0;right:0;background:#333;color:#fff;padding:8px;text-align:center;font-size:12px;font-weight:600;z-index:20}
+.toast{position:fixed;right:16px;bottom:54px;background:#333;color:#fff;padding:10px 14px;border-radius:6px;font-size:13px;z-index:40;opacity:0;transition:opacity .3s}
+.toast.visible{opacity:.95}.toast.erreur{background:var(--rouge)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:50}
+.modal.ouvert{display:flex}
+.modal .boite{background:#fff;border-radius:8px;width:min(1300px,96vw);max-height:94vh;overflow:auto;padding:14px}
+.clcg{background:#fff;border:1px solid #dee2e6;border-radius:4px;padding:6px;text-align:center;font-size:12px}
+</style>
+</head>
+<body>
+<div class="entete">
+  <h1>Outil d’adaptation posologique</h1>
+  <div class="entete-choix">
+    <div class="champ"><label for="molecule">Molécule :</label><select id="molecule"></select></div>
+    <div class="champ"><label for="modele">Modèle pharmacocinétique :</label><select id="modele"></select></div>
+  </div>
+  <div class="entete-liens"><button class="btn petit contour-rouge" id="tout-effacer" type="button">Effacer toutes les données</button><a href="./">Veille du jour</a><a href="referentiel.html" id="lien-ref" target="_blank" rel="noopener">Référentiel STP ↗</a></div>
+</div>
+<div class="contenu">
+  <div id="note-modele" class="note" style="margin:0 0 10px"></div>
+
+  <div class="carte" id="carte-patient">
+    <div class="titre">Covariables du patient (invariantes)</div>
+    <div class="corps">
+      <div class="cote" style="align-items:flex-end">
+        <div data-besoin="SEXE"><label>Sexe :</label><div class="groupe" style="justify-content:flex-start"><button class="bascule actif" data-sexe="H" type="button">Homme</button><button class="bascule" data-sexe="F" type="button">Femme</button></div></div>
+        <div class="requis" data-besoin="AGE"><label for="age">Âge (ans) :</label><input id="age" type="number" placeholder=" " min="18" max="120"></div>
+        <div class="requis" data-besoin="POIDS"><label for="poids">Poids (kg) :</label><input id="poids" type="number" placeholder=" " min="30" max="250"></div>
+        <div data-besoin="TAILLE" class="requis"><label for="taille">Taille (cm) :</label><input id="taille" type="number" placeholder=" " min="100" max="230"></div>
+        <div data-besoin="ALB" class="requis"><label for="albumine">Albumine (g/L) :</label><input id="albumine" type="number" placeholder=" " min="5" max="60" step="0.1"></div>
+        <div><div class="clcg" id="clcg">ClCG : —</div></div>
+      </div>
+      <div class="cote" id="binaires" style="align-items:flex-end;margin-top:6px">
+        <div data-besoin="CHOC"><label>Choc septique :</label><div class="groupe" style="justify-content:flex-start"><button class="bascule actif" data-binaire="CHOC" data-val="0" type="button">Non</button><button class="bascule" data-binaire="CHOC" data-val="1" type="button">Oui</button></div></div>
+        <div data-besoin="HEMATO"><label>Comorbidité hématologique :</label><div class="groupe" style="justify-content:flex-start"><button class="bascule actif" data-binaire="HEMATO" data-val="0" type="button">Non</button><button class="bascule" data-binaire="HEMATO" data-val="1" type="button">Oui</button></div></div>
+        <div data-besoin="TRAUMA"><label>Traumatisme crânien :</label><div class="groupe" style="justify-content:flex-start"><button class="bascule actif" data-binaire="TRAUMA" data-val="0" type="button">Non</button><button class="bascule" data-binaire="TRAUMA" data-val="1" type="button">Oui</button></div></div>
+        <div data-besoin="DIAL"><label>Hémodialyse :</label><div class="groupe" style="justify-content:flex-start"><button class="bascule actif" data-binaire="DIAL" data-val="0" type="button">Non</button><button class="bascule" data-binaire="DIAL" data-val="1" type="button">Oui</button></div></div>
+        <div data-besoin="RIFAMP"><label>Rifampicine associée :</label><div class="groupe" style="justify-content:flex-start"><button class="bascule actif" data-binaire="RIFAMP" data-val="0" type="button">Non</button><button class="bascule" data-binaire="RIFAMP" data-val="1" type="button">Oui</button></div></div>
+        <div data-besoin="FUMEUR"><label>Tabagisme actif :</label><div class="groupe" style="justify-content:flex-start"><button class="bascule actif" data-binaire="FUMEUR" data-val="0" type="button">Non</button><button class="bascule" data-binaire="FUMEUR" data-val="1" type="button">Oui</button></div></div>
+        <div data-besoin="IH"><label>Insuffisance hépatique :</label><div class="groupe" style="justify-content:flex-start"><button class="bascule actif" data-binaire="IH" data-val="0" type="button">Non</button><button class="bascule" data-binaire="IH" data-val="1" type="button">Oui</button></div></div>
+        <div data-besoin="IR"><label>Insuffisance rénale :</label><div class="groupe" style="justify-content:flex-start"><button class="bascule actif" data-binaire="IR" data-val="0" type="button">Non</button><button class="bascule" data-binaire="IR" data-val="1" type="button">Oui</button></div></div>
+        <div data-besoin="FLUOX"><label>Fluoxétine associée :</label><div class="groupe" style="justify-content:flex-start"><button class="bascule actif" data-binaire="FLUOX" data-val="0" type="button">Non</button><button class="bascule" data-binaire="FLUOX" data-val="1" type="button">Oui</button></div></div>
+        <div data-besoin="AINS"><label>AINS associés :</label><div class="groupe" style="justify-content:flex-start"><button class="bascule actif" data-binaire="AINS" data-val="0" type="button">Non</button><button class="bascule" data-binaire="AINS" data-val="1" type="button">Oui</button></div></div>
+      </div>
+      <div class="note centre" style="margin-top:4px" id="note-patient">Ces paramètres servent au calcul de la clairance selon Cockcroft-Gault, avec la créatinine de chaque ligne du tableau.</div>
+    </div>
+  </div>
+
+  <div class="onglets"><button class="onglet actif" data-onglet="stp" type="button">STP</button><button class="onglet" data-onglet="priori" type="button">A priori</button></div>
+
+  <!-- ===================== STP ===================== -->
+  <div id="onglet-stp">
+    <div class="ligne l84" style="align-items:start">
+      <div style="min-width:0">
+      <div class="carte">
+        <div class="titre">Données du Suivi Thérapeutique Pharmacologique</div>
+        <div class="corps">
+          <div class="groupe"><button class="bascule actif" data-mode="dates" type="button">Saisie par dates et heures</button><button class="bascule" data-mode="heures" type="button">Saisie en heures depuis T0</button></div>
+          <div class="encadre">
+            <div class="ligne l2" style="gap:12px">
+              <div class="section">
+                <h4>Saisie de dose</h4>
+                <div class="cote mode-dates"><div><label>Date :</label><input class="date" type="date" id="d-date"></div><div><label>Heure :</label><input class="heure" type="time" id="d-heure" step="300"></div></div>
+                <div class="mode-heures" hidden><label>Temps depuis T0 (h) :</label><input type="number" id="d-temps" step="0.1"></div>
+                <div class="cote" style="margin-top:6px"><div class="requis" style="flex:1.5"><label>Dose (mg) :</label><input type="number" id="d-dose" placeholder=" "></div><div id="zone-d-voie" hidden><label for="d-voie">Voie :</label><select id="d-voie"><option value="PO">Per os</option><option value="IV">IV</option></select></div><div class="requis"><label>Durée perf. (h) :</label><input type="number" id="d-duree" step="0.1" placeholder=" "></div></div>
+                <div style="margin-top:6px"><label class="lib-cov"></label><input type="number" id="d-cov"></div>
+                <div class="centre" style="margin-top:8px"><button class="btn" id="ajouter-dose" type="button">Ajouter cette dose</button></div>
+              </div>
+              <div class="section">
+                <h4>Saisie de concentration</h4>
+                <div class="cote mode-dates"><div><label>Date :</label><input class="date" type="date" id="c-date"></div><div><label>Heure :</label><input class="heure" type="time" id="c-heure" step="300"></div></div>
+                <div class="mode-heures" hidden><label>Temps depuis T0 (h) :</label><input type="number" id="c-temps" step="0.1"></div>
+                <div class="requis" style="margin-top:6px"><label id="lib-conc">Concentration (mg/L) :</label><input type="number" id="c-conc" step="0.1" placeholder=" "></div>
+                <div style="margin-top:6px"><label class="lib-cov"></label><input type="number" id="c-cov"></div>
+                <div class="centre" style="margin-top:8px"><button class="btn vert" id="ajouter-conc" type="button">Ajouter cette concentration</button></div>
+              </div>
+            </div>
+            <div class="centre" style="margin-top:12px"><button class="btn contour-jaune" id="mettre-equilibre" type="button"><span id="signe-eq">+</span> Mettre à l’équilibre</button></div>
+          </div>
+          <div class="zone-eq" id="zone-eq" hidden>
+            <div style="display:flex;justify-content:space-between;align-items:center"><b>Paramètres d’équilibre</b><span><button class="btn petit" id="eq-ajouter" type="button">Ajouter l’équilibre</button> <button class="btn petit contour-rouge" id="eq-desactiver" type="button">Désactiver</button></span></div>
+            <div class="cote" style="margin-top:8px">
+              <div class="requis"><label>Dose (mg) :</label><input type="number" id="eq-dose" placeholder=" "></div>
+              <div class="requis"><label>Intervalle (h) :</label><input type="number" id="eq-intervalle" placeholder=" "></div>
+              <div><label>Nb doses :</label><input type="number" id="eq-nb" value="2" min="1"></div>
+              <div class="requis"><label>Durée perf. (h) :</label><input type="number" id="eq-duree" step="0.1" placeholder=" "></div>
+            </div>
+            <div class="note" id="eq-info" style="margin-top:6px">Doses supposées données avant T0 pour représenter un patient déjà à l’équilibre.</div>
+          </div>
+          <p class="note" id="texte-tableau" style="font-size:13px"></p>
+          <div class="tableau"><table id="tableau"><thead></thead><tbody></tbody></table></div>
+          <details class="plie"><summary>Aide à la saisie du tableau</summary>
+          <div class="instructions">
+            <div><b>Saisie des données :</b><br>• Il est possible de renseigner une ou plusieurs doses ainsi qu’un ou plusieurs dosages<br>• Les champs peuvent être vides, une ligne vide est ajoutée automatiquement<br>• Ne pas renseigner dose et concentration sur la même ligne<br>• Covariable vide : valeur de la ligne précédente (ou valeur par défaut)</div>
+            <div><b id="aide-colonnes">Doses multiples (colonnes 6-7) :</b><br>• Permet de définir des administrations répétées<br>• Calcul du temps pour la ligne suivante :<br><b>T = (Nb doses + 1) × Interdose</b></div>
+          </div>
+          </details>
+          <div class="groupe" style="margin-top:10px;flex-wrap:wrap"><button class="btn contour" id="enregistrer-dossier" type="button">Enregistrer le dossier</button><button class="btn contour" id="ouvrir-dossier" type="button">Ouvrir un dossier</button><input type="file" id="fichier-dossier" accept=".json,application/json" hidden><button class="btn contour" id="export-csv" type="button">Exporter CSV</button><button class="btn contour-rouge" id="effacer-tableau" type="button">Effacer le tableau</button></div>
+        </div>
+      </div>
+      </div>
+      <div style="min-width:0">
+      <div class="carte">
+        <div class="titre">Nouvelle posologie à estimer</div>
+        <div class="corps">
+          <div class="champ requis"><label>Durée de perfusion (h) :</label><input type="number" id="n-duree" step="0.1" placeholder=" "></div>
+          <div class="encadre" style="padding:8px">
+            <div class="ligne l2" style="gap:8px">
+              <div><div class="centre" style="font-size:12px;font-weight:bold;margin-bottom:4px">Nouvelle administration</div>
+                <div class="mode-dates"><input class="date" type="date" id="n-dose-date"><input class="heure" type="time" id="n-dose-heure" step="300" style="margin-top:4px"></div>
+                <div class="mode-heures" hidden><input type="number" id="n-dose-temps" step="0.1" placeholder="h depuis T0"></div></div>
+              <div><div class="centre" style="font-size:12px;font-weight:bold;margin-bottom:4px">Nouveau prélèvement</div>
+                <div class="mode-dates"><input class="date" type="date" id="n-plvt-date"><input class="heure" type="time" id="n-plvt-heure" step="300" style="margin-top:4px"></div>
+                <div class="mode-heures" hidden><input type="number" id="n-plvt-temps" step="0.1" placeholder="h depuis T0"></div></div>
+            </div>
+          </div>
+          <div style="font-size:12px;font-weight:bold">Objectif thérapeutique :</div>
+          <div class="groupe" data-objectif="stp"><button class="bascule actif" data-val="Concentration" type="button">Concentration</button><button class="bascule" data-val="CMI" type="button">CMI</button><button class="bascule" data-val="Probabiliste" type="button">Probabiliste</button></div>
+          <div id="cible-stp"></div>
+          <div class="cote" style="margin-top:10px"><button class="btn" id="calculer-stp" type="button">Calculer</button><button class="btn gris" id="effacer-stp" type="button">Effacer</button></div>
+        </div>
+      </div>
+      <div class="carte">
+        <div class="titre">Résultats</div>
+        <div class="corps"><div id="reco-stp"></div><div class="centre" style="margin-top:8px"><button class="btn petit contour" id="copier-stp" type="button" hidden>Copier le compte-rendu</button></div><details class="plie" id="plie-stp" hidden><summary>Détails de l’estimation</summary><div class="details" id="details-stp"></div></details></div>
+      </div>
+      <div class="carte">
+        <div class="titre">Profil pharmacocinétique individualisé</div>
+        <div class="corps">
+          <div class="graphe" id="graphe-stp"><div class="note centre" style="padding:80px 0">Aucune donnée à afficher</div></div>
+          <div class="commandes-graphe"><label><input type="checkbox" id="aff-eq" checked> Aff. équilibre</label><label><input type="checkbox" id="aff-incert"> Incertitude (90 %)</label><button class="btn petit contour" data-agrandir="stp" type="button">⛶ Agrandir</button></div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== A PRIORI ===================== -->
+  <div id="onglet-priori" hidden>
+    <div class="ligne l444">
+      <div class="carte">
+        <div class="titre">Posologie à estimer</div>
+        <div class="corps">
+          <div class="champ requis"><label>Durée de perfusion (h) :</label><input type="number" id="p-duree" step="0.1" placeholder=" "></div>
+          <div class="cote">
+            <div class="champ requis"><label>Fréquence d’administration (x/jour) :</label><input type="number" id="p-freq" min="1" placeholder=" "></div>
+            <div class="champ requis"><label>Temps du prélèvement (h) :</label><input type="number" id="p-temps" step="0.1" placeholder=" "></div>
+          </div>
+          <div class="champ"><label class="lib-cov"></label><input type="number" id="p-cov"></div>
+          <div style="font-size:12px;font-weight:bold">Objectif thérapeutique :</div>
+          <div class="groupe" data-objectif="priori"><button class="bascule actif" data-val="Concentration" type="button">Concentration</button><button class="bascule" data-val="CMI" type="button">CMI</button><button class="bascule" data-val="Probabiliste" type="button">Probabiliste</button></div>
+          <div id="cible-priori"></div>
+          <div class="cote" style="margin-top:10px"><button class="btn" id="calculer-priori" type="button">Calculer</button><button class="btn gris" id="effacer-priori" type="button">Effacer</button></div>
+          <p class="note">Le temps du prélèvement est compté depuis la première administration ; la dose est répétée selon la fréquence choisie jusqu’au prélèvement.</p>
+        </div>
+      </div>
+      <div class="carte">
+        <div class="titre">Résultats</div>
+        <div class="corps"><div class="details" id="details-priori"></div><div id="reco-priori"></div><div class="centre" style="margin-top:8px"><button class="btn petit contour" id="copier-priori" type="button" hidden>Copier le compte-rendu</button></div></div>
+      </div>
+      <div class="carte">
+        <div class="titre">Profil pharmacocinétique a priori</div>
+        <div class="corps"><div class="graphe" id="graphe-priori"><div class="note centre" style="padding:80px 0">Aucune donnée à afficher</div></div>
+          <div class="commandes-graphe"><button class="btn petit contour" data-agrandir="priori" type="button">⛶ Agrandir</button></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pied" id="pied"></div>
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal"><div class="boite"><div style="display:flex;justify-content:space-between;align-items:center"><b id="modal-titre"></b><button class="btn petit gris" id="modal-fermer" type="button">Fermer</button></div><div class="graphe" id="modal-graphe"></div></div></div>
+
+<script>// Moteur pharmacocinétique bayésien (MAP) — reproduit la logique de posologyr pour des modèles linéaires
+// linéaires (1 à 3 compartiments, système quelconque pour les modèles convertis depuis R), en perfusion (IV) ou en absorption d'ordre 1 (oral).
+(function (racine) {
+  'use strict';
+
+  // ---------- Algèbre linéaire de base ----------
+  function matMul(A, B) {
+    var n = A.length, m = B[0].length, p = B.length, C = [];
+    for (var i = 0; i < n; i++) { C.push(new Array(m).fill(0)); for (var k = 0; k < p; k++) { var a = A[i][k]; if (a) for (var j = 0; j < m; j++) C[i][j] += a * B[k][j]; } }
+    return C;
+  }
+  function identite(n) { var I = []; for (var i = 0; i < n; i++) { I.push(new Array(n).fill(0)); I[i][i] = 1; } return I; }
+  function normeInf(A) { var m = 0; A.forEach(function (l) { var s = 0; l.forEach(function (x) { s += Math.abs(x); }); m = Math.max(m, s); }); return m; }
+  // Exponentielle de matrice : mise à l'échelle et élévation au carré + série de Taylor
+  function expm(A) {
+    var n = A.length, nrm = normeInf(A), s = Math.max(0, Math.ceil(Math.log2(nrm || 1)) + 1);
+    var f = Math.pow(2, -s), As = A.map(function (l) { return l.map(function (x) { return x * f; }); });
+    var R = identite(n), T = identite(n);
+    for (var k = 1; k <= 18; k++) {
+      T = matMul(T, As).map(function (l) { return l.map(function (x) { return x / k; }); });
+      for (var i = 0; i < n; i++) for (var j = 0; j < n; j++) R[i][j] += T[i][j];
+    }
+    for (var q = 0; q < s; q++) R = matMul(R, R);
+    return R;
+  }
+  function inverse(M) {
+    var n = M.length, A = M.map(function (l, i) { return l.concat(identite(n)[i]); });
+    for (var c = 0; c < n; c++) {
+      var p = c; for (var r = c + 1; r < n; r++) if (Math.abs(A[r][c]) > Math.abs(A[p][c])) p = r;
+      var t = A[c]; A[c] = A[p]; A[p] = t;
+      var d = A[c][c]; if (Math.abs(d) < 1e-14) throw new Error('Matrice non inversible');
+      for (var j = 0; j < 2 * n; j++) A[c][j] /= d;
+      for (r = 0; r < n; r++) if (r !== c) { var f = A[r][c]; if (f) for (j = 0; j < 2 * n; j++) A[r][j] -= f * A[c][j]; }
+    }
+    return A.map(function (l) { return l.slice(n); });
+  }
+  function cholesky(M) {
+    var n = M.length, L = []; for (var i = 0; i < n; i++) L.push(new Array(n).fill(0));
+    for (i = 0; i < n; i++) for (var j = 0; j <= i; j++) {
+      var s = M[i][j]; for (var k = 0; k < j; k++) s -= L[i][k] * L[j][k];
+      if (i === j) { if (s <= 0) s = 1e-12; L[i][j] = Math.sqrt(s); } else L[i][j] = s / L[j][j];
+    }
+    return L;
+  }
+  function formeQuad(v, M) { var s = 0; for (var i = 0; i < v.length; i++) for (var j = 0; j < v.length; j++) s += v[i] * M[i][j] * v[j]; return s; }
+
+  // ---------- Hasard reproductible ----------
+  function generateur(graine) {
+    var a = graine >>> 0 || 1;
+    function u() { a ^= a << 13; a >>>= 0; a ^= a >> 17; a ^= a << 5; a >>>= 0; return (a >>> 0) / 4294967296; }
+    return function normale() { var x = u() || 1e-12, y = u(); return Math.sqrt(-2 * Math.log(x)) * Math.cos(2 * Math.PI * y); };
+  }
+
+  // ---------- Simulation ----------
+  // doses : [{t, montant, duree (h, 0 = bolus), voie: 'iv'|'oral'}] ; renvoie les concentrations aux temps demandés
+  // p peut être un objet de paramètres constants ou une fonction du temps (covariables qui changent : dernière valeur connue)
+  function simuler(modele, p, doses, temps) {
+    var P = typeof p === 'function' ? p : function () { return p; };
+    if (modele.systeme && modele.systeme.depot >= 0 && doses.some(function (d) { return d.voie === 'oral'; })) {
+      // dose orale : quantité × F dans le compartiment depot, au temps de la prise + temps de latence
+      doses = doses.map(function (d) {
+        if (d.voie !== 'oral') return d;
+        var q = P(d.t);
+        return { t: d.t + (q.tlag || 0), montant: d.montant * (q.F == null ? 1 : q.F), duree: 0, voie: 'oral' };
+      });
+    }
+    var gen = !!modele.systeme, oral = !gen && modele.voie === 'oral', deux = modele.cmt === 2;
+    var nc = gen ? modele.systeme.n : (oral ? 1 : 0) + (deux ? 2 : 1), ic = gen ? modele.systeme.ic : (oral ? 1 : 0);
+    var idep = gen ? modele.systeme.depot : 0;
+    function conc(q) { if (!gen) return x[ic] / q.V1; var c = 0; for (var i = 0; i < nc; i++) c += q._obs[i] * x[i]; return c; }
+    function matriceA(q) {
+      if (gen) return q._A;
+      var k10 = q.CL / q.V1, k12 = deux ? q.Q / q.V1 : 0, k21 = deux ? q.Q / q.V2 : 0;
+      var A = []; for (var i = 0; i < nc; i++) A.push(new Array(nc).fill(0));
+      if (oral) { A[0][0] = -q.ka; A[ic][0] = q.ka * (q.F == null ? 1 : q.F); }
+      A[ic][ic] = -k10 - k12;
+      if (deux) { A[ic][ic + 1] = k21; A[ic + 1][ic] = k12; A[ic + 1][ic + 1] = -k21; }
+      return A;
+    }
+    var evts = [];
+    doses.forEach(function (d) { evts.push(d.t); if (d.duree > 0) evts.push(d.t + d.duree); });
+    temps.forEach(function (t) { evts.push(t); });
+    if (p.ruptures) p.ruptures.forEach(function (t) { evts.push(t); });
+    evts = Array.from(new Set(evts)).sort(function (a, b) { return a - b; });
+    if (!evts.length) return [];
+    var x = new Array(nc).fill(0), t0 = evts[0], res = {}, cache = {};
+    function appliquerBolus(t) {
+      doses.forEach(function (d) { if (d.t === t && !(d.duree > 0)) x[(oral && d.voie !== 'iv') ? 0 : (gen && idep >= 0 && d.voie === 'oral') ? idep : ic] += d.montant; });
+    }
+    appliquerBolus(t0);
+    res[t0] = conc(P(t0));
+    for (var e = 1; e < evts.length; e++) {
+      var t = evts[e], dt = t - t0, q = P(t0);
+      var debit = 0; doses.forEach(function (d) { if (d.duree > 0 && d.t <= t0 && t0 < d.t + d.duree - 1e-12) debit += d.montant / d.duree; });
+      var cle = gen ? dt.toFixed(9) + '|' + debit + '|' + q._cle : dt.toFixed(9) + '|' + debit + '|' + q.CL + '|' + q.V1 + '|' + q.V2 + '|' + q.Q + '|' + q.ka + '|' + q.F;
+      var E = cache[cle];
+      if (!E) {
+        var A = matriceA(q), M = []; for (var i = 0; i <= nc; i++) M.push(new Array(nc + 1).fill(0));
+        for (i = 0; i < nc; i++) for (var j = 0; j < nc; j++) M[i][j] = A[i][j] * dt;
+        M[ic][nc] = debit * dt;
+        E = cache[cle] = expm(M);
+      }
+      var nx = new Array(nc).fill(0);
+      for (i = 0; i < nc; i++) { var s = E[i][nc]; for (j = 0; j < nc; j++) s += E[i][j] * x[j]; nx[i] = s; }
+      x = nx; t0 = t; appliquerBolus(t);
+      res[t] = conc(P(t));
+    }
+    return temps.map(function (t) { return res[t]; });
+  }
+  // Aire sous la courbe par intégration (trapèzes fins) entre a et b
+  function aire(modele, p, doses, a, b) {
+    var n = 400, ts = []; for (var i = 0; i <= n; i++) ts.push(a + (b - a) * i / n);
+    var c = simuler(modele, p, doses, ts), s = 0;
+    for (i = 1; i <= n; i++) s += (c[i] + c[i - 1]) / 2 * (ts[i] - ts[i - 1]);
+    return s;
+  }
+
+  // ---------- Modèle : paramètres individuels ----------
+  function etasActifs(modele) { return modele.etas.map(function (n, i) { return i; }).filter(function (i) { return modele.omega[i][i] > 0; }); }
+  function omegaReduite(modele) { var a = etasActifs(modele); return a.map(function (i) { return a.map(function (j) { return modele.omega[i][j]; }); }); }
+  function etaComplet(modele, etaRed) { var a = etasActifs(modele), e = new Array(modele.etas.length).fill(0); a.forEach(function (i, k) { e[i] = etaRed[k]; }); return e; }
+  // Variabilité inter-occasion (kappa) : une seule occasion. Comme posologyr (poso_dose_conc avec tdm = TRUE, qui
+  // prolonge la table d'événements de la MAP avec sa dernière ligne), le kappa estimé est conservé pour la prédiction.
+  function parametres(modele, etaRed, cov) {
+    var e = etaComplet(modele, etaRed), eta = {}; modele.etas.forEach(function (n, i) { eta[n] = e[i]; });
+    if (typeof cov === 'function') {
+      var f = function (t) { return modele.parametres(modele.theta, eta, cov(t)); };
+      f.ruptures = cov.ruptures || [];
+      return f;
+    }
+    return modele.parametres(modele.theta, eta, cov);
+  }
+  function valeurs(p, t) { return typeof p === 'function' ? p(t) : p; }
+  // Demi-vie : ln2·V/Cl pour un compartiment ; demi-vie terminale (plus petite valeur propre, compartiment
+  // d'absorption exclu) au-delà
+  function demiVie(modele, q) {
+    var A;
+    if (modele.systeme) {
+      var d = modele.systeme.depot;
+      A = q._A.filter(function (l, i) { return i !== d; }).map(function (l) { return l.filter(function (v, j) { return j !== d; }); });
+    } else if (modele.cmt === 2) A = [[-(q.CL + q.Q) / q.V1, q.Q / q.V2], [q.Q / q.V1, -q.Q / q.V2]];
+    else A = [[-q.CL / q.V1]];
+    if (A.length === 1) return Math.log(2) / -A[0][0];
+    // itération inverse : la plus grande valeur propre (en module) de A⁻¹ correspond à la phase terminale
+    var Ai = inverse(A), x = A.map(function () { return 1; }), l = 0;
+    for (var k = 0; k < 500; k++) {
+      var y = Ai.map(function (r) { return r.reduce(function (s, v, j) { return s + v * x[j]; }, 0); });
+      var n = Math.sqrt(y.reduce(function (s, v) { return s + v * v; }, 0)), nl = n / Math.sqrt(x.reduce(function (s, v) { return s + v * v; }, 0));
+      x = y.map(function (v) { return v / n; });
+      if (Math.abs(nl - l) < 1e-13 * nl) { l = nl; break; } l = nl;
+    }
+    return Math.log(2) * l;
+  }
+  function ecartType(modele, f) {
+    var a = modele.sigma.add || 0, b = (modele.sigma.prop || 0) * f;
+    return modele.sigma.type === 'combined2' ? Math.sqrt(a * a + b * b) : a + b;
+  }
+
+  // Fonction objectif MAP, identique à posologyr : somme des résidus pondérés + log de la variance + terme a priori
+  function fonctionObjectif(modele, cov, doses, obs) {
+    var omi = inverse(omegaReduite(modele));
+    var tObs = obs.map(function (o) { return o.t; });
+    return function (eta) {
+      var p = parametres(modele, eta, cov), p0 = valeurs(p, tObs[0] || 0);
+      if (!(p0.CL > 0 && p0.V1 > 0)) return 1e12;
+      var f = simuler(modele, p, doses, tObs), r = 0;
+      for (var i = 0; i < obs.length; i++) {
+        if (!isFinite(f[i])) return 1e12;
+        var g = ecartType(modele, f[i]); if (!(g > 0)) g = 1e-6;
+        r += Math.pow((obs[i].c - f[i]) / g, 2) + Math.log(g * g);
+      }
+      return r + formeQuad(eta, omi);
+    };
+  }
+
+  // ---------- Optimisation (Nelder-Mead) ----------
+  function nelderMead(f, x0, options) {
+    var n = x0.length, tol = (options && options.tol) || 1e-10, max = (options && options.max) || 4000;
+    var simplexe = [x0.slice()];
+    for (var i = 0; i < n; i++) { var x = x0.slice(); x[i] += 0.1; simplexe.push(x); }
+    var valeurs = simplexe.map(f);
+    for (var it = 0; it < max; it++) {
+      var ordre = valeurs.map(function (v, i) { return i; }).sort(function (a, b) { return valeurs[a] - valeurs[b]; });
+      simplexe = ordre.map(function (i) { return simplexe[i]; }); valeurs = ordre.map(function (i) { return valeurs[i]; });
+      if (Math.abs(valeurs[n] - valeurs[0]) < tol && it > 50) break;
+      var c = new Array(n).fill(0);
+      for (i = 0; i < n; i++) for (var j = 0; j < n; j++) c[j] += simplexe[i][j] / n;
+      function point(a) { return c.map(function (v, j) { return v + a * (simplexe[n][j] - v); }); }
+      var xr = point(-1), fr = f(xr);
+      if (fr < valeurs[0]) { var xe = point(-2), fe = f(xe); if (fe < fr) { simplexe[n] = xe; valeurs[n] = fe; } else { simplexe[n] = xr; valeurs[n] = fr; } }
+      else if (fr < valeurs[n - 1]) { simplexe[n] = xr; valeurs[n] = fr; }
+      else {
+        var xc = point(fr < valeurs[n] ? -0.5 : 0.5), fc = f(xc);
+        if (fc < Math.min(fr, valeurs[n])) { simplexe[n] = xc; valeurs[n] = fc; }
+        else for (i = 1; i <= n; i++) { simplexe[i] = simplexe[i].map(function (v, j) { return simplexe[0][j] + 0.5 * (v - simplexe[0][j]); }); valeurs[i] = f(simplexe[i]); }
+      }
+    }
+    return { x: simplexe[0], valeur: valeurs[0] };
+  }
+  function hessienne(f, x) {
+    var n = x.length, h = 1e-3, H = []; for (var i = 0; i < n; i++) H.push(new Array(n).fill(0));
+    var f0 = f(x);
+    for (i = 0; i < n; i++) for (var j = i; j < n; j++) {
+      var v;
+      if (i === j) { var a = x.slice(), b = x.slice(); a[i] += h; b[i] -= h; v = (f(a) - 2 * f0 + f(b)) / (h * h); }
+      else {
+        var pp = x.slice(), pm = x.slice(), mp = x.slice(), mm = x.slice();
+        pp[i] += h; pp[j] += h; pm[i] += h; pm[j] -= h; mp[i] -= h; mp[j] += h; mm[i] -= h; mm[j] -= h;
+        v = (f(pp) - f(pm) - f(mp) + f(mm)) / (4 * h * h);
+      }
+      H[i][j] = H[j][i] = v;
+    }
+    return H;
+  }
+
+  // ---------- Loi du khi-deux (pour la distance des paramètres individuels) ----------
+  function gammaReguliereInf(a, x) {
+    if (x <= 0) return 0;
+    var somme = 1 / a, terme = 1 / a;
+    for (var n = 1; n < 500; n++) { terme *= x / (a + n); somme += terme; if (terme < somme * 1e-14) break; }
+    return Math.exp(-x + a * Math.log(x) - lgamma(a)) * somme;
+  }
+  function lgamma(z) {
+    var g = 7, c = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+    if (z < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * z)) - lgamma(1 - z);
+    z -= 1; var x = c[0]; for (var i = 1; i < g + 2; i++) x += c[i] / (z + i);
+    var t = z + g + 0.5; return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(x);
+  }
+  function khi2Survie(x, k) { return 1 - gammaReguliereInf(k / 2, x / 2); }
+
+  // ---------- Estimation complète pour un modèle ----------
+  function estimer(modele, cov, doses, obs, options) {
+    var k = etasActifs(modele).length;
+    var omega = omegaReduite(modele);
+    var resultat = { modele: modele, k: k };
+    if (obs.length) {
+      var f = fonctionObjectif(modele, cov, doses, obs);
+      var meilleur = null;
+      [new Array(k).fill(0)].concat(Array.from({ length: 3 }, function (_, r) { return new Array(k).fill(0).map(function (_, i) { return (i === r % k ? 0.4 : -0.2) * (r % 2 ? -1 : 1); }); }))
+        .forEach(function (d) { var r = nelderMead(f, d); if (!meilleur || r.valeur < meilleur.valeur) meilleur = r; });
+      meilleur = nelderMead(f, meilleur.x, { tol: 1e-13, max: 8000 });
+      resultat.eta = meilleur.x; resultat.ofv = meilleur.valeur;
+      // Incertitude : approximation de Laplace, covariance a posteriori = 2 × inverse de la hessienne de l'OFV
+      try {
+        var H = hessienne(f, meilleur.x), C = inverse(H).map(function (l) { return l.map(function (v) { return 2 * v; }); });
+        var ok = C.every(function (l, i) { return l[i] > 0; });
+        resultat.covPost = ok ? C : omega;
+      } catch (e) { resultat.covPost = omega; }
+    } else {
+      resultat.eta = new Array(k).fill(0); resultat.ofv = 0; resultat.covPost = omega;
+    }
+    resultat.param = parametres(modele, resultat.eta, cov);
+    resultat.paramPop = parametres(modele, new Array(k).fill(0), cov);
+    // Diagnostics
+    var tObs = obs.map(function (o) { return o.t; });
+    var pred = obs.length ? simuler(modele, resultat.param, doses, tObs) : [];
+    resultat.residus = obs.map(function (o, i) { var g = ecartType(modele, pred[i]); return { t: o.t, obs: o.c, pred: pred[i], iwres: (o.c - pred[i]) / g }; });
+    var d2 = k ? formeQuad(resultat.eta, inverse(omega)) : 0;
+    resultat.distance = { d2: d2, p: k ? khi2Survie(d2, k) : 1 };
+    resultat.information = etasActifs(modele).map(function (i, j) {
+      var a = Math.sqrt(omega[j][j]), b = Math.sqrt(resultat.covPost[j][j]);
+      return { eta: modele.etas[i], sdPrior: a, sdPost: b, gain: 1 - b / a };
+    });
+    return resultat;
+  }
+
+  // Concentration résultant d'un nouveau schéma, linéaire en dose : C = C_existant + D × C_unitaire
+  function doseCible(modele, param, doses, schema, cible) {
+    var t = [schema.tCible];
+    var base = simuler(modele, param, doses, t)[0];
+    var unitaire = simuler(modele, param, doses.concat(schema.administrations(1)), t)[0] - base;
+    if (!(unitaire > 0)) return NaN;
+    return (cible - base) / unitaire;
+  }
+  function echantillonsEta(res, n, graine) {
+    var L = cholesky(res.covPost), z = generateur(graine || 12345), out = [];
+    for (var s = 0; s < n; s++) {
+      var u = res.eta.map(function () { return z(); });
+      out.push(res.eta.map(function (m, i) { var v = m; for (var j = 0; j <= i; j++) v += L[i][j] * u[j]; return v; }));
+    }
+    return out;
+  }
+  function quantile(arr, q) { var a = arr.filter(isFinite).slice().sort(function (x, y) { return x - y; }); if (!a.length) return NaN; var p = (a.length - 1) * q, b = Math.floor(p); return a[b] + (a[Math.min(b + 1, a.length - 1)] - a[b]) * (p - b); }
+
+  // Poids des modèles (moyenne bayésienne de modèles) : w ∝ exp(−OFV/2)
+  function poids(resultats) {
+    var min = Math.min.apply(null, resultats.map(function (r) { return r.ofv; }));
+    var w = resultats.map(function (r) { return Math.exp(-0.5 * (r.ofv - min)); }), s = w.reduce(function (a, b) { return a + b; }, 0);
+    return w.map(function (v) { return v / s; });
+  }
+
+  racine.MoteurPK = {
+    simuler: simuler, aire: aire, valeurs: valeurs, demiVie: demiVie, estimer: estimer, doseCible: doseCible, parametres: parametres,
+    echantillonsEta: echantillonsEta, quantile: quantile, poids: poids, ecartType: ecartType, khi2Survie: khi2Survie
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<!-- Fichiers R de posologyr, collés tels quels : ils sont lus et convertis au chargement par le convertisseur ci-dessous -->
+<script type="text/plain" class="modele-r" data-fichier="Amoxicilline_IV.R">
+# Modèle de Carlier et al. 2013 : patients adultes en soins critiques.
+amoxicillin_Carlier2013 <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+    TVCl  = THETA_Cl*(clcreat/102);
+    TVVc  = THETA_Vc;
+    TVVp  = THETA_Vp;
+    TVQ   = THETA_Q;
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    Vp    = TVVp*exp(ETA_Vp);
+    Q     = TVQ *exp(ETA_Q);
+    ke    = Cl/Vc;
+    k12   = Q/Vc;
+    k21   = Q/Vp;
+    Cc    = centr/Vc;
+    d/dt(centr)  = - ke*centr - k12*centr + k21*periph;
+    d/dt(periph) =            + k12*centr - k21*periph;
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl=10.3, THETA_Vc=13.5, THETA_Vp=14.1,THETA_Q=15.7),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
+      c(0.147731 ,
+        0        ,   0.1395611 ,
+        0        ,   0         ,   0  ,
+        0        ,   0         ,   0  ,   0)}),
+  covariates  = c("clcreat"),
+  sigma       = c(additive_a = 0, proportional_b = 0.22))
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Cefepime.R">
+# Modèle de Seo et al. 2023 : patients atteints de pneumonie nosocomiale ou sur
+# ventilation assistée.
+#cefepime_Seo2023 <- list(
+#  ppk_model   = rxode2::rxode({
+#    centr(0) = 0;
+#    TVCl  = THETA_Cl*(CLCG/77.21)^0.656;
+#    TVVc  = THETA_Vc;
+#    TVVp  = THETA_Vp;
+#    TVQ   = THETA_Q;
+#    Cl    = TVCl*exp(ETA_Cl);
+#    Vc    = TVVc*exp(ETA_Vc);
+#    Vp    = TVVp*exp(ETA_Vp);
+#    Q     = TVQ *exp(ETA_Q);
+#    ke    = Cl/Vc;
+#    k12   = Q/Vc;
+#    k21   = Q/Vp;
+#    Cc    = centr/Vc;
+#    d/dt(centr)  = - ke*centr - k12*centr + k21*periph;
+#    d/dt(periph) =            + k12*centr - k21*periph;
+#    d/dt(AUC)    =   Cc;
+#  }),
+#  error_model = function(f,sigma){
+#    g <- sigma[1] + sigma[2]*f
+#    return(g)
+#  },
+#  theta = c(THETA_Cl=6.60, THETA_Vc=13.3, THETA_Vp=13.0,THETA_Q=16.5),
+#  omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
+#      c(0.113569 ,
+#        0        ,   0.116281 ,
+#        0        ,   0        ,   0.160801  ,
+#        0        ,   0        ,   0         ,   0.258064)}),
+#  covariates  = c("CLCG"),
+#  sigma       = c(additive_a = 0, proportional_b = 0.0762))
+#
+cefepime_Seo2023 <- function() {
+  ini({
+    THETA_Cl = 6.60
+    THETA_Vc = 13.3
+    THETA_Vp = 13.0
+    THETA_Q = 16.5
+    ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
+      c(0.113569 ,
+        0        ,   0.116281 ,
+        0        ,   0        ,   0.160801  ,
+        0        ,   0        ,   0         ,   0.258064)
+    add.sd <- 0
+    prop.sd <- 0.0762
+  })
+  model({
+    #centr(0) = 0;
+    TVCl  = THETA_Cl*(CLCG/77.21)^0.656
+    TVVc  = THETA_Vc
+    TVVp  = THETA_Vp
+    TVQ   = THETA_Q
+    Cl    = TVCl*exp(ETA_Cl)
+    Vc    = TVVc*exp(ETA_Vc)
+    Vp    = TVVp*exp(ETA_Vp)
+    Q     = TVQ *exp(ETA_Q)
+    ke    = Cl/Vc
+    k12   = Q/Vc
+    k21   = Q/Vp
+    Cc    = centr/Vc
+    d/dt(centr)  = - ke*centr - k12*centr + k21*periph
+    d/dt(periph) =            + k12*centr - k21*periph
+    d/dt(AUC)    =   Cc
+    Cc ~ add(add.sd) + prop(prop.sd) + combined1()
+  })
+}
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Cefazoline.R">
+# Modèle de Lanoiselee et al. 2021 : patients recevant une arhroplastie totale de
+# la hanche.
+cefazolin_Lanoiselee2021 <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+    TVCl  = THETA_Cl*(DFG/80)^0.79;
+    TVVc  = THETA_Vc;
+    TVVp  = THETA_Vp;
+    TVQ   = THETA_Q;
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    Vp    = TVVp*exp(ETA_Vp);
+    Q     = TVQ *exp(ETA_Q);
+    ke    = Cl/Vc;
+    k12   = Q/Vc;
+    k21   = Q/Vp;
+    Cc    = centr/Vc;
+    d/dt(centr)  = - ke*centr - k12*centr + k21*periph;
+    d/dt(periph) =            + k12*centr - k21*periph;
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl=2.86, THETA_Vc=5.2, THETA_Vp=4.56,THETA_Q=10.9),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
+      c(0.32      ,
+        0.354479  ,   0.57   ,
+        0         ,   0      ,  0.10  ,
+        0         ,   0      ,  0     ,   0.66)}),
+  covariates  = c("DFG"),
+  sigma       = c(additive_a = 0, proportional_b = 0.12))
+# CLCREAT est la clairance de la créatinine en mL/min
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Cefotaxime.R">
+# Modèle de Swartling et al. 2022 : patients en soins critiques.
+cefotaxime_Swartling2022 <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+    TVCl  = THETA_Cl*(poids/92)^0.75*(1+6.67*(CLCG-94)/1000);
+    TVVc  = THETA_Vc*(poids/92);
+    TVVp  = THETA_Vp*(poids/92);
+    TVQ   = THETA_Q*(poids/92)^0.75;
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    Vp    = TVVp*exp(ETA_Vp);
+    Q     = TVQ *exp(ETA_Q);
+    ke    = Cl/Vc;
+    k12   = Q/Vc;
+    k21   = Q/Vp;
+    Cc    = centr/Vc;
+    d/dt(centr)  = - ke*centr - k12*centr + k21*periph;
+    d/dt(periph) =            + k12*centr - k21*periph;
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl=11.1, THETA_Vc=5.13, THETA_Vp=18.2,THETA_Q=14.5),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
+      c(0.2401 ,
+        0      ,   0.4096 ,
+        0      ,     0    ,   0  ,
+        0      ,     0    ,   0  ,   0)}),
+  covariates  = c("CLCG","poids"),
+  sigma       = c(additive_a = 0, proportional_b = 0.333))
+# CLCREAT est la clairance de la créatinine en mL/min
+# TBW est le poids du patient en kg
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Ceftazidime.R">
+# Modèle de Buning et al. 2021 : patients adultes infectés par P aeruginosa
+# sans hémofiltration veino-veineuse continue.
+ceftazidime_Buning2021 <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+    TVCl  = THETA_Cl*(DFG/73)^0.772*1.57^(hemat)*1.99^(trauma);
+    TVVc  = THETA_Vc;
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    ke    = Cl/Vc;
+    Cc    = centr/Vc;
+    d/dt(centr)  = - ke*centr
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl=3.42, THETA_Vc=46.8),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc ~
+      c(0.1219   ,
+        0        ,   0.7211)}),
+  covariates  = c("DFG","hemat","trauma"),
+  sigma       = c(additive_a = 0, proportional_b = 0.281))
+# "DFG" est le débit de filtration glomérulaire calculé avec la formule de la
+# Chronic Kidney Disease Epidemiology Collaboration en mL/min/m2 :
+#DFG = 142*(min(serum_creat/k,1))^a*(max(serum_creat/k,1))^-1.2*0.9938^age*1.012#si sexe féminin
+  # serum_creat : créatinine sérique en mg/dL
+  # k = 0.7 (femme) ou 0.9 (homme)
+  # a = -0.241 (femme) ou -0.302 (homme)
+  # âge en années
+# "hemat" =1 si présence de comorbidité hématologique, sinon =0.
+# "trauma_head_inj" =1 si blessure ou traumatisme crânien, sinon =0.
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Ceftriaxone.R">
+# Modèle de Garot et al. : patients en soins critiques atteints de sepsis ou
+# de choc septique.
+ceftriaxone_Garot2011 <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+    TVCl  = THETA_Cl1+THETA_Cl2*(clcreat/71);  #La médiane de la clairance a été convertie de L/h en mL/min
+    TVVc  = THETA_Vc;
+    TVVp  = THETA_Vp;
+    TVQ   = THETA_Q;
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    Vp    = TVVp*exp(ETA_Vp);
+    Q     = TVQ *exp(ETA_Q);
+    ke    = Cl/Vc;
+    k12   = Q/Vc;
+    k21   = Q/Vp;
+    Cc    = centr/Vc;
+    d/dt(centr)  = - ke*centr - k12*centr + k21*periph;
+    d/dt(periph) =            + k12*centr - k21*periph;
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl1=0.56, THETA_Cl2=0.32, THETA_Vc=10.3, THETA_Vp=7.35,THETA_Q=5.28),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
+      c(0.24 ,
+        0    ,  0.23 ,
+        0    ,  0    ,  0.42 ,
+        0    ,  0    ,  0    ,  0)}),
+  covariates  = c("clcreat"),
+  sigma       = c(additive_a = 0, proportional_b = 0.24))
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Piperacillin.R">
+# Modèle de Hemmersbach-Miller et al. 2023 chez patients adultes
+piperacillin_Hemmersbach2023 <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+    TVCl  = THETA_Cl*(CLCG/69)+2.44;
+    TVVc  = THETA_Vc*(poids/89);
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    ke    = Cl/Vc;
+    Cc    = centr/Vc;
+    d/dt(centr)  = - ke*centr
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl=4.09, THETA_Vc=31.8),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc ~
+      c(0.1995883 ,
+        0         ,   0.06062462 )}),
+  covariates  = c("CLCG","poids"),
+  sigma       = c(additive_a = 0.0488, proportional_b = 0.358))
+# CLCREAT la clairance de la créatinine en ml/min
+# TBW le poids en kg
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Meropenem.R">
+# Modèle de Boonpeng et al. 2022 : patients adultes en soins critiques.
+meropenem_Boonpeng2022 <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+    TVCl  = THETA_Cl*(1+0.016*(CLCG-50));
+    TVVc  = THETA_Vc*(1-0.255*(albumine-2.5));
+    TVVp  = THETA_Vp+11.3*choc;
+    TVQ   = THETA_Q;
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    Vp    = TVVp*exp(ETA_Vp);
+    Q     = TVQ *exp(ETA_Q);
+    ke    = Cl/Vc;
+    k12   = Q/Vc;
+    k21   = Q/Vp;
+    Cc    = centr/Vc;
+    d/dt(centr)  = - ke*centr - k12*centr + k21*periph;
+    d/dt(periph) =            + k12*centr - k21*periph;
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl=5.16, THETA_Vc=11.1, THETA_Vp=10.3,THETA_Q=9.37),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
+      c(0.3119051 ,
+        0         ,   0 ,
+        0         ,   0 ,   0.2050032 ,
+        0         ,   0 ,   0         ,   0)}),
+  covariates  = c("CLCG","albumine","choc"),
+  sigma       = c(additive_a = 0, proportional_b = 0.26))
+# CLcrcg est la clairance de la créatinine calculée en mL/min avec la formule de
+# Cockcroft-Gault utilisant le poids idéal (formules de Devine [1974])
+# ALB est la concentration sérique d'albumine en g/dL
+# CHOC la survenue ou non d'un choc septique
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Imipenem.R">
+# Modèle de Seo et al. 2023 : patients atteints de pneumonie nosocomiale ou sur
+# ventilation assistée.
+imipenem_Bai2024 <- function() {
+  ini({
+    THETA_Cl = 11.357
+    THETA_Vc = 16.378
+    THETA_Vp = 10.904
+    THETA_Q = 7.645
+    ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
+      c(0.1202617 ,
+        0         ,   0.5918651 ,
+        0         ,   0         ,   0.006896739 ,
+        0         ,   0         ,   0           ,   0.05807542)
+    add.sd <- 0
+    prop.sd <- 0.30370
+  })
+  model({
+    centr(0) = 0
+    TVCl  = THETA_Cl*(CLCG/99.896)^0.473
+    TVVc  = THETA_Vc
+    TVVp  = THETA_Vp
+    TVQ   = THETA_Q
+    Cl    = TVCl*exp(ETA_Cl)
+    Vc    = TVVc*exp(ETA_Vc)
+    Vp    = TVVp*exp(ETA_Vp)
+    Q     = TVQ *exp(ETA_Q)
+    ke    = Cl/Vc
+    k12   = Q/Vc
+    k21   = Q/Vp
+    Cc    = centr/Vc
+    d/dt(centr)  = - ke*centr - k12*centr + k21*periph
+    d/dt(periph) =            + k12*centr - k21*periph
+    d/dt(AUC)    =   Cc
+    Cc ~ add(add.sd) + prop(prop.sd) + combined1()
+  })
+}
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Amikacine.R">
+# Modèle de Medellin et al. 2022 : sujets âgés présentant une infection sévère.
+amikacin_Medellin2022 <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+    TVCl  = THETA_Cl*(CLCG/80)^0.7*(1+0.28*ains)  # AINS associés : +28 % (Medellín-Garibay 2022) ; le fichier d’origine appliquait 1,28 à tous les patients;
+    TVVc  = THETA_Vc*(BMI/25)^1.16;
+    TVVp  = THETA_Vp;
+    TVQ   = THETA_Q;
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    Vp    = TVVp*exp(ETA_Vp);
+    Q     = TVQ *exp(ETA_Q);
+    ke    = Cl/Vc;
+    k12   = Q/Vc;
+    k21   = Q/Vp;
+    Cc    = centr/Vc;
+    d/dt(centr)  = - ke*centr - k12*centr + k21*periph;
+    d/dt(periph) =            + k12*centr - k21*periph;
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl=2.75, THETA_Vc=17.4, THETA_Vp=11.9,THETA_Q=0.5),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
+      c(0.26   ,
+        0     ,   0.23 ,
+        0     ,   0    ,   0  ,
+        0     ,   0    ,   0    ,    0)}),
+  covariates  = c("CLCG","BMI"),
+  sigma       = c(additive_a = 2.4, proportional_b = 0))
+
+# IBW = 2.2*(poids/taille(en m)^2)+3.5*(poids/taille(en m)^2)*(taille(en m)-1.5)
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Gentamicine.R">
+gentamicin_Xuan2003 <- function() {
+  ini({
+    THETA_Cl  = 0.047
+    THETA_V   = 0.28
+    THETA_k12 = 0.092
+    THETA_k21 = 0.071
+    ETA_Cl  ~ 0.084
+    ETA_V   ~ 0.003
+    ETA_k12 ~ 0.398
+    ETA_k21 ~ 0.342
+    add_sd  <- 0.230
+    prop_sd <- 0.237
+  })
+  model({
+    TVCl  = THETA_Cl*clcreat
+    TVVc  = THETA_V*poids
+    TVk12 = THETA_k12
+    TVk21 = THETA_k21
+    Cl    = TVCl*exp(ETA_Cl)
+    Vc    = TVVc*exp(ETA_V)
+    k12   = TVk12*exp(ETA_k12)
+    k21   = TVk21*exp(ETA_k21)
+    ke    = Cl/Vc
+    Cc    = centr/Vc
+    d/dt(centr)  = - ke*centr - k12*centr + k21*periph
+    d/dt(periph) =            + k12*centr - k21*periph
+    d/dt(AUC)    =   Cc
+    Cc ~ add(add_sd) + prop(prop_sd) + combined1()
+  })
+}
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Tobramycine.R">
+# Modèle de Conil et al. 2010 : patients en soins intensifs.
+tobramycin_Conil2010 <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+    TVCl  = THETA_Cl+0.020*(CLCG-94)+0.052*(taille-172);
+    TVVc  = THETA_Vc;
+    TVVp  = THETA_Vp;
+    TVQ   = THETA_Q;
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    Vp    = TVVp*exp(ETA_Vp);
+    Q     = TVQ *exp(ETA_Q);
+    ke    = Cl/Vc;
+    k12   = Q/Vc;
+    k21   = Q/Vp;
+    Cc    = centr/Vc;
+    d/dt(centr)  = - ke*centr - k12*centr + k21*periph;
+    d/dt(periph) =            + k12*centr - k21*periph;
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl=3.83, THETA_Vc=25.5, THETA_Vp=30.6,THETA_Q=4.74),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
+      c(0.095 ,
+        0     ,   0.045 ,
+        0     ,   0     ,   0    ,
+        0     ,   0     ,   0    ,    0)}),
+  covariates  = c("CLCG","taille"),
+  sigma       = c(additive_a = 0, proportional_b = 0.055))
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Vancomycine.R">
+## Goti et al. Ther Drug Monitor 2018 (modèle standard)
+vanco_Goti2018 <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+    TVCl  = THETA_Cl*(clcreat/120)^0.8*(0.7^dial);
+    TVVc  = THETA_Vc*(poids/70)       *(0.5^dial);
+    TVVp  = THETA_Vp;
+    TVQ   = THETA_Q;
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    Vp    = TVVp*exp(ETA_Vp);
+    Q     = TVQ;
+    ke    = Cl/Vc;
+    k12   = Q/Vc;
+    k21   = Q/Vp;
+    Cc    = centr/Vc;
+    d/dt(centr)  = - ke*centr - k12*centr + k21*periph;
+    d/dt(periph) =            + k12*centr - k21*periph;
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl=4.5, THETA_Vc=58.4, THETA_Vp=38.4,THETA_Q=6.5),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
+      c(0.147,
+        0    ,  0.510 ,
+        0    ,  0     ,   0.282,
+        0    ,  0     ,   0    ,    0)}),
+  covariates  = c("clcreat","poids","dial"),
+  sigma       = c(additive_a = 3.4, proportional_b = 0.227))
+# clcreat est la clairance de la créat calculée avec la formule MDRD
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Dalbavancine.R">
+# Modèle de Carrothers et al. 2019 
+dalbavancine_Carrothers2019 <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+    TVCl  = THETA_Cl*(albumine/3.7)^(-0.477)*((clcreat)/100)^0.273*(poids/85.5)^0.391;
+    TVV1  = THETA_V1*(albumine/3.7)^(-0.340)*(poids/85.5)^0.683;
+    TVV2  = THETA_V2*(age/47)^(0.486)*(albumine/3.7)^(-0.413)*(poids/85.5)^0.365;
+    TVV3  = THETA_V3*(albumine/3.7)^(-0.551)*(poids/85.5)^0.518;
+    TVQ2   = THETA_Q2;
+    TVQ3   = THETA_Q3;
+    Cl    = TVCl*exp(ETA_Cl);
+    V1    = TVV1*exp(ETA_V1);
+    V2    = TVV2*exp(ETA_V2);
+    V3    = TVV3*exp(ETA_V3);
+    Q2     = TVQ2 *exp(ETA_Q2);
+    Q3    = TVQ3 *exp(ETA_Q3);
+    ke    = Cl/V1;
+    k12   = Q2/V1;
+    k21   = Q2/V2;
+    k13   = Q3/V1;
+    k31   = Q3/V3;
+    Cc    = centr/V1;
+    d/dt(centr)  = - ke*centr - k12*centr + k21*periph1- k13*centr + k31*periph2;
+    d/dt(periph1) =            + k12*centr - k21*periph1;
+    d/dt(periph2) =            + k13*centr - k31*periph2;
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl=0.0531, THETA_V1=3.014, THETA_V2=8.78, THETA_V3=3.28,
+            THETA_Q2=0.288,THETA_Q3=2.11),
+  omega = lotri::lotri({ETA_Cl + ETA_V1 + ETA_V2 + ETA_V3+ ETA_Q2+ ETA_Q3 ~
+      c(0.0489^2 ,
+        0      ,   0.0566^2 ,
+        0.0823^2 ,     0    ,   0.153^2  ,
+        0      , 0.111^2    ,   0      ,   0.437^2,
+        0      ,  0       ,    0     ,   0    ,   0   ,
+        0      ,  0       ,    0     ,   0    ,   0   ,    0   )}),
+  covariates  = c("clcreat","poids","albumine","age"),
+  sigma       = c(additive_a = 0, proportional_b = 0.0362))
+# clcreat est la clairance de la créatinine en mL/min
+# TBW est le poids du patient en kg
+# albumine est la concentration sérique d'albumineumine en g/dL
+# AGE est l'age en année
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Linezolide.R">
+# Modèle de Crass et al. 2019 : patients adultes en TDM de routine, avec des
+# fonctions rénales variables.
+linezolid_Crass2019 <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+    TVCl  = THETA_ClNR+3.49*(BSA-1.89)-0.0242*(age-40)*ageind+THETA_Cl*(DFG/80);
+    TVVc  = THETA_Vc*exp(0.901*(BSA-1.89));
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    ka    = THETA_ka;
+    ke    = Cl/Vc;
+    Cc    = centr/Vc;
+    d/dt(depot)  = -ka*depot;
+    d/dt(centr)  = + ka*depot - ke*centr;
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_ClNR=3.43, THETA_Cl=1.77, THETA_Vc=42.9, THETA_ka=1.40),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc ~
+      c(0.222344   ,
+        0.05654667 ,   0.03119242 )}),
+  covariates  = c("BSA","age","ageind","DFG"),
+  sigma       = c(additive_a = 1.43, proportional_b = 0.271))
+
+# "BSA" body surface area en m2.
+    # https://www.sfmu.org/calculateurs/SC_Boyd.htm
+    # ou la formule :
+#    0.0001*3.207*(Poids^(0.7285-0.0188*log10(Poids)))*Taille^0.3
+    # avec le poids en GRAMMES et la taille en CM.
+# "age" age en années.
+# "ageind" = 1 si age > 40 et 0 si < ou = 40
+# "EGFR" filtration glomérulaire estimée en mL/min :
+#    EGFR = 142*(min(serum_creat/k,1))^a*(max(serum_creat/k,1))^-1.2*0.9938^age*1.012#si sexe féminin
+    # serum_creat : créatinine sérique en mg/dL
+    # k = 0.7 (femme) ou 0.9 (homme)
+    # a = -0.241 (femme) ou -0.302 (homme)
+    # âge en années
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Ciprofloxacin_IV.R">
+# Modèle de Guo et al. 2022 : patients en soins critiques, 140 patients poolés 
+# sur 3 études PK.
+ciprofloxacin_Guo2022 <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+    TVCl  = THETA_Cl*(poids/70)^0.75*(1+0.008*(clcreat-58.4));
+    TVVc  = THETA_Vc*(poids/70);
+    TVVp  = THETA_Vp*(poids/70);
+    TVQ   = THETA_Q*(poids/70)^0.75;
+    Cl    = TVCl*exp(ETA_Cl+KAPPA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    Vp    = TVVp*exp(ETA_Vp);
+    Q     = TVQ *exp(ETA_Q);
+    ke    = Cl/Vc;
+    k12   = Q/Vc;
+    k21   = Q/Vp;
+    Cc    = centr/Vc;
+    d/dt(centr)  = - ke*centr - k12*centr + k21*periph;
+    d/dt(periph) =            + k12*centr - k21*periph;
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl=14.7, THETA_Vc=61.2, THETA_Vp=71.6,THETA_Q=44.9),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q ~
+      c(0.2011302  ,
+        0          ,   0.3172319 ,
+        0          ,   0         ,  0.1980505  ,
+        0          ,   0         ,  0          ,   0)}),
+  pi_matrix = lotri::lotri({KAPPA_Cl ~
+      c(0.01832703)}),
+  covariates  = c("clcreat","poids"),
+  sigma       = c(additive_a = 0.151, proportional_b = 0.175))
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Voriconazole_IV.R">
+# Modèle de Jiang et al. 2022 : patients atteints de talaromycose.
+voriconazole_Jiang2022_IV <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+    TVCl  = THETA_Cl*exp(-0.135*(CRP/43.6));
+    TVVc  = THETA_Vc;
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    ke    = Cl/Vc;
+    Cc    = centr/Vc;
+    d/dt(centr)  = - ke*centr;
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl=4.34, THETA_Vc=97.4),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc ~
+      c(0.6981472 ,
+        0        ,   0.09289271)}),
+  covariates  = c("CRP"),
+  sigma       = c(additive_a = 0.373, proportional_b = 0.071))
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Voriconazole_oral.R">
+# Modèle de Jiang et al. 2022 : patients atteints de talaromycose.
+voriconazole_Jiang2022 <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+    TVCl  = THETA_Cl*exp(-0.135*(CRP/43.6));
+    TVVc  = THETA_Vc;
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    ka    = 1.1;
+    F1    = 0.951;
+    ke    = Cl/Vc;
+    Cc    = centr/Vc;
+    d/dt(depot)  = - ka*depot;
+    d/dt(centr)  =   F1*ka*depot - ke*centr;
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl=4.34, THETA_Vc=97.4),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc ~
+      c(0.6981472 ,
+        0        ,   0.09289271)}),
+  covariates  = c("CRP"),
+  sigma       = c(additive_a = 0.373, proportional_b = 0.071))
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Ciprofloxacin_oral.R">
+# Modèle de Zahr et al. 2021 : patients traités pour infections ostéo-articulaires.
+ciprofloxacin_Zahr2021 <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+#    depot(0) = 0;
+    TVCl  = THETA_Cl*(poids/70)^0.75*(clcreat/100)^0.319*1.62^rifamp;
+    TVVc  = THETA_Vc*(poids/70);
+    TVVp  = THETA_Vp*(poids/70);
+    TVQ   = THETA_Q*(poids/70)^0.75;
+    TVLAG = THETA_lag;
+    TVF1  = 1;
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    Vp    = TVVp*exp(ETA_Vp);
+    Q     = TVQ *exp(ETA_Q);
+    tlag  = TVLAG*exp(ETA_lag);
+    F1    = TVF1*exp(KAPPA_f);
+    ka    = 0.44;
+    ke    = Cl/Vc;
+    k12   = Q/Vc;
+    k21   = Q/Vp;
+    Cc    = centr/Vc;
+    d/dt(depot)  = - ka*depot;
+    f(depot)     = F1;
+    alag(depot)  = tlag;
+    d/dt(centr)  =   ka*depot - ke*centr - k12*centr + k21*periph;
+    d/dt(periph) =                       + k12*centr - k21*periph;
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl=44, THETA_Vc=56.5, THETA_Vp=194,THETA_Q=31.1,THETA_lag=0.551),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q + ETA_lag ~
+      c(0.074529   ,
+        0          ,   0.595984,
+        0          ,   0       ,  0     ,
+        0          ,   0       ,  0     ,   0   ,
+        0          ,   0       ,  0     ,   0   ,   1.1025)}),
+  pi_matrix = lotri::lotri({KAPPA_f ~
+      c(0.131044)}),
+  covariates  = c("poids","clcreat","rifamp"),
+  sigma       = c(additive_a = 0.082, proportional_b = 0.264))
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Levofloxacin_oral.R">
+# Modèle de Eloy et al. 2020 : patients atteints d'infections osseuses et articulaires.
+levofloxacin_Eloy2020 <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+    depot(0) = 0;
+    TVCl  = THETA_Cl*(age/58)^-0.52*(clcreat/105)^0.48;
+    TVVc  = THETA_Vc;
+    TVka  = THETA_ka;
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    ka    = TVka*exp(ETA_ka);
+    ke    = Cl/Vc;
+    Cc    = centr/Vc;
+    d/dt(depot)  = - ka*depot;
+    d/dt(centr)  =   ka*depot - ke*centr;
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl=6.1, THETA_Vc=90.6, THETA_ka=0.895),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_ka ~
+      c(0.157 ,
+        0.043 ,   0.061 ,
+        0     ,   0     ,   0   )}),
+  covariates  = c("age","clcreat"),
+  sigma       = c(additive_a = 0, proportional_b = 0.118))
+# clcreat est la clairance de la créat calculée avec la formule MDRD
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Sulfamethoxazole_oral.R">
+# Modèle de Leegwater 2024 : Patients adultes souffrant d'insuffisance rénale..
+sulfaméthoxazole_Leegwater2024 <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+    depot(0) = 0;
+    TVCl  = THETA_Cl*0.97*(DFG/68)^0.27;
+    TVVc  = THETA_Vc;
+    TVka  = THETA_ka;
+    TVF1  = 1;
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    F1    = TVF1;
+    ka    = TVka
+    ke    = Cl/Vc;
+    Cc    = centr/Vc;
+    d/dt(depot)  = -ka*depot
+    d/dt(centr)  = + ka*depot - ke*centr;
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl=0.97, THETA_Vc=37, THETA_ka=0.978),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc ~
+      c(0.1237819   ,
+        0,   0.3333538 )}),
+  covariates  = c("DFG"),
+  sigma       = c(additive_a = 0, proportional_b = 0.181))
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Levetiracetam_oral.R">
+# Modèle de M.P. Hernandez-Mitre et al 2020 : Patients adultes et âgés atteints d'épilepsie.
+levetiracetam_Hernandez2020 <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+    depot(0) = 0;
+    TVCl  = THETA_Cl*(CLCG/96.2)^0.588;
+    TVVc  = THETA_Vc*(bsa/1.68)^2.85;
+    TVka  = THETA_ka;
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    ka    = TVka*exp(ETA_ka);
+    ke    = Cl/Vc;
+    Cc    = centr/Vc;
+    d/dt(depot)  = - ka*depot;
+    d/dt(centr)  =   ka*depot - ke*centr;
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl=2.74, THETA_Vc=29.7, THETA_ka=3.63),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_ka ~
+      c(0.436 ,
+        0 ,   0.304 ,
+        0     ,   0     ,   1.396   )}),
+  covariates  = c("CLCG","bsa"),
+  sigma       = c(additive_a = 0, proportional_b = 0.1149))
+# clcreat est la clairance de la créat calculée avec la formule Cockcroft-Gault
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Mycophenolate.R">
+# Modèle de Zaho et al. 2009 : enfants avec syndrome néphrotique idiopathique
+mycophenolate_Zaho2009 <- list(
+  ppk_model   = rxode2::rxode({
+    centr(0) = 0;
+    TVCl  = THETA_Cl*(poids/23.5)*0.753*(1-0.570*(alb/38.6));
+    TVVc  = THETA_Vc;
+    TVVp  = THETA_Vp;
+    TVQ   = THETA_Q;
+    TVka  = THETA_ka;
+    TVL   = THETA_L;
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    Vp    = TVVp*exp(ETA_Vp);
+    Q     = TVQ *exp(ETA_Q);
+    ka    = TVka*exp(ETA_ka);
+    L     = TVL*exp(ETA_L);
+    ke    = Cl/Vc;
+    k12   = Q/Vc;
+    k21   = Q/Vp;
+    Cc    = centr/Vc;
+    d/dt(depot)  = - ka*depot;
+    alag(depot)  =   L;
+    d/dt(centr)  =   ka*depot - ke*centr - k12*centr + k21*periph;
+    d/dt(periph) =            + k12*centr - k21*periph;
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl=22.5, THETA_Vc=22.3, THETA_Vp=250, THETA_Q=18.8, THETA_ka=5.16, THETA_L=0.215),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q + ETA_ka + ETA_L ~
+      c(0.04726519  ,
+        0           ,   0.4937208 ,
+        0           ,   0         ,  0     ,
+        0           ,   0         ,  0     ,   0.2865134  ,
+        0           ,   0         ,  0     ,   0          ,    0    ,
+        0           ,   0         ,  0     ,   0          ,    0    ,   0.2558818)}),
+  covariates  = c("poids","alb"),
+  sigma       = c(additive_a = 0, proportional_b = 0.446))
+# poids en kg
+# alb en g/L
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Clozapine.R">
+# Modèle de Reeves et al. 2023 : Etude pharmacocinétique sur une importante
+# cohorte de patients (plus de 5900).
+# Unité de concentration : mg/L
+clozapine_Reeves2023 <- function() {
+  ini({
+    THETA_Cl = 19.3
+    THETA_Vc = 1410
+    THETA_Clm = 12.7
+    THETA_Vcm = 1410
+    THETA_km = 0.006
+    ETA_Cl + ETA_Vc + ETA_Clm + ETA_Vcm + ETA_km ~
+      c(0.5625 ,
+        0      ,   0.01 ,
+        0      ,   0    ,   0.0049  ,
+        0      ,   0    ,   0       ,   0   ,
+        0      ,   0    ,   0       ,   0   ,   0.0169)
+    add.sd <- 0.02
+    prop.sd <- 0.39
+    m.add.sd <- 0.02
+    m.prop.sd <- 0.31
+  })
+  model({
+    #centr(0) = 0;
+    TVCl  = THETA_Cl*(poids/70)^0.75*(age-40)^0.013*(1+0.39*fumeur)*(1-0.26*sexe)
+    TVVc  = THETA_Vc*(poids/70)
+    TVClm = THETA_Clm*(poids/70)^0.75
+    TVVcm = THETA_Vcm*(poids/70)
+    TVkm  = THETA_km
+    Cl    = TVCl*exp(ETA_Cl)
+    Vc    = TVVc*exp(ETA_Vc)
+    Clm   = TVClm*exp(ETA_Clm)
+    Vcm   = TVVcm*exp(ETA_Vcm)
+    km    = TVkm*exp(ETA_km)
+    ka    = 0.69
+    ke    = Cl/Vc
+    kem   = Clm/Vcm
+    Cc    = centr/Vc
+    Ccm   = centrm/Vcm
+    d/dt(depot)  = - ka*depot
+    d/dt(centr)  =   ka*depot - ke*centr - km*depot
+    d/dt(AUC)    =   Cc
+    d/dt(centrm) =   km*depot - kem*centrm
+    Cc ~ add(add.sd) + prop(prop.sd) + combined1()
+    Ccm ~ add(m.add.sd) + prop(m.prop.sd) + combined1()
+  })
+}
+# MM cloza = 326.823 g/mol
+# MM norcloza = 312.80 g/mol
+# sexe = 1 si femme et 0 si homme
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Olanzapine.R">
+# Modèle de Sun et al. 2021 : patients traités par association olanzapine/samidorphan.
+# Unité de concentration : µg/L
+olanzapine_Sun2021 <- list(
+  ppk_model   = rxode2::rxode({
+    #centr(0) = 0;
+    TVCl  = THETA_Cl*(poids/76.9)^0.75*1.80^rifamp*1.30^fumeur*0.875^foie*0.801^rein*0.862^sexe;
+    TVVc  = THETA_Vc*(poids/76.9)^1.0*(age/36)^0.356;
+    TVVp  = THETA_Vp;
+    TVQ   = THETA_Q;
+    TVLAG = THETA_lag;
+    TVka  = THETA_ka;
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    Vp    = TVVp*exp(ETA_Vp);
+    Q     = TVQ *exp(ETA_Q);
+    tlag  = TVLAG*exp(ETA_lag);
+    ka    = TVka*exp(ETA_ka+KAPPA_ka);
+    ke    = Cl/Vc;
+    k12   = Q/Vc;
+    k21   = Q/Vp;
+    Cc    = centr/Vc;
+    d/dt(depot)  = - ka*depot;
+    alag(depot)  =   tlag;
+    d/dt(centr)  =   ka*depot - ke*centr - k12*centr + k21*periph;
+    d/dt(periph) =                       + k12*centr - k21*periph;
+    d/dt(AUC)    =   Cc;
+  }),
+    error_model = function(f,sigma){
+      g <- sigma[1] + sigma[2]*f
+      return(g)
+    },
+    theta = c(THETA_Cl = 15.5, THETA_Vc = 656, THETA_Vp = 225, THETA_Q = 6.15, THETA_lag = 0.782, THETA_ka  = 0.861),
+    omega = lotri::lotri({ETA_Cl + ETA_Vc + ETA_Vp + ETA_Q + ETA_lag + ETA_ka ~
+      c(0.171 ,
+        0     ,   0.127 ,
+        0     ,   0     ,   0.223  ,
+        0     ,   0     ,   0      ,   0.223  ,
+        0     ,   0     ,   0      ,   0      ,   0.319  ,
+        0     ,   0     ,   0      ,   0      ,   0      ,   0.209)}),
+    pi_matrix = lotri::lotri({KAPPA_ka ~
+      c(0.630)}),
+    covariates  = c("poids","rifamp","fumeur","foie","rein","sexe","age"),
+    sigma       = c(additive_a = 0, proportional_b = 0.0462)
+  # Sexe : femme = 1, homme = 0
+)
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Aripiprazole.R">
+# Modèle de Zhang et al. 2024 : interactions médicamenteuses chez des patients
+# schizophrènes.
+# Unité de concentration : µg/L
+aripiprazole_Zhang2024 <- function() {
+  ini({
+    THETA_Cl = 3.23
+    THETA_Vc = 157
+    ETA_Cl ~
+      c(0.233)
+    add.sd <- 49.498
+    prop.sd <- 0.123
+  })
+  model({
+    #centr(0) = 0;
+    TVCl  = THETA_Cl*(poids/70)^0.75*(1-0.286*fluoxetine)
+    TVVc  = THETA_Vc*(poids/70)
+    Cl    = TVCl*exp(ETA_Cl)
+    Vc    = TVVc
+    ka    = 1.06
+    ke    = Cl/Vc
+    Cc    = centr/Vc
+    d/dt(depot)  = - ka*depot
+    d/dt(centr)  =   ka*depot - ke*centr
+    d/dt(AUC)    =   Cc
+    Cc ~ add(add.sd) + prop(prop.sd) + combined1()
+  })
+}
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Haloperidol.R">
+# Modèle de Reddy et al. 2013 : modélisation chez des patients schizophrènes
+# avec évaluation PANSS.
+# Unité de concentration : µg/L
+haloperidol_Reddy2013 <- list(
+  ppk_model   = rxode2::rxode({
+    TVCl  = THETA_Cl;
+    #*(poids/70)^0.75;
+    TVVc  = THETA_Vc;
+    TVVp  = THETA_Vp;
+    TVQ   = THETA_Q;
+    TVka  = THETA_ka;
+    Cl    = TVCl*exp(ETA_Cl);
+    Vc    = TVVc*exp(ETA_Vc);
+    Vp    = TVVp;
+    Q     = TVQ;
+    ka    = TVka;
+    ke    = Cl/Vc;
+    k12   = Q/Vc;
+    k21   = Q/Vp;
+    Cc    = centr/Vc;
+    d/dt(depot)  = - ka*depot;
+    d/dt(centr)  =   ka*depot - ke*centr - k12*centr + k21*periph;
+    d/dt(periph) =                       + k12*centr - k21*periph;
+    d/dt(AUC)    =   Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sigma[1] + sigma[2]*f
+    return(g)
+  },
+  theta = c(THETA_Cl=88, THETA_Vc=669, THETA_Vp=2500, THETA_ka=0.236, THETA_Q=233),
+  omega = lotri::lotri({ETA_Cl + ETA_Vc ~
+      c(0.1806744 ,
+        0         ,   0.8525412 )}),
+  #covariates  = c("poids"),
+  sigma       = c(additive_a = 0, proportional_b = 0.44))
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Ganciclovir_Caldes2009.R">
+# Modèle de Caldès et al. 2009 (ganciclovir IV et valganciclovir oral), repris tel quel des tests du package posologyr.
+# ClCr est la clairance de la créatinine en mL/min.
+mod_ganciclovir_Caldes_AAC2009 <- function() {
+  ini({
+    THETA_cl  <- 7.49
+    THETA_v1  <- 31.90
+    THETA_cld <- 10.20
+    THETA_v2  <- 32.0
+    THETA_ka  <- 0.895
+    THETA_baf <- 0.825
+    ETA_cl ~ 0.107
+    ETA_v1 ~ 0.227
+    ETA_ka ~ 0.464
+    ETA_baf ~ 0.049
+    add.sd <- 0.465
+    prop.sd <- 0.143
+  })
+  model({
+    TVcl  = THETA_cl*(ClCr/57);
+    TVv1  = THETA_v1;
+    TVcld = THETA_cld;
+    TVv2  = THETA_v2;
+    TVka  = THETA_ka;
+    TVbaf = THETA_baf;
+
+    cl  = TVcl*exp(ETA_cl);
+    v1  = TVv1*exp(ETA_v1);
+    cld = TVcld;
+    v2  = TVv2;
+    ka  = TVka*exp(ETA_ka);
+    baf = TVbaf*exp(ETA_baf);
+
+    k10 = cl/v1;
+    k12 = cld / v1;
+    k21 = cld / v2;
+    Cc = centr/v1;
+
+    d/dt(depot)  = -ka*depot
+    d/dt(centr)  =  ka*depot - k10*centr - k12*centr + k21*periph;
+    d/dt(periph) =                         k12*centr - k21*periph;
+    d/dt(AUC)    = Cc;
+
+    f(depot)=baf;
+    alag(depot)=0.382;
+
+    Cc ~ add(add.sd) + prop(prop.sd) + combined1()
+  })
+}
+</script>
+<script type="text/plain" class="modele-r" data-fichier="Clindamycine_Mimram2022.R">
+# Modèle de Mimram et al. 2022 : infections sur prothèse articulaire, clindamycine per os SANS rifampicine.
+# Transcrit depuis l'article (Antibiotics 2022;11:1462, tableau 2), à vérifier :
+# - omega : valeurs du tableau 2 (0,14 ; 0,08 ; 0,60) prises comme des variances ; le résumé de l'article
+#   donne pourtant des CV de 14,4 %, 8,2 % et 59,6 %, ce qui correspondrait à des variances bien plus faibles.
+# - sigma : erreur combinée, valeurs du tableau lues comme des variances NONMEM (prop 0,00976 ; add 0,0801 mg²/L²).
+# Pas de covariable. Modèle non applicable en cas de rifampicine associée (clairance très augmentée).
+clindamycin_Mimram2022 <- list(
+  ppk_model = rxode2::rxode({
+    centr(0) = 0;
+    Cl = THETA_Cl*exp(ETA_Cl);
+    V  = THETA_V*exp(ETA_V);
+    ka = THETA_ka*exp(ETA_ka);
+    Cc = centr/V;
+    d/dt(depot) = -ka*depot;
+    d/dt(centr) =  ka*depot - Cl/V*centr;
+    d/dt(AUC)   =  Cc;
+  }),
+  error_model = function(f,sigma){
+    g <- sqrt(sigma[1]^2 + (sigma[2]^2)*(f^2))
+    return(g)
+  },
+  theta = c(THETA_Cl=23, THETA_V=103, THETA_ka=3.53),
+  omega = lotri::lotri({ETA_Cl + ETA_V + ETA_ka ~
+      c(0.14,
+        0,    0.08,
+        0,    0,    0.60)}),
+  covariates = c(),
+  sigma = c(additive_a = sqrt(0.0801), proportional_b = sqrt(0.00976)))
+</script>
+<script>// Convertisseur de modèles posologyr (fichiers R) vers la bibliothèque JavaScript.
+// Lit les deux formats utilisés dans les fichiers R : liste rxode2 (ppk_model, theta, omega, sigma, covariates,
+// pi_matrix) et fonction nlmixr2 (ini / model). Les équations sont traduites telles quelles, puis le système
+// d'équations différentielles est transformé en matrice (modèles linéaires uniquement, vérifié à la conversion).
+(function (racine) {
+  'use strict';
+
+  // ---------- Covariables R reconnues → covariables standardisées de l'appli ----------
+  var COV_R = {
+    clcreat: 'CLCR', CLCREAT: 'CLCR', CLCG: 'CLCG', clcg: 'CLCG', DFG: 'DFG', EGFR: 'DFG', eGFR: 'DFG',
+    poids: 'POIDS', WT: 'POIDS', TBW: 'POIDS', age: 'AGE', AGE: 'AGE', taille: 'TAILLE', HT: 'TAILLE',
+    BMI: 'IMC', IMC: 'IMC', BSA: 'SC', bsa: 'SC', albumine: 'ALB_GDL', ALB: 'ALB_GDL',
+    choc: 'CHOC', hemat: 'HEMATO', trauma: 'TRAUMA', dial: 'DIAL', ageind: 'AGE_SUP40', CRP: 'CRP', rifamp: 'RIFAMP',
+    fumeur: 'FUMEUR', foie: 'IH', rein: 'IR', fluoxetine: 'FLUOX', alb: 'ALB_GL', ains: 'AINS'
+  };
+  var FONCTIONS = { exp: 'Math.exp', log: 'Math.log', sqrt: 'Math.sqrt', abs: 'Math.abs', log10: 'Math.log10', min: 'Math.min', max: 'Math.max', floor: 'Math.floor' };
+
+  function Erreur(msg) { var e = new Error(msg); e.conversion = true; return e; }
+
+  // ---------- Lecture du texte R ----------
+  function sansCommentaires(src) {
+    return src.split(/\r?\n/).map(function (l) {
+      var dans = null;
+      for (var i = 0; i < l.length; i++) {
+        var c = l[i];
+        if (dans) { if (c === dans && l[i - 1] !== '\\') dans = null; }
+        else if (c === '"' || c === "'") dans = c;
+        else if (c === '#') return l.slice(0, i);
+      }
+      return l;
+    }).join('\n');
+  }
+  function jetons(src) {
+    var t = [], i = 0, n = src.length;
+    while (i < n) {
+      var c = src[i];
+      if (c === '\n') { t.push({ k: 'nl', p: i }); i++; continue; }
+      if (/\s/.test(c)) { i++; continue; }
+      var m = /^(\d+\.?\d*([eE][+-]?\d+)?|\.\d+([eE][+-]?\d+)?)/.exec(src.slice(i, i + 40));
+      if (m) { t.push({ k: 'num', v: parseFloat(m[0]), p: i, f: i + m[0].length }); i += m[0].length; continue; }
+      m = /^[A-Za-zÀ-ÿ][A-Za-z0-9_.À-ÿ]*(::[A-Za-z][A-Za-z0-9_.]*)?/.exec(src.slice(i, i + 80));
+      if (m) { t.push({ k: 'id', v: m[0], p: i, f: i + m[0].length }); i += m[0].length; continue; }
+      if (c === '"' || c === "'") { var j = src.indexOf(c, i + 1); t.push({ k: 'str', v: src.slice(i + 1, j), p: i, f: j + 1 }); i = j + 1; continue; }
+      if (c === '%') { var fin = src.indexOf('%', i + 1); if (fin < 0) throw Erreur('Opérateur % non fermé'); t.push({ k: 'op', v: src.slice(i, fin + 1), p: i, f: fin + 1 }); i = fin + 1; continue; } // %*%, %in%…
+      var ops = ['<-', '->', '==', '!=', '<=', '>=', '&&', '||', '**'], op = null;
+      for (var o = 0; o < ops.length; o++) if (src.substr(i, ops[o].length) === ops[o]) { op = ops[o]; break; }
+      if (!op) {
+        if ('=~+-*/^(){}[],;<>!&|'.indexOf(c) < 0) throw Erreur('Caractère inattendu « ' + c + ' »');
+        op = c;
+      }
+      t.push({ k: 'op', v: op, p: i, f: i + op.length }); i += op.length;
+    }
+    t.push({ k: 'fin', p: n, f: n });
+    return t;
+  }
+
+  // Analyseur à précédence (sous-ensemble de R suffisant pour les modèles)
+  var BIN = { '~': [1, 'g'], '<-': [2, 'd'], '=': [2, 'd'], '||': [3, 'g'], '|': [3, 'g'], '&&': [4, 'g'], '&': [4, 'g'],
+    '==': [6, 'g'], '!=': [6, 'g'], '<': [6, 'g'], '>': [6, 'g'], '<=': [6, 'g'], '>=': [6, 'g'],
+    '+': [7, 'g'], '-': [7, 'g'], '*': [8, 'g'], '/': [8, 'g'], '%*%': [9, 'g'], '%%': [9, 'g'], '%in%': [9, 'g'], '^': [11, 'd'], '**': [11, 'd'] };
+  function Analyseur(src) {
+    this.src = src; this.t = jetons(src); this.i = 0; this.par = 0;
+  }
+  Analyseur.prototype = {
+    vue: function () { var j = this.i; if (this.par > 0) while (this.t[j].k === 'nl') j++; return this.t[j]; },
+    prendre: function () { if (this.par > 0) while (this.t[this.i].k === 'nl') this.i++; return this.t[this.i++]; },
+    sauterNl: function () { while (this.t[this.i].k === 'nl' || (this.t[this.i].k === 'op' && this.t[this.i].v === ';')) this.i++; },
+    attendre: function (v) { var j = this.prendre(); if (j.v !== v) throw Erreur('« ' + v + ' » attendu près de « ' + this.src.slice(j.p, j.p + 30) + ' »'); return j; },
+    expr: function (minP) {
+      minP = minP || 0;
+      while (this.t[this.i].k === 'nl') this.i++;
+      var g = this.prefixe();
+      for (;;) {
+        var j = this.vue();
+        if (j.k !== 'op' || !BIN[j.v]) break;
+        var p = BIN[j.v][0], assoc = BIN[j.v][1];
+        if (p < minP) break;
+        this.prendre();
+        var d = this.expr(assoc === 'd' ? p : p + 1);
+        g = { type: 'bin', op: j.v === '**' ? '^' : j.v, g: g, d: d, p: g.p, f: d.f };
+      }
+      return g;
+    },
+    prefixe: function () {
+      var j = this.prendre(), n;
+      if (j.k === 'num') n = { type: 'num', v: j.v, p: j.p, f: j.f };
+      else if (j.k === 'str') n = { type: 'str', v: j.v, p: j.p, f: j.f };
+      else if (j.k === 'id' && j.v === 'function') {
+        this.attendre('('); this.par++; var params = [];
+        while (this.vue().v !== ')') { params.push(this.prendre().v); if (this.vue().v === ',') this.prendre(); }
+        this.attendre(')'); this.par--;
+        var corps = this.expr(9);
+        return { type: 'fonction', params: params, corps: corps, p: j.p, f: corps.f };
+      }
+      else if (j.k === 'id') n = { type: 'id', v: j.v, p: j.p, f: j.f };
+      else if (j.v === '-' || j.v === '+') { var a = this.expr(10); return { type: 'un', op: j.v, a: a, p: j.p, f: a.f }; }
+      else if (j.v === '!') { var b = this.expr(5); return { type: 'un', op: '!', a: b, p: j.p, f: b.f }; }
+      else if (j.v === '(') { this.par++; var e = this.expr(); this.par--; var fe = this.attendre(')'); n = { type: 'par', a: e, p: j.p, f: fe.f }; }
+      else if (j.v === '{') {
+        var sauv = this.par; this.par = 0; var ins = [];
+        for (;;) { this.sauterNl(); if (this.t[this.i].v === '}') break; if (this.t[this.i].k === 'fin') throw Erreur('Accolade non fermée'); ins.push(this.expr()); }
+        var fb = this.t[this.i++]; this.par = sauv;
+        n = { type: 'bloc', ins: ins, p: j.p, f: fb.f };
+      }
+      else throw Erreur('Expression inattendue près de « ' + this.src.slice(j.p, j.p + 30) + ' »');
+      // appels et indexations
+      for (;;) {
+        var s = this.t[this.i];
+        if (s.k === 'op' && s.v === '(') {
+          this.i++; this.par++; var args = [];
+          while (this.vue().v !== ')') {
+            var nom = null;
+            if (this.vue().k === 'id' && this.t[this.indexSuivant()].v === '=') { nom = this.prendre().v; this.prendre(); }
+            args.push({ nom: nom, val: this.expr(3) });
+            if (this.vue().v === ',') this.prendre();
+          }
+          var fp = this.attendre(')'); this.par--;
+          n = { type: 'appel', f0: n, args: args, p: n.p, f: fp.f };
+        } else if (s.k === 'op' && s.v === '[') {
+          this.i++; this.par++; var ix = this.expr(); var fi = this.attendre(']'); this.par--;
+          n = { type: 'index', a: n, ix: ix, p: n.p, f: fi.f };
+        } else break;
+      }
+      return n;
+    },
+    indexSuivant: function () { var j = this.i; while (this.t[j].k === 'nl') j++; j++; while (this.t[j].k === 'nl') j++; return j; },
+    programme: function () { var ins = []; for (;;) { this.sauterNl(); if (this.t[this.i].k === 'fin') break; ins.push(this.expr()); } return ins; }
+  };
+
+  // ---------- Évaluation des valeurs numériques (theta, omega, sigma) ----------
+  function valeur(n) {
+    switch (n.type) {
+      case 'num': return n.v;
+      case 'par': return valeur(n.a);
+      case 'un': return n.op === '-' ? -valeur(n.a) : valeur(n.a);
+      case 'bin':
+        var a = valeur(n.g), b = valeur(n.d);
+        return { '+': a + b, '-': a - b, '*': a * b, '/': a / b, '^': Math.pow(a, b) }[n.op];
+      case 'appel':
+        var f = n.f0.v;
+        if (f === 'sqrt' || f === 'exp' || f === 'log') return Math[f](valeur(n.args[0].val));
+        throw Erreur('Valeur numérique attendue (fonction ' + f + ')');
+      default: throw Erreur('Valeur numérique attendue');
+    }
+  }
+  function vecteurC(n) {
+    if (n.type === 'num' || n.type === 'un' || n.type === 'bin') return [{ nom: null, v: valeur(n) }];
+    if (n.type !== 'appel' || n.f0.v !== 'c') throw Erreur('Vecteur c(...) attendu');
+    return n.args.map(function (a) { return { nom: a.nom, v: valeur(a.val) }; });
+  }
+  function nomsPlus(n) { // ETA_a + ETA_b + ... → ['ETA_a', 'ETA_b']
+    if (n.type === 'id') return [n.v];
+    if (n.type === 'bin' && n.op === '+') return nomsPlus(n.g).concat(nomsPlus(n.d));
+    throw Erreur('Liste de noms d’effets aléatoires invalide');
+  }
+  // Bloc lotri ou instructions « ~ » de ini() : renvoie {noms, matrice}
+  function blocVariance(instructions) {
+    var noms = [], blocs = [];
+    instructions.forEach(function (s) {
+      if (s.type !== 'bin' || s.op !== '~') return;
+      var nm = nomsPlus(s.g), vals = vecteurC(s.d).map(function (x) { return x.v; });
+      var k = nm.length, att = k * (k + 1) / 2;
+      if (vals.length !== att) throw Erreur('Bloc de variance ' + nm.join('+') + ' : ' + vals.length + ' valeurs pour ' + att + ' attendues (triangle inférieur)');
+      var M = []; for (var i = 0; i < k; i++) M.push(new Array(k).fill(0));
+      var q = 0; for (i = 0; i < k; i++) for (var j = 0; j <= i; j++) { M[i][j] = M[j][i] = vals[q++]; }
+      noms = noms.concat(nm); blocs.push(M);
+    });
+    var n = noms.length, O = []; for (var i = 0; i < n; i++) O.push(new Array(n).fill(0));
+    var d = 0; blocs.forEach(function (B) { for (var i = 0; i < B.length; i++) for (var j = 0; j < B.length; j++) O[d + i][d + j] = B[i][j]; d += B.length; });
+    return { noms: noms, M: O };
+  }
+
+  // ---------- Traduction des équations en JavaScript ----------
+  function traduire(modele) {
+    var corresp = {}; Object.keys(COV_R).forEach(function (k) { corresp[k] = COV_R[k]; });
+    Object.keys(modele.covR || {}).forEach(function (k) { corresp[k] = modele.covR[k]; });
+    var locaux = {}, etats = [], derivees = [], covs = {}, code = [], obsNom = null, erreurNlmixr = null, initiales = [], proprietes = [];
+    function nomEtat(n) { // d/dt(x) ou x(0)
+      if (n.type === 'bin' && n.op === '/' && n.g.type === 'id' && n.g.v === 'd' && n.d.type === 'appel' && n.d.f0.v === 'dt') return n.d.args[0].val.v;
+      return null;
+    }
+    // premier passage : états
+    modele.instructions.forEach(function (s) { if (s.type === 'bin' && (s.op === '=' || s.op === '<-')) { var e = nomEtat(s.g); if (e && etats.indexOf(e) < 0) etats.push(e); } });
+    function js(n) {
+      switch (n.type) {
+        case 'num': return String(n.v);
+        case 'par': return '(' + js(n.a) + ')';
+        case 'un': return n.op === '!' ? '(' + js(n.a) + '?0:1)' : '(' + n.op + js(n.a) + ')';
+        case 'bin':
+          if (n.op === '^') return 'Math.pow(' + js(n.g) + ',' + js(n.d) + ')';
+          if (['==', '!=', '<', '>', '<=', '>='].indexOf(n.op) >= 0) return '((' + js(n.g) + (n.op === '==' ? '===' : n.op === '!=' ? '!==' : n.op) + js(n.d) + ')?1:0)';
+          if (n.op === '&' || n.op === '&&') return '((' + js(n.g) + '&&' + js(n.d) + ')?1:0)';
+          if (n.op === '|' || n.op === '||') return '((' + js(n.g) + '||' + js(n.d) + ')?1:0)';
+          if ('+-*/'.indexOf(n.op) >= 0) return '(' + js(n.g) + n.op + js(n.d) + ')';
+          throw Erreur('Opérateur non pris en charge : ' + n.op);
+        case 'appel':
+          var f = n.f0.v;
+          if (f === 'ifelse') return '(' + js(n.args[0].val) + '?' + js(n.args[1].val) + ':' + js(n.args[2].val) + ')';
+          if (!FONCTIONS[f]) throw Erreur('Fonction non prise en charge : ' + f + '()');
+          return FONCTIONS[f] + '(' + n.args.map(function (a) { return js(a.val); }).join(',') + ')';
+        case 'id':
+          var v = n.v;
+          if (locaux[v]) return 'v["' + v + '"]';
+          if (modele.theta.hasOwnProperty(v)) return 'th["' + v + '"]';
+          if (modele.etas.indexOf(v) >= 0) return 'eta["' + v + '"]';
+          if (etats.indexOf(v) >= 0) return 'x[' + etats.indexOf(v) + ']';
+          if (/^(ETA|KAPPA)_/.test(v)) return '0'; // effet aléatoire de variance nulle non déclaré
+          if (corresp[v]) { covs[v] = corresp[v]; return 'cov["' + corresp[v] + '"]'; }
+          throw Erreur('Variable inconnue « ' + v + ' » (ni theta, ni eta, ni covariable reconnue, ni variable définie avant)');
+        default: throw Erreur('Expression non prise en charge');
+      }
+    }
+    modele.instructions.forEach(function (s) {
+      if (s.type === 'bin' && s.op === '~') { // erreur résiduelle nlmixr2 : Cc ~ add(a) + prop(b) + combined1()
+        if (!obsNom || s.g.v === (modele.sortie || 'Cc')) { obsNom = s.g.v; erreurNlmixr = s.d; }
+        return;
+      }
+      if (s.type !== 'bin' || (s.op !== '=' && s.op !== '<-')) throw Erreur('Instruction non prise en charge dans le modèle');
+      var e = nomEtat(s.g);
+      if (e) { derivees[etats.indexOf(e)] = true; code.push('dx[' + etats.indexOf(e) + ']=' + js(s.d) + ';'); return; }
+      // biodisponibilité f(cmt) / F(cmt) et temps de latence alag(cmt) / lag(cmt) d'un compartiment de dose
+      if (s.g.type === 'appel' && /^(f|F|alag|lag)$/.test(s.g.f0.v) && s.g.args.length === 1 && s.g.args[0].val.type === 'id') {
+        var cible = s.g.args[0].val.v, nature = /^f$/i.test(s.g.f0.v) ? '__f_' : '__lag_';
+        code.push('v["' + nature + cible + '"]=' + js(s.d) + ';'); proprietes.push(nature + cible); return;
+      }
+      if (s.g.type === 'appel' && etats.indexOf(s.g.f0.v) >= 0 || (s.g.type === 'appel' && s.g.args.length === 1 && s.g.args[0].val.type === 'num' && s.g.args[0].val.v === 0)) {
+        if (valeur(s.d) !== 0) throw Erreur('Condition initiale non nulle pour ' + s.g.f0.v + ' : non prise en charge');
+        initiales.push(s.g.f0.v); return;
+      }
+      if (s.g.type !== 'id') throw Erreur('Affectation non prise en charge');
+      code.push('v["' + s.g.v + '"]=' + js(s.d) + ';'); locaux[s.g.v] = true;
+    });
+    if (!etats.length) throw Erreur('Aucune équation différentielle d/dt() trouvée');
+    obsNom = obsNom || 'Cc';
+    if (!locaux[obsNom]) throw Erreur('Variable observée « ' + obsNom + ' » non définie');
+    var f = new Function('th', 'eta', 'cov', 'x', '"use strict";var v={},dx=[];' + code.join('') + 'return {v:v,dx:dx};');
+    proprietes.forEach(function (p) { var c = p.replace(/^__(f|lag)_/, ''); if (etats.indexOf(c) < 0) throw Erreur('f() ou alag() sur un compartiment inconnu : ' + c); });
+    return { calc: f, etats: etats, obs: obsNom, covariables: covs, erreurNlmixr: erreurNlmixr, proprietes: proprietes, source: code.join('\n') };
+  }
+
+  // ---------- Construction du système linéaire ----------
+  function construire(def) {
+    var tr = traduire(def), n = tr.etats.length;
+    function unitaire(j) { var x = new Array(n).fill(0); if (j >= 0) x[j] = 1; return x; }
+    function systeme(th, eta, cov) {
+      var z = tr.calc(th, eta, cov, unitaire(-1)), A = [], obs = [];
+      for (var i = 0; i < n; i++) A.push(new Array(n).fill(0));
+      for (var j = 0; j < n; j++) {
+        var r = tr.calc(th, eta, cov, unitaire(j));
+        for (i = 0; i < n; i++) A[i][j] = r.dx[i] - z.dx[i];
+        obs[j] = r.v[tr.obs] - z.v[tr.obs];
+      }
+      return { A: A, obs: obs, v: z.v, termeConstant: z.dx.some(function (d) { return d !== 0; }) || z.v[tr.obs] !== 0 };
+    }
+    // États conservés : on retire ceux dont personne ne dépend (AUC…), sauf le compartiment central
+    var th0 = def.theta, eta0 = {}; def.etas.forEach(function (e) { eta0[e] = 0; });
+    var cov0 = { CLCR: 80, CLCG: 80, DFG: 80, POIDS: 70, AGE: 50, TAILLE: 170, IMC: 24, SC: 1.8, ALB_GDL: 3.5, CHOC: 0, HEMATO: 0, TRAUMA: 0, DIAL: 0, AGE_SUP40: 1, CRP: 40, RIFAMP: 0, FUMEUR: 0, IH: 0, IR: 0, FLUOX: 0, ALB_GL: 38, SEXE_F: 0, AINS: 0 };
+    Object.keys(def.covR || {}).forEach(function (k) { var c = def.covR[k]; if (cov0[c] == null) cov0[c] = c === 'TEMP' ? 37 : 1; }); // covariables propres au modèle
+    var s0 = systeme(th0, eta0, cov0);
+    if (s0.A.some(function (l) { return l.some(function (v) { return !isFinite(v); }); }) || s0.obs.some(function (v) { return !isFinite(v); }))
+      throw Erreur('Paramètres non calculables avec des covariables types (covariable non reconnue ou valeur hors domaine)');
+    if (s0.termeConstant) throw Erreur('Le modèle contient un terme constant (production endogène ?) : non linéaire, non pris en charge');
+    var ic = tr.etats.indexOf('centr'); if (ic < 0) ic = tr.etats.indexOf('central');
+    if (ic < 0) ic = s0.obs.findIndex(function (o) { return o !== 0; });
+    var garder = tr.etats.map(function (e, j) { return j; });
+    var change = true;
+    while (change) {
+      change = false;
+      garder = garder.filter(function (j) {
+        if (j === ic) return true;
+        var utile = garder.some(function (i) { return i !== j && s0.A[i][j] !== 0; }) || s0.obs[j] !== 0;
+        if (!utile) change = true;
+        return utile;
+      });
+    }
+    // Contrôle de linéarité : la dérivée de x1 + x2 doit être la somme des dérivées
+    var xa = tr.etats.map(function (_, i) { return 1 + i * 0.37; }), xb = tr.etats.map(function (_, i) { return 2.1 - i * 0.29; });
+    var ra = tr.calc(th0, eta0, cov0, xa).dx, rb = tr.calc(th0, eta0, cov0, xb).dx, rab = tr.calc(th0, eta0, cov0, xa.map(function (v, i) { return v + xb[i]; })).dx;
+    rab.forEach(function (v, i) { if (Math.abs(v - ra[i] - rb[i]) > 1e-9 * (1 + Math.abs(v))) throw Erreur('Équations non linéaires (état ' + tr.etats[i] + ') : non pris en charge par le moteur'); });
+    var icRed = garder.indexOf(ic);
+    var depot = -1;
+    garder.forEach(function (j, k) { if (j !== ic && s0.A[ic][j] > 0 && s0.A[j][ic] === 0 && tr.etats[j] !== undefined && /depot|gut|abs/i.test(tr.etats[j])) depot = k; });
+    var periph = garder.map(function (j, k) { return k; }).filter(function (k) { return k !== icRed && k !== depot; });
+    return { tr: tr, systeme: systeme, garder: garder, ic: icRed, depot: depot, periph: periph };
+  }
+
+  // ---------- Lecture d'un fichier R complet ----------
+  function lireFichier(texte, nomFichier) {
+    var lignes = texte.split(/\r?\n/), commentaires = [];
+    var src = sansCommentaires(texte);
+    var an = new Analyseur(src), prog = an.programme(), modeles = [];
+    prog.forEach(function (s) {
+      if (s.type !== 'bin' || (s.op !== '<-' && s.op !== '=') || s.g.type !== 'id') return;
+      var nom = s.g.v, d = s.d, def = null;
+      // commentaire qui précède la définition (référence, population)
+      var ligneDef = src.slice(0, s.p).split('\n').length - 1, c = [];
+      for (var l = ligneDef - 1; l >= 0 && /^\s*#/.test(lignes[l]); l--) c.unshift(lignes[l].replace(/^\s*#+\s?/, '').trim());
+      if (d.type === 'appel' && d.f0.v === 'list') def = depuisListe(d, src);
+      else if (d.type === 'fonction') def = depuisNlmixr(d);
+      else return;
+      def.nomR = nom; def.commentaire = c.join(' ').trim(); def.fichier = nomFichier || '';
+      // commentaires qui suivent (définition des covariables)
+      var fin = src.slice(0, s.f).split('\n').length, apres = [];
+      for (l = fin; l < lignes.length && (/^\s*#/.test(lignes[l]) || !lignes[l].trim()); l++) if (lignes[l].trim()) apres.push(lignes[l].replace(/^\s*#+\s?/, '').trim());
+      def.notesCovariables = apres.join(' ');
+      modeles.push(def);
+    });
+    if (!modeles.length) throw Erreur('Aucun modèle trouvé dans ' + (nomFichier || 'le fichier'));
+    return modeles;
+  }
+  function depuisListe(d, src) {
+    var arg = {}; d.args.forEach(function (a) { arg[a.nom] = a.val; });
+    if (!arg.ppk_model || !arg.theta || !arg.omega) throw Erreur('Liste posologyr incomplète (ppk_model, theta, omega requis)');
+    var bloc = arg.ppk_model; if (bloc.type === 'appel') bloc = bloc.args[0].val;
+    var theta = {}; vecteurC(arg.theta).forEach(function (x) { theta[x.nom] = x.v; });
+    var om = arg.omega; if (om.type === 'appel' && /lotri$/.test(om.f0.v)) om = om.args[0].val;
+    var omega = blocVariance(om.type === 'bloc' ? om.ins : [om]);
+    var sigma = { add: 0, prop: 0, type: 'combined1' };
+    if (arg.sigma.type === 'appel' && /lotri$/.test(arg.sigma.f0.v)) {
+      // matrice de variances résiduelles (prop + add ~ c(...)) : écarts-types = racines des variances, erreur combinée en variance
+      var sv = arg.sigma.args[0].val, B = blocVariance(sv.type === 'bloc' ? sv.ins : [sv]);
+      B.noms.forEach(function (n, i) {
+        B.noms.forEach(function (m, j) { if (i !== j && B.M[i][j] !== 0) throw Erreur('Covariance entre erreurs résiduelles non prise en charge'); });
+        if (/add/i.test(n)) sigma.add = Math.sqrt(B.M[i][i]); else if (/prop/i.test(n)) sigma.prop = Math.sqrt(B.M[i][i]); else throw Erreur('Erreur résiduelle inconnue : ' + n);
+      });
+      sigma.type = 'combined2';
+    } else {
+      vecteurC(arg.sigma).forEach(function (x, i) { if (/^add/i.test(x.nom || '') || (!x.nom && i === 0)) sigma.add = x.v; else sigma.prop = x.v; });
+    }
+    if (arg.error_model) {
+      var t = src.slice(arg.error_model.p, arg.error_model.f).replace(/\s/g, '');
+      if (/sqrt\(/.test(t)) sigma.type = 'combined2';
+      else if (!/sigma\[1\]\+sigma\[2\]\*f/.test(t)) throw Erreur('Modèle d’erreur non reconnu : ' + t);
+      if (sigma.type === 'combined2' && /sigma\[1\]\^2\+\(?sigma\[2\]\^2\)?\*\(?f\^2\)?/.test(t) === false && !/dv%\*%sigma/.test(t)) throw Erreur('Modèle d’erreur non reconnu : ' + t);
+    }
+    var kappa = null;
+    if (arg.pi_matrix) { var pm = arg.pi_matrix; if (pm.type === 'appel' && /lotri$/.test(pm.f0.v)) pm = pm.args[0].val; kappa = blocVariance(pm.type === 'bloc' ? pm.ins : [pm]); }
+    var covDecl = arg.covariates ? arg.covariates.args.map(function (a) { return a.val.v; }) : [];
+    return { format: 'rxode2', instructions: bloc.ins, theta: theta, omega: omega, kappa: kappa, sigma: sigma, covDeclarees: covDecl };
+  }
+  function depuisNlmixr(f) {
+    var ini = null, mod = null;
+    (f.corps.type === 'bloc' ? f.corps.ins : [f.corps]).forEach(function (s) {
+      if (s.type === 'appel' && s.f0.v === 'ini') ini = s.args[0].val;
+      if (s.type === 'appel' && s.f0.v === 'model') mod = s.args[0].val;
+    });
+    if (!ini || !mod) throw Erreur('Fonction nlmixr2 sans ini() ou model()');
+    var theta = {}, vars = [], fixes = {};
+    ini.ins.forEach(function (s) {
+      if (s.type === 'bin' && (s.op === '=' || s.op === '<-') && s.g.type === 'id') {
+        theta[s.g.v] = s.d.type === 'appel' && s.d.f0.v === 'fix' ? valeur(s.d.args[0].val) : valeur(s.d);
+      } else if (s.type === 'bin' && s.op === '~') vars.push(s);
+    });
+    var omega = blocVariance(vars);
+    // erreur résiduelle : Cc ~ add(a) + prop(b) [+ combined1()|combined2()]
+    var errs = mod.ins.filter(function (s) { return s.type === 'bin' && s.op === '~'; });
+    if (!errs.length) throw Erreur('Aucune erreur résiduelle (Cc ~ …)');
+    // plusieurs sorties : la sortie Cc (molécule mère) est retenue, les autres sont ignorées
+    var sorties = errs.map(function (e) { return e.g.v; });
+    errs = errs.filter(function (e) { return e.g.v === 'Cc'; }).concat(errs).slice(0, 1);
+    var termes = []; (function plat(n) { if (n.type === 'bin' && n.op === '+') { plat(n.g); plat(n.d); } else termes.push(n); })(errs[0].d);
+    var sigma = { add: 0, prop: 0, type: null };
+    function val(a) { var x = a.args[0].val; if (x.type === 'id') { var k = x.v; if (fixes.hasOwnProperty(k)) return fixes[k]; if (theta.hasOwnProperty(k)) { var w = theta[k]; delete theta[k]; return w; } throw Erreur('Paramètre d’erreur inconnu : ' + k); } return valeur(x); }
+    termes.forEach(function (n) {
+      if (n.type !== 'appel') throw Erreur('Terme d’erreur non reconnu');
+      if (n.f0.v === 'add') sigma.add = val(n); else if (n.f0.v === 'prop') sigma.prop = val(n);
+      else if (n.f0.v === 'combined1' || n.f0.v === 'combined2') sigma.type = n.f0.v;
+      else throw Erreur('Terme d’erreur non pris en charge : ' + n.f0.v + '()');
+    });
+    // nlmixr2 : sans combined1()/combined2() explicite, add + prop se combinent en variance (combined2)
+    if (!sigma.type) sigma.type = sigma.add && sigma.prop ? 'combined2' : 'combined1';
+    Object.keys(theta).forEach(function (k) { if (/sd$/i.test(k) && !/^THETA/.test(k)) delete theta[k]; }); // écarts-types des sorties ignorées
+    return { format: 'nlmixr2', instructions: mod.ins, theta: theta, omega: omega, kappa: null, sigma: sigma, covDeclarees: null, sorties: sorties };
+  }
+
+  // ---------- Modèle prêt pour le moteur ----------
+  // meta : {id, molecule, nom, reference, population, valide, verification, voie}
+  function versModele(def, meta) {
+    var etas = def.omega.noms.slice(), O = def.omega.M.map(function (l) { return l.slice(); }), iov = [];
+    if (def.kappa) { // variabilité inter-occasion : effets aléatoires supplémentaires, une seule occasion
+      var n0 = etas.length, nk = def.kappa.noms.length, N = n0 + nk, M = [];
+      for (var i = 0; i < N; i++) M.push(new Array(N).fill(0));
+      for (i = 0; i < n0; i++) for (var j = 0; j < n0; j++) M[i][j] = O[i][j];
+      for (i = 0; i < nk; i++) for (j = 0; j < nk; j++) M[n0 + i][n0 + j] = def.kappa.M[i][j];
+      etas = etas.concat(def.kappa.noms); O = M; iov = def.kappa.noms.slice();
+    }
+    var base = { theta: def.theta, etas: etas, instructions: def.instructions, covR: meta.covR, sortie: 'Cc' };
+    var fu = meta.unite === 'µg/L' ? 1000 : 1;
+    var c = construire(base), tr = c.tr, g = c.garder, ic = c.ic;
+    var covUtilisees = Object.keys(tr.covariables).map(function (k) { return tr.covariables[k]; }).filter(function (v, i, a) { return a.indexOf(v) === i; });
+    // eta portée par la clairance (pour le gain d'information affiché)
+    var etaCL = etas.filter(function (e) { return /^ETA_CL$/i.test(e); })[0] || etas[0];
+    var m = {
+      id: meta.id, molecule: meta.molecule, nom: meta.nom, reference: meta.reference || def.commentaire, doi: meta.doi || '', population: meta.population || '',
+      voie: meta.voie || 'iv', unite: meta.unite || 'mg/L', sortiesIgnorees: (def.sorties || []).filter(function (x) { return x !== tr.obs; }), valide: !!meta.valide, verification: meta.verification || '',
+      theta: def.theta, etas: etas, iov: iov, omega: O, sigma: def.sigma, etaCL: etaCL,
+      covariables: covUtilisees, nomR: def.nomR, fichier: def.fichier, format: def.format,
+      etatsR: tr.etats, systeme: { n: g.length, ic: ic, depot: c.depot },
+      sourceJs: tr.source,
+      parametres: function (th, eta, cov) {
+        var s = c.systeme(th, eta, cov), A = [], obs = [];
+        for (var a = 0; a < g.length; a++) { A.push(new Array(g.length)); obs.push(s.obs[g[a]] * fu); for (var b = 0; b < g.length; b++) A[a][b] = s.A[g[a]][g[b]]; }
+        var V1 = fu / obs[ic], sortie = 0;
+        for (a = 0; a < g.length; a++) sortie += A[a][ic];
+        var q = { CL: -sortie * V1, V1: V1, _A: A, _obs: obs, _cle: A.join(';') + '|' + obs.join(',') };
+        if (c.periph.length) { var p = c.periph[0], k12 = A[p][ic], k21 = A[ic][p]; q.Q = k12 * V1; q.V2 = q.Q / k21; }
+        if (c.periph.length > 1) { var p2 = c.periph[1]; q.Q3 = A[p2][ic] * V1; q.V3 = q.Q3 / A[ic][p2]; }
+        if (c.depot >= 0) {
+          var nd = tr.etats[g[c.depot]];
+          q.ka = -A[c.depot][c.depot];
+          q.F = s.v['__f_' + nd] != null ? s.v['__f_' + nd] : 1;
+          q.tlag = s.v['__lag_' + nd] || 0;
+          q.Ftot = q.F * A[ic][c.depot] / q.ka; // biodisponibilité totale (f() et éventuel F dans l'équation)
+          q._cle += '|' + q.F + '|' + q.tlag;
+        }
+        return q;
+      }
+    };
+    return m;
+  }
+
+  racine.ConvertisseurR = { lireFichier: lireFichier, versModele: versModele, COV_R: COV_R, sansCommentaires: sansCommentaires };
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>// Bibliothèque de modèles. Les modèles sont lus directement dans les fichiers R de posologyr collés plus haut
+// (blocs <script type="text/plain" class="modele-r">) et convertis au chargement : aucune valeur n'est recopiée.
+// Pour ajouter un modèle : coller le fichier R dans un nouveau bloc, puis ajouter une ligne dans CATALOGUE.
+// Covariables standardisées : CLCR (clairance saisie, mL/min), CREAT (µmol/L), CLCG (Cockcroft-Gault, poids réel,
+// mL/min), DFG (CKD-EPI 2021, mL/min/1,73 m²), POIDS (kg), AGE (ans), TAILLE (cm), IMC (kg/m²), SC (m², Boyd),
+// ALB_GDL (albumine en g/dL, saisie en g/L), CHOC, HEMATO, TRAUMA, DIAL (0/1), AGE_SUP40 (0/1).
+(function (racine) {
+  'use strict';
+  var E = Math.exp, P = Math.pow, C = racine.ConvertisseurR;
+
+  // Fichier R → molécule, nom affiché, population, statut de vérification
+  var CATALOGUE = [
+    { fichier: 'Amoxicilline_IV.R', objet: 'amoxicillin_Carlier2013', id: 'amoxicilline_carlier2013', molecule: 'amoxicilline', nom: 'Carlier 2013',
+      reference: 'Carlier et al. 2013', doi: '10.1093/jac/dkt240', population: 'Patients adultes en soins critiques',
+      valide: true, verification: '' },
+    { fichier: 'Cefepime.R', objet: 'cefepime_Seo2023', id: 'cefepime_seo2023', molecule: 'cefepime', nom: 'Seo 2023',
+      reference: 'Seo et al. 2023', doi: '10.3947/ic.2022.0087', population: 'Pneumonie nosocomiale ou sous ventilation assistée',
+      valide: true, verification: '' },
+    { fichier: 'Cefazoline.R', objet: 'cefazolin_Lanoiselee2021', id: 'cefazoline_lanoiselee2021', molecule: 'cefazoline', nom: 'Lanoiselée 2021',
+      reference: 'Lanoiselée et al. 2021', doi: '10.1038/s41598-021-99162-7', population: 'Arthroplastie totale de hanche',
+      verification: 'À comparer à l’ancienne appli. DFG calculé par CKD-EPI 2021 (le commentaire du fichier R parle de clairance de la créatinine).' },
+    { fichier: 'Cefotaxime.R', objet: 'cefotaxime_Swartling2022', id: 'cefotaxime_swartling2022', molecule: 'cefotaxime', nom: 'Swartling 2022',
+      reference: 'Swartling et al. 2022', doi: '10.1007/s00228-021-03218-6', population: 'Patients en soins critiques',
+      verification: 'À comparer à l’ancienne appli. Covariables : ClCG et poids (allométrie).' },
+    { fichier: 'Ceftazidime.R', objet: 'ceftazidime_Buning2021', id: 'ceftazidime_buning2021', molecule: 'ceftazidime', nom: 'Werumeus Buning 2021',
+      reference: 'Werumeus Buning et al. 2021', doi: '10.3390/antibiotics10060612', population: 'Soins critiques, infection à P. aeruginosa prouvée ou suspectée, sans hémofiltration',
+      verification: 'À comparer à l’ancienne appli. Un compartiment ; DFG CKD-EPI 2021, comorbidité hématologique et traumatisme crânien.' },
+    { fichier: 'Ceftriaxone.R', objet: 'ceftriaxone_Garot2011', id: 'ceftriaxone_garot2011', molecule: 'ceftriaxone', nom: 'Garot 2011',
+      reference: 'Garot et al. 2011', doi: '10.1111/j.1365-2125.2011.04005.x', population: 'Soins critiques, sepsis ou choc septique',
+      verification: 'À comparer à l’ancienne appli. Cl = θ1 + θ2 × ClCréat/71 (clairance saisie).' },
+    { fichier: 'Piperacillin.R', objet: 'piperacillin_Hemmersbach2023', id: 'piperacilline_hemmersbach2023', molecule: 'piperacilline', nom: 'Hemmersbach-Miller 2023',
+      reference: 'Hemmersbach-Miller et al. 2023', doi: '10.1007/s40262-022-01198-z', population: 'Adultes de tous âges (dont sujets âgés)',
+      verification: 'À comparer à l’ancienne appli. Un compartiment ; Cl = θ × ClCG/69 + 2,44 L/h.' },
+    { fichier: 'Meropenem.R', objet: 'meropenem_Boonpeng2022', id: 'meropeneme_boonpeng2022', molecule: 'meropeneme', nom: 'Boonpeng 2022',
+      reference: 'Boonpeng et al. 2022', doi: '', population: 'Patients adultes en soins critiques',
+      verification: 'À comparer à l’ancienne appli. Albumine (g/L convertie en g/dL), choc septique ; le fichier R mentionne une ClCG au poids idéal, l’appli utilise le poids réel.' },
+    { fichier: 'Imipenem.R', objet: 'imipenem_Bai2024', id: 'imipeneme_bai2024', molecule: 'imipenem', nom: 'Bai 2024',
+      reference: 'Bai et al. 2024', doi: '10.1136/ejhpharm-2022-003403', population: 'Patients en soins critiques',
+      verification: 'À comparer à l’ancienne appli. Format nlmixr2.' },
+    { fichier: 'Amikacine.R', objet: 'amikacin_Medellin2022', id: 'amikacine_medellin2022', molecule: 'amikacine', nom: 'Medellín-Garibay 2022',
+      reference: 'Medellín-Garibay et al. 2022', doi: '10.1016/j.ejps.2022.106219', population: 'Sujets âgés présentant une infection sévère',
+      verification: 'À comparer à l’ancienne appli. IMC (poids et taille) ; AINS associés (Cl × 1,28, codé en dur dans le fichier R, rendu conditionnel ici) ; erreur additive seule.' },
+    { fichier: 'Gentamicine.R', objet: 'gentamicin_Xuan2003', id: 'gentamicine_xuan2003', molecule: 'gentamicine', nom: 'Xuan 2003',
+      reference: 'Xuan et al. 2003', doi: '10.1016/j.ijantimicag.2003.07.010', population: 'Population à préciser (absente du fichier R)',
+      verification: 'À comparer à l’ancienne appli. Format nlmixr2 ; variabilité sur k12 et k21 ; Cl = 0,047 × ClCréat, V = 0,28 × poids.' },
+    { fichier: 'Tobramycine.R', objet: 'tobramycin_Conil2010', id: 'tobramycine_conil2010', molecule: 'tobramycine', nom: 'Conil 2011',
+      reference: 'Conil et al. 2011', doi: '10.1111/j.1365-2125.2010.03793.x', population: 'Patients de réanimation, administration une fois par jour',
+      verification: 'À comparer à l’ancienne appli. Covariables additives : ClCG et taille.' },
+    { fichier: 'Vancomycine.R', objet: 'vanco_Goti2018', id: 'vancomycine_goti2018', molecule: 'vancomycine', nom: 'Goti 2018',
+      reference: 'Goti et al. 2018', doi: '10.1097/FTD.0000000000000490', population: 'Patients hospitalisés (modèle standard)',
+      valide: true, verification: 'Validé contre les tests du package posologyr (estimation MAP, écart sur les etas < 10⁻⁴). Hémodialyse : Cl × 0,7 et Vc × 0,5 ; clairance saisie (MDRD selon le fichier R).' },
+    { fichier: 'Dalbavancine.R', objet: 'dalbavancine_Carrothers2019', id: 'dalbavancine_carrothers2019', molecule: 'dalbavancine', nom: 'Carrothers 2020',
+      reference: 'Carrothers et al. 2020', doi: '10.1002/cpdd.695', population: 'Adultes (études de phase 1 à 3, infections cutanées)',
+      verification: 'À comparer à l’ancienne appli. Trois compartiments ; albumine (g/L convertie en g/dL) ; variances du fichier R à recontrôler sur l’article.' },
+    { fichier: 'Linezolide.R', objet: 'linezolid_Crass2019', id: 'linezolide_crass2019', molecule: 'linezolide', nom: 'Crass 2019',
+      reference: 'Crass et al. 2019', doi: '10.1128/AAC.00605-19', population: 'Adultes en STP de routine, fonctions rénales variables',
+      verification: 'À comparer à l’ancienne appli. Doses IV dans le compartiment central ; surface corporelle (Boyd), âge, DFG CKD-EPI 2021.' },
+    { fichier: 'Ciprofloxacin_IV.R', objet: 'ciprofloxacin_Guo2022', id: 'ciprofloxacine_guo2022', molecule: 'ciprofloxacine', nom: 'Guo 2022',
+      reference: 'Guo et al. 2022', doi: '10.1007/s40262-022-01114-5', population: 'Patients en soins critiques (140 patients, 3 études poolées)',
+      verification: 'À comparer à l’ancienne appli (OCC = 1 partout). Variabilité inter-occasion sur Cl : une seule occasion, kappa estimé et conservé pour la dose, comme posologyr.' },
+    { fichier: 'Voriconazole_IV.R', objet: 'voriconazole_Jiang2022_IV', id: 'voriconazole_jiang2022_iv', molecule: 'voriconazole', nom: 'Jiang 2022',
+      reference: 'Jiang et al. 2022', doi: '10.3389/fphar.2022.982981', population: 'Patients atteints de talaromycose',
+      verification: 'À comparer à l’ancienne appli. Un compartiment, pharmacocinétique linéaire ; covariable CRP (saisie dans le tableau).' },
+    { fichier: 'Voriconazole_oral.R', objet: 'voriconazole_Jiang2022', id: 'voriconazole_jiang2022_po', molecule: 'voriconazole_po', nom: 'Jiang 2022', voie: 'oral',
+      reference: 'Jiang et al. 2022', doi: '10.3389/fphar.2022.982981', population: 'Patients atteints de talaromycose',
+      verification: 'À comparer à l’ancienne appli. ka = 1,1 h⁻¹ et F = 0,951 fixés ; covariable CRP (saisie dans le tableau).' },
+    { fichier: 'Ciprofloxacin_oral.R', objet: 'ciprofloxacin_Zahr2021', id: 'ciprofloxacine_zahr2021', molecule: 'ciprofloxacine_po', nom: 'Zahr 2021', voie: 'oral',
+      reference: 'Zahr et al. 2021', doi: '10.1093/jac/dkab275', population: 'Infections ostéo-articulaires',
+      verification: 'À comparer à l’ancienne appli (OCC = 1 partout). Temps de latence avec variabilité, variabilité inter-occasion sur F, rifampicine associée (Cl × 1,62).' },
+    { fichier: 'Levofloxacin_oral.R', objet: 'levofloxacin_Eloy2020', id: 'levofloxacine_eloy2020', molecule: 'levofloxacine', nom: 'Eloy 2020', voie: 'oral',
+      reference: 'Eloy et al. 2020', doi: '10.3390/antibiotics9070401', population: 'Infections ostéo-articulaires',
+      verification: 'À comparer à l’ancienne appli. Covariables âge et clairance saisie (MDRD selon le fichier R) ; pas de variabilité sur ka.' },
+    { fichier: 'Sulfamethoxazole_oral.R', objet: 'sulfaméthoxazole_Leegwater2024', id: 'sulfamethoxazole_leegwater2024', molecule: 'sulfamethoxazole', nom: 'Leegwater 2024', voie: 'oral',
+      reference: 'Leegwater et al. 2024', doi: '10.1002/cpt.3421', population: 'Patients hospitalisés, dont insuffisants rénaux',
+      verification: 'À comparer à l’ancienne appli. DFG CKD-EPI 2021 ; facteur 0,97 appliqué deux fois dans la clairance (θ = 0,97 puis × 0,97) : à vérifier sur l’article.' },
+    { fichier: 'Levetiracetam_oral.R', objet: 'levetiracetam_Hernandez2020', id: 'levetiracetam_hernandez2020', molecule: 'levetiracetam', nom: 'Hernández-Mitre 2020', voie: 'oral',
+      reference: 'Hernández-Mitre et al. 2020', doi: '10.1016/j.xphs.2020.02.018', population: 'Adultes et sujets âgés épileptiques',
+      verification: 'À comparer à l’ancienne appli. ClCG et surface corporelle (formule non précisée dans le fichier R : Boyd utilisée) ; voie orale uniquement.' },
+    { fichier: 'Mycophenolate.R', objet: 'mycophenolate_Zaho2009', id: 'mycophenolate_zaho2009', molecule: 'mycophenolate', nom: 'Zhao 2010', voie: 'oral',
+      reference: 'Zhao et al. 2010', doi: '10.1111/j.1365-2125.2010.03615.x', population: 'Enfants avec syndrome néphrotique idiopathique',
+      verification: 'À comparer à l’ancienne appli. Modèle pédiatrique (poids de référence 23,5 kg) : extrapolation à l’adulte non validée ; albumine en g/L saisie dans le tableau ; facteur 0,753 fixé dans la clairance ; dose en MMF ou en MPA à vérifier. Le fichier R indique « Zaho 2009 ».' },
+    { fichier: 'Clozapine.R', objet: 'clozapine_Reeves2023', id: 'clozapine_reeves2023', molecule: 'clozapine', nom: 'Reeves 2024', voie: 'oral', covR: { sexe: 'SEXE_F' },
+      reference: 'Reeves et al. 2024', doi: '10.1111/bcp.15691', population: 'Données de STP, 5 960 patients de 18 à 86 ans',
+      verification: 'À comparer à l’ancienne appli. Terme (âge − 40)^0,013 du fichier R : non défini à 40 ans et avant, et l’article rapporte une baisse de clairance d’environ 40 % entre 20 et 80 ans (à vérifier) ; norclozapine non utilisée ; la formation de norclozapine est retirée du compartiment central (bilan de masse à vérifier) ; sexe codé 1 = femme.' },
+    { fichier: 'Olanzapine.R', objet: 'olanzapine_Sun2021', id: 'olanzapine_sun2021', molecule: 'olanzapine', nom: 'Sun 2021', voie: 'oral', unite: 'µg/L', covR: { sexe: 'SEXE_F' },
+      reference: 'Sun et al. 2021', doi: '10.1002/jcph.1911', population: 'Volontaires sains et patients schizophrènes (olanzapine/samidorphan)',
+      verification: 'À comparer à l’ancienne appli (OCC = 1 partout). Concentrations en µg/L ; temps de latence avec variabilité ; variabilité inter-occasion sur ka ; rifampicine, tabac, insuffisances hépatique et rénale, sexe.' },
+    { fichier: 'Aripiprazole.R', objet: 'aripiprazole_Zhang2024', id: 'aripiprazole_zhang2024', molecule: 'aripiprazole', nom: 'Zhang 2024', voie: 'oral', unite: 'µg/L',
+      reference: 'Zhang et al. 2024', doi: '10.3389/fpsyt.2024.1377268', population: 'Patients schizophrènes (interactions médicamenteuses)',
+      verification: 'À comparer à l’ancienne appli. Format nlmixr2 ; concentrations en µg/L ; Vc sans variabilité ; fluoxétine associée (Cl × 0,714) ; erreur additive de 49,5 µg/L.' },
+    { fichier: 'Haloperidol.R', objet: 'haloperidol_Reddy2013', id: 'haloperidol_reddy2013', molecule: 'haloperidol', nom: 'Pilla Reddy 2013', voie: 'oral', unite: 'µg/L',
+      reference: 'Pilla Reddy et al. 2013', doi: '10.1097/JCP.0b013e3182a4ee2c', population: 'Patients schizophrènes',
+      verification: 'À comparer à l’ancienne appli. Aucune covariable ; concentrations en µg/L ; Vp et Q sans variabilité.' },
+    { fichier: 'Ganciclovir_Caldes2009.R', objet: 'mod_ganciclovir_Caldes_AAC2009', id: 'ganciclovir_caldes2009', molecule: 'ganciclovir', nom: 'Caldès 2009', covR: { ClCr: 'CLCR' }, valide: true,
+      reference: 'Caldès et al. 2009', doi: '10.1128/aac.00085-09', population: 'Population à préciser (modèle conçu pour le ganciclovir IV et le valganciclovir oral)',
+      verification: 'Validé contre les tests du package posologyr (dose IV et orale, estimation MAP). Doses IV uniquement ici : l’unité de la dose orale de valganciclovir reste à vérifier avant un usage per os.' },
+    { fichier: 'Clindamycine_Mimram2022.R', objet: 'clindamycin_Mimram2022', id: 'clindamycine_mimram2022', molecule: 'clindamycine', nom: 'Mimram 2022', voie: 'oral',
+      reference: 'Mimram et al. 2022', doi: '10.3390/antibiotics11111462', population: 'Infections sur prothèse articulaire, per os, sans rifampicine (20 patients)',
+      verification: 'Transcrit depuis l’article, non validé : les variances omega du tableau 2 ne concordent pas avec les CV du résumé (à vérifier) ; ne pas utiliser avec la rifampicine.' }
+  ];
+
+  var modeles = [], erreurs = [];
+  var sources = {};
+  if (typeof document !== 'undefined') document.querySelectorAll('script.modele-r').forEach(function (b) { sources[b.dataset.fichier] = b.textContent; });
+  if (racine.SOURCES_R) Object.keys(racine.SOURCES_R).forEach(function (k) { sources[k] = racine.SOURCES_R[k]; });
+  CATALOGUE.forEach(function (meta) {
+    try {
+      if (!sources[meta.fichier]) throw new Error('fichier R absent de la page');
+      var defs = C.lireFichier(sources[meta.fichier], meta.fichier);
+      var def = defs.filter(function (d) { return d.nomR === meta.objet; })[0];
+      if (!def) throw new Error('objet ' + meta.objet + ' introuvable dans ' + meta.fichier);
+      var m = C.versModele(def, meta);
+      if (meta.voie === 'oral' && m.systeme.depot < 0) throw new Error('modèle oral sans compartiment d’absorption (depot)');
+      modeles.push(m);
+    } catch (e) { erreurs.push(meta.fichier + ' : ' + e.message); if (typeof console !== 'undefined') console.error('Conversion', meta.fichier, e); }
+  });
+
+  // Modèle sans fichier R (saisi à la main)
+  modeles.splice(1, 0, {
+    id: 'amoxicilline_pressiat2025', molecule: 'amoxicilline', nom: 'Pressiat 2025',
+    reference: 'Pressiat C et al. 2025',
+    population: 'À compléter', voie: 'iv', cmt: 2, unite: 'mg/L',
+    covariables: ['CLCR'], valide: false,
+    verification: 'À vérifier : volume central de 1,09 L et erreur proportionnelle de 2,8 % inhabituels (unités par kg ?). Exclu de la moyenne par défaut.',
+    theta: { CL: 2.89, V1: 1.09, V2: 5.58, Q: 1.83 },
+    etas: ['CL', 'V1'],
+    omega: [[0.19, 0], [0, 0.15]],
+    sigma: { add: 0, prop: 0.028 },
+    plages: {},
+    parametres: function (th, eta, cov) {
+      return { CL: th.CL * P(cov.CLCR / 68.4, 0.68) * E(eta.CL), V1: th.V1 * E(eta.V1), V2: th.V2, Q: th.Q };
+    }
+  });
+  racine.MODELES_PK = modeles;
+  racine.ERREURS_CONVERSION = erreurs;
+
+  // Réglages par molécule : covariable saisie dans le tableau, zone cible du graphique (cibles du référentiel STP),
+  // CMI par défaut et facteur (cible probabiliste = CMI × facteur)
+  var CREAT = { cle: 'CREAT', libelle: 'Créatinine sérique (µmol/L)', court: 'Créatinine (µmol/L)', defaut: 80 };
+  var CLCR = { cle: 'CLCR', libelle: 'Clairance de la créatinine (mL/min)', court: 'ClCréat (mL/min)', defaut: 90 };
+  var CRP = { cle: 'CRP', libelle: 'CRP (mg/L)', court: 'CRP (mg/L)', defaut: 43.6 };
+  var ALB = { cle: 'ALB_GL', libelle: 'Albumine (g/L)', court: 'Albumine (g/L)', defaut: 38.6 };
+  var AUCUNE = { cle: 'AUCUNE', libelle: '', court: '', defaut: 0, aucune: true }; // pas de covariable variable dans le temps
+  racine.MOLECULES_PK = {
+    amoxicilline: { libelle: 'Amoxicilline', covariable: CLCR, ymin: 40, ymax: 80, cmiDefaut: 8, cmiGerme: 'E. coli', facteurCmi: 5 },
+    cefazoline: { libelle: 'Céfazoline', covariable: CREAT, ymin: 40, ymax: 80, cmiDefaut: 2, cmiGerme: 'S. aureus', facteurCmi: 20 },
+    cefepime: { libelle: 'Céfépime', covariable: { cle: 'CREAT', libelle: 'Créatinine sérique (µmol/L)', court: 'Créatinine (µmol/L)', defaut: 60 },
+      ymin: 5, ymax: 20, ymaxContinu: 35, cmiDefaut: 1, cmiGerme: 'Enterobacteriaceae', facteurCmi: 5 },
+    cefotaxime: { libelle: 'Céfotaxime', covariable: CREAT, ymin: 25, ymax: 60, cmiDefaut: 4, cmiGerme: 'S. aureus', facteurCmi: 7 },
+    ceftazidime: { libelle: 'Ceftazidime', covariable: CREAT, ymin: 35, ymax: 80, cmiDefaut: 8, cmiGerme: 'P. aeruginosa', facteurCmi: 4 },
+    ceftriaxone: { libelle: 'Ceftriaxone', covariable: CLCR, ymin: 20, ymax: 80, cmiDefaut: 0.5, cmiGerme: 'E. cloacae', facteurCmi: 40 },
+    piperacilline: { libelle: 'Pipéracilline', covariable: CREAT, ymin: 80, ymax: 160, cmiDefaut: 16, cmiGerme: 'P. aeruginosa', facteurCmi: 5 },
+    meropeneme: { libelle: 'Méropénème', covariable: CREAT, ymin: 8, ymax: 16, ymaxContinu: 30, cmiDefaut: 2, cmiGerme: 'P. aeruginosa', facteurCmi: 4 },
+    imipenem: { libelle: 'Imipénem', covariable: CREAT, ymin: 2, ymax: 5, cmiDefaut: 0.5, cmiGerme: 'E. coli', facteurCmi: 4 },
+    amikacine: { ciblePic: true, residuelleMax: 2.5, libelle: 'Amikacine', covariable: CREAT, ymin: 60, ymax: 80, cmiDefaut: 8, cmiGerme: 'Enterobacterales, cible au pic', facteurCmi: 8 },
+    gentamicine: { ciblePic: true, residuelleMax: 0.5, libelle: 'Gentamicine', covariable: CLCR, ymin: 30, ymax: 40, cmiDefaut: 4, cmiGerme: 'valeur de travail à confirmer, cible au pic', facteurCmi: 8 },
+    tobramycine: { ciblePic: true, residuelleMax: 0.5, libelle: 'Tobramycine', covariable: CREAT, ymin: 30, ymax: 40, cmiDefaut: 4, cmiGerme: 'valeur de travail à confirmer, cible au pic', facteurCmi: 8 },
+    vancomycine: { libelle: 'Vancomycine', covariable: CLCR, ymin: 15, ymax: 25, ymaxContinu: 35, cmiDefaut: 1, cmiGerme: 'S. aureus, AUC/CMI 400', facteurCmi: 16.7 },
+    dalbavancine: { libelle: 'Dalbavancine', covariable: CLCR, ymin: 8, ymax: 20, cmiDefaut: 0.125, cmiGerme: 'S. aureus', facteurCmi: 160 },
+    linezolide: { libelle: 'Linézolide', covariable: CREAT, ymin: 2, ymax: 7, cmiDefaut: 2, cmiGerme: 'valeur de travail à confirmer', facteurCmi: 1 },
+    ciprofloxacine: { libelle: 'Ciprofloxacine IV', covariable: CLCR, ymin: 0.5, ymax: 1, cmiDefaut: 0.25, cmiGerme: 'Enterobacterales, cible au pic', facteurCmi: 10 },
+    ciprofloxacine_po: { relaisIV: true, libelle: 'Ciprofloxacine per os', fiche: 'ciprofloxacine', voie: 'oral', covariable: CLCR, ymin: 0.5, ymax: 1, cmiDefaut: 0.25, cmiGerme: 'Enterobacterales, cible au pic', facteurCmi: 10 },
+    levofloxacine: { relaisIV: true, libelle: 'Lévofloxacine per os', voie: 'oral', covariable: CLCR, ymin: 1, ymax: 3, cmiDefaut: 0.5, cmiGerme: 'valeur de travail à confirmer, cible au pic', facteurCmi: 10 },
+    sulfamethoxazole: { libelle: 'Sulfaméthoxazole per os', voie: 'oral', covariable: CREAT, ymin: 30, ymax: 60, cmiDefaut: 30, cmiGerme: 'résiduelle basse du référentiel', facteurCmi: 1 },
+    voriconazole: { classe: 'Antifongiques', libelle: 'Voriconazole IV', covariable: CRP, ymin: 1, ymax: 6, cmiDefaut: 1, cmiGerme: 'A. fumigatus, à confirmer', facteurCmi: 2.5 },
+    voriconazole_po: { classe: 'Antifongiques', relaisIV: true, libelle: 'Voriconazole per os', fiche: 'voriconazole', voie: 'oral', covariable: CRP, ymin: 1, ymax: 6, cmiDefaut: 1, cmiGerme: 'A. fumigatus, à confirmer', facteurCmi: 2.5 },
+    levetiracetam: { classe: 'Antiépileptiques', relaisIV: true, libelle: 'Lévétiracétam per os', fiche: 'leviteracetam', voie: 'oral', covariable: CREAT, ymin: 10, ymax: 40 },
+    mycophenolate: { classe: 'Immunosuppresseurs', libelle: 'Acide mycophénolique per os', fiche: 'mpa-mypa-acide-mycophenolique', voie: 'oral', covariable: ALB, ymin: 1, ymax: 3.5 },
+    clozapine: { classe: 'Antipsychotiques', libelle: 'Clozapine per os', voie: 'oral', covariable: AUCUNE, ymin: 0.2, ymax: 0.6 },
+    olanzapine: { classe: 'Antipsychotiques', libelle: 'Olanzapine per os', voie: 'oral', unite: 'µg/L', covariable: AUCUNE, ymin: 20, ymax: 80 },
+    aripiprazole: { classe: 'Antipsychotiques', libelle: 'Aripiprazole per os', voie: 'oral', unite: 'µg/L', covariable: AUCUNE, ymin: 100, ymax: 350 },
+    clindamycine: { libelle: 'Clindamycine per os', voie: 'oral', covariable: AUCUNE, ymin: 2, ymax: 4, cmiDefaut: 0.25, cmiGerme: 'Staphylococcus spp., seuil clinique', facteurCmi: 8 },
+    ganciclovir: { classe: 'Antiviraux', libelle: 'Ganciclovir IV', covariable: CLCR, ymin: 2, ymax: 4 },
+    haloperidol: { classe: 'Antipsychotiques', libelle: 'Halopéridol per os', voie: 'oral', unite: 'µg/L', covariable: AUCUNE, ymin: 5, ymax: 15 }
+  };
+  // Saisies patient nécessaires selon les covariables utilisées par les modèles de la molécule
+  var BESOINS = { CLCG: ['SEXE', 'AGE', 'POIDS'], DFG: ['SEXE', 'AGE'], POIDS: ['POIDS'], AGE: ['AGE'], AGE_SUP40: ['AGE'],
+    TAILLE: ['TAILLE'], IMC: ['POIDS', 'TAILLE'], SC: ['POIDS', 'TAILLE'], ALB_GDL: ['ALB'], CHOC: ['CHOC'], HEMATO: ['HEMATO'], TRAUMA: ['TRAUMA'], DIAL: ['DIAL'], RIFAMP: ['RIFAMP'],
+    FUMEUR: ['FUMEUR'], IH: ['IH'], IR: ['IR'], FLUOX: ['FLUOX'], SEXE_F: ['SEXE'], ALB_GL: ['ALB'], AINS: ['AINS'] };
+  Object.keys(racine.MOLECULES_PK).forEach(function (k) {
+    var b = [];
+    modeles.filter(function (m) { return m.molecule === k; }).forEach(function (m) { m.covariables.forEach(function (c) { if (c === racine.MOLECULES_PK[k].covariable.cle) return; (BESOINS[c] || []).forEach(function (x) { if (b.indexOf(x) < 0) b.push(x); }); }); });
+    racine.MOLECULES_PK[k].besoins = b;
+    racine.MOLECULES_PK[k].patient = b.length > 0;
+  });
+
+  racine.COVARIABLES_PK = {
+    CLCR: { libelle: 'Clairance de la créatinine', unite: 'mL/min', aide: 'Saisie dans le tableau' },
+    CLCG: { libelle: 'Clairance de Cockcroft-Gault', unite: 'mL/min', calculee: true, aide: 'Calculée à partir de l’âge, du poids réel, du sexe et de la créatinine' },
+    DFG: { libelle: 'DFG CKD-EPI 2021', unite: 'mL/min/1,73 m²', calculee: true, aide: 'Calculé à partir de l’âge, du sexe et de la créatinine' }
+  };
+  racine.cockcroftGault = function (age, poids, creat, sexe) {
+    if (!(age > 0 && poids > 0 && creat > 0)) return NaN;
+    var c = ((140 - age) * poids) / (72 * (creat / 88.4));
+    return sexe === 'F' ? c * 0.85 : c;
+  };
+  // CKD-EPI 2021 (sans coefficient ethnique), créatinine en µmol/L, formule du fichier R
+  racine.ckdEpi = function (age, creat, sexe) {
+    if (!(age > 0 && creat > 0)) return NaN;
+    var f = sexe === 'F', s = creat / 88.4, k = f ? 0.7 : 0.9, a = f ? -0.241 : -0.302;
+    return 142 * P(Math.min(s / k, 1), a) * P(Math.max(s / k, 1), -1.2) * P(0.9938, age) * (f ? 1.012 : 1);
+  };
+  // Surface corporelle de Boyd (poids en grammes, taille en cm), formule du fichier R du linézolide
+  racine.surfaceBoyd = function (poids, taille) {
+    if (!(poids > 0 && taille > 0)) return NaN;
+    var g = poids * 1000;
+    return 0.0001 * 3.207 * P(g, 0.7285 - 0.0188 * Math.log10(g)) * P(taille, 0.3);
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>
+(function () {
+  'use strict';
+  var M = window.MoteurPK, MODS = window.MODELES_PK, MOLS = window.MOLECULES_PK;
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function nb(v) { if (v == null) return NaN; var x = parseFloat(String(v).replace(',', '.')); return isNaN(x) ? NaN : x; }
+  function arr(x, d) { if (!isFinite(x)) return '—'; var p = Math.pow(10, d == null ? 1 : d); return String(Math.round(x * p) / p); }
+  function toast(msg, erreur) { var t = $('toast'); t.textContent = msg; t.className = 'toast visible' + (erreur ? ' erreur' : ''); clearTimeout(toast.m); toast.m = setTimeout(function () { t.className = 'toast'; }, 3500); }
+
+  var etat = { sexe: 'H', binaires: { CHOC: 0, HEMATO: 0, TRAUMA: 0, DIAL: 0, RIFAMP: 0, FUMEUR: 0, IH: 0, IR: 0, FLUOX: 0, AINS: 0 }, mode: 'dates', ref: null, lignes: [], eq: null, objectif: { stp: 'Concentration', priori: 'Concentration' }, resultatsStp: null, resultatsPriori: null };
+
+  // ---------- Molécule et modèle ----------
+  // Liste des molécules par classe thérapeutique, ordre alphabétique dans chaque classe
+  ['Antibiotiques', 'Antifongiques', 'Antiviraux', 'Antiépileptiques', 'Antipsychotiques', 'Immunosuppresseurs'].forEach(function (cl) {
+    var cles = Object.keys(MOLS).filter(function (k) { return (MOLS[k].classe || 'Antibiotiques') === cl; });
+    if (!cles.length) return;
+    var g = el('optgroup'); g.label = cl;
+    cles.sort(function (a, b) { return MOLS[a].libelle.localeCompare(MOLS[b].libelle, 'fr'); })
+      .forEach(function (k) { var o = el('option', null, MOLS[k].libelle); o.value = k; g.appendChild(o); });
+    $('molecule').appendChild(g);
+  });
+  var demande = new URLSearchParams(location.search).get('mol'); if (demande && MOLS[demande]) $('molecule').value = demande;
+  function mol() { return MOLS[$('molecule').value]; }
+  function oral() { return mol().voie === 'oral'; }
+  // unité de concentration de la molécule (mg/L par défaut, µg/L pour certains psychotropes) et facteur pour les AUC
+  function U() { return mol().unite || 'mg/L'; }
+  function FU() { return U() === 'µg/L' ? 1000 : 1; }
+  function UA() { return U() === 'µg/L' ? 'µg·h/L' : 'mg·h/L'; }
+  function sansCov() { return !!mol().covariable.aucune; }
+  function colonnes() { return COLS.filter(function (c) { return (c[0] !== 'cov' || !sansCov()) && (c[0] !== 'voie' || relais()); }); }
+  function titreCol(c) { return c[0] === 'cov' ? mol().covariable.court : c[0] === 'c' ? 'Concentration (' + U() + ')' : c[1]; }
+  function VOIE() { return oral() ? 'oral' : 'iv'; }
+  // durée de perfusion saisie ; 0 pour la voie orale (champ masqué)
+  function dureeSaisie(id) { return oral() && !(id === 'd-duree' && doseIV()) ? 0 : nb($(id).value); }
+  // relais IV → per os : certaines molécules orales acceptent aussi des doses IV dans le tableau (colonne Voie)
+  function relais() { return !!mol().relaisIV; }
+  function doseIV() { return relais() && $('d-voie').value === 'IV'; }
+  function majVoieDose() { $('zone-d-voie').hidden = !relais(); $('d-duree').parentNode.hidden = oral() && !doseIV(); }
+  function texteVoie(d) { return oral() ? 'par voie orale' : 'en perfusion de ' + d + ' h'; }
+  function modelesMol() { return MODS.filter(function (m) { return m.molecule === $('molecule').value; }); }
+  function majModeles() {
+    var s = $('modele'); s.innerHTML = '';
+    modelesMol().forEach(function (m) { var o = el('option', null, m.nom + (m.valide ? '' : ' (à vérifier)')); o.value = m.id; s.appendChild(o); });
+    var valides = modelesMol().filter(function (m) { return m.valide; });
+    if (valides.length > 1) { var o = el('option', null, 'Moyenne pondérée des modèles vérifiés'); o.value = 'moyenne'; s.appendChild(o); }
+    majNoteModele();
+  }
+  function majNoteModele() {
+    var id = $('modele').value, m = MODS.filter(function (x) { return x.id === id; })[0];
+    $('note-modele').textContent = m ? [m.population, m.verification].filter(Boolean).join(' · ') : 'Chaque modèle vérifié est pondéré selon sa capacité à décrire les concentrations du patient.';
+    // accès direct à la fiche de la molécule dans le référentiel (nouvel onglet : les saisies restent en place)
+    var lf = el('a', null, 'Fiche ' + mol().libelle.replace(/ (IV|per os)$/, '') + ' du référentiel ↗');
+    lf.href = 'referentiel.html#' + (mol().fiche || $('molecule').value); lf.target = '_blank'; lf.rel = 'noopener'; lf.style.whiteSpace = 'nowrap';
+    $('note-modele').appendChild(document.createTextNode(' · ')); $('note-modele').appendChild(lf);
+    $('pied').innerHTML = '';
+    if (m) { $('pied').appendChild(document.createTextNode('Référence : ' + m.reference)); if (m.doi) { $('pied').appendChild(document.createTextNode(' (')); var ld = el('a', null, 'doi:' + m.doi); ld.href = 'https://doi.org/' + m.doi; ld.target = '_blank'; ld.rel = 'noopener'; ld.style.color = 'inherit'; $('pied').appendChild(ld); $('pied').appendChild(document.createTextNode(')')); } }
+    else $('pied').textContent = 'Moyenne pondérée de modèles';
+  }
+  function majMolecule() {
+    var c = mol();
+    $('lien-ref').href = 'referentiel.html#' + (c.fiche || $('molecule').value);
+    $('carte-patient').hidden = !c.patient;
+    document.querySelectorAll('[data-besoin]').forEach(function (x) { x.hidden = c.besoins.indexOf(x.dataset.besoin) < 0; });
+    $('binaires').hidden = !['CHOC', 'HEMATO', 'TRAUMA', 'DIAL', 'RIFAMP', 'FUMEUR', 'IH', 'IR', 'FLUOX', 'AINS'].some(function (b) { return c.besoins.indexOf(b) >= 0; });
+    ['eq-duree', 'n-duree', 'p-duree'].forEach(function (id) { $(id).parentNode.hidden = oral(); });
+    $('d-voie').value = 'PO'; majVoieDose();
+    var calc = besoinsCalcul();
+    $('clcg').parentNode.hidden = !calc.length;
+    $('note-patient').textContent = calc.length ? 'Ces paramètres servent au calcul ' + calc.map(function (x) { return x[1]; }).join(', ') + (c.covariable.cle === 'CREAT' ? ', avec la créatinine de chaque ligne du tableau.' : '.') : 'Covariables du modèle, supposées constantes pendant le traitement.';
+    majClcg();
+    document.querySelectorAll('.lib-cov').forEach(function (l) { l.textContent = c.covariable.libelle + ' :'; });
+    ['d-cov', 'c-cov', 'p-cov'].forEach(function (id) { $(id).placeholder = 'défaut ' + c.covariable.defaut; $(id).parentNode.hidden = sansCov(); });
+    $('lib-conc').textContent = 'Concentration (' + U() + ') :';
+    var ic = colonnes().map(function (x) { return x[0]; }).indexOf('suppl') + 1;
+    $('aide-colonnes').textContent = 'Doses multiples (colonnes ' + ic + '-' + (ic + 1) + ') :';
+    // objectifs CMI et probabiliste réservés aux anti-infectieux
+    ['stp', 'priori'].forEach(function (o) {
+      document.querySelectorAll('[data-objectif="' + o + '"] button').forEach(function (b) { if (b.dataset.val !== 'Concentration') b.hidden = !c.cmiDefaut; });
+      if (!c.cmiDefaut && etat.objectif[o] !== 'Concentration') { etat.objectif[o] = 'Concentration'; document.querySelectorAll('[data-objectif="' + o + '"] button').forEach(function (b) { b.classList.toggle('actif', b.dataset.val === 'Concentration'); }); }
+    });
+    etat.lignes = []; etat.ref = null; etat.eq = null; $('zone-eq').hidden = true;
+    majModeles(); dessinerTableau(); majCibles(); invalider(); majClcg();
+    afficherConsignesStp(); $('details-priori').innerHTML = consignes(false);
+  }
+  $('molecule').addEventListener('change', majMolecule);
+  $('d-voie').addEventListener('change', majVoieDose);
+  $('modele').addEventListener('change', function () { majNoteModele(); invalider(); });
+
+  // ---------- Patient ----------
+  document.querySelectorAll('[data-sexe]').forEach(function (b) { b.addEventListener('click', function () { etat.sexe = b.dataset.sexe; document.querySelectorAll('[data-sexe]').forEach(function (x) { x.classList.toggle('actif', x === b); }); majClcg(); invalider(); }); });
+  ['age', 'poids', 'taille', 'albumine'].forEach(function (id) { $(id).addEventListener('input', function () { majClcg(); invalider(); invaliderPriori(); }); });
+  document.querySelectorAll('[data-binaire]').forEach(function (b) { b.addEventListener('click', function () {
+    etat.binaires[b.dataset.binaire] = +b.dataset.val;
+    document.querySelectorAll('[data-binaire="' + b.dataset.binaire + '"]').forEach(function (x) { x.classList.toggle('actif', x === b); });
+    invalider(); invaliderPriori();
+  }); });
+  function clcg(creat) { return window.cockcroftGault(nb($('age').value), nb($('poids').value), creat, etat.sexe); }
+  // Covariables calculées utiles à la molécule : [clé, libellé]
+  function besoinsCalcul() {
+    var u = []; modelesMol().forEach(function (m) { (m.covariables || []).forEach(function (c) { if (u.indexOf(c) < 0) u.push(c); }); });
+    return [['CLCG', 'de la clairance selon Cockcroft-Gault'], ['DFG', 'du DFG (CKD-EPI 2021)'], ['IMC', 'de l’IMC'], ['SC', 'de la surface corporelle (Boyd)']].filter(function (x) { return u.indexOf(x[0]) >= 0; });
+  }
+  function texteCalcul(cov) {
+    var t = { CLCG: function () { return 'ClCG : ' + arr(cov.CLCG, 1) + ' mL/min'; }, DFG: function () { return 'DFG : ' + arr(cov.DFG, 1) + ' mL/min/1,73 m²'; },
+      IMC: function () { return 'IMC : ' + arr(cov.IMC, 1) + ' kg/m²'; }, SC: function () { return 'SC : ' + arr(cov.SC, 2) + ' m²'; } };
+    return besoinsCalcul().map(function (x) { return t[x[0]](); });
+  }
+  function majClcg() {
+    var c = mol(), v = nb($('d-cov').value);
+    if (!isFinite(v)) { var dern = etat.lignes.filter(function (l) { return nb(l.cov) > 0; }).pop(); v = dern ? nb(dern.cov) : c.covariable.defaut; }
+    var cov = covObjet(v), lignes = texteCalcul(cov);
+    $('clcg').textContent = lignes.some(function (l) { return /NaN|—/.test(l); }) ? lignes.map(function (l) { return l.split(' : ')[0]; }).join(', ') + ' : compléter les covariables'
+      : lignes.join(' · ') + (c.covariable.cle === 'CREAT' && lignes.length && /ClCG|DFG/.test(lignes.join()) ? ' (créat. ' + v + ' µmol/L)' : '');
+  }
+  // Message si une saisie patient requise manque (chaîne vide sinon)
+  function manquant() {
+    var c = mol(), m = [];
+    if (c.besoins.indexOf('AGE') >= 0 && !(nb($('age').value) > 0)) m.push('l’âge');
+    if (c.besoins.indexOf('POIDS') >= 0 && !(nb($('poids').value) > 0)) m.push('le poids');
+    if (c.besoins.indexOf('TAILLE') >= 0 && !(nb($('taille').value) > 0)) m.push('la taille');
+    if (c.besoins.indexOf('ALB') >= 0 && !(nb($('albumine').value) > 0)) m.push('l’albumine');
+    if (!m.length && c.besoins.indexOf('ALB') >= 0 && nb($('albumine').value) < 10) return 'Albumine attendue en g/L (valeur saisie < 10 : en g/dL ?).';
+    if (!m.length && c.besoins.indexOf('TAILLE') >= 0 && nb($('taille').value) < 100) return 'Taille attendue en cm (valeur saisie < 100).';
+    return m.length ? 'Renseigne ' + m.join(', ').replace(/, ([^,]*)$/, ' et $1') + ' du patient.' : '';
+  }
+  $('d-cov').addEventListener('input', majClcg);
+
+  // ---------- Mode de saisie ----------
+  document.querySelectorAll('[data-mode]').forEach(function (b) { b.addEventListener('click', function () {
+    etat.mode = b.dataset.mode; document.querySelectorAll('[data-mode]').forEach(function (x) { x.classList.toggle('actif', x === b); });
+    document.querySelectorAll('.mode-dates').forEach(function (x) { x.hidden = etat.mode !== 'dates'; });
+    document.querySelectorAll('.mode-heures').forEach(function (x) { x.hidden = etat.mode !== 'heures'; });
+    majTexteTableau();
+  }); });
+  function heures(date, heure) {
+    if (!date || !heure || !etat.ref) return NaN;
+    var a = new Date(date + 'T' + heure + ':00'), r = new Date(etat.ref.date + 'T' + etat.ref.heure + ':00');
+    return (a - r) / 3600000;
+  }
+
+  // ---------- Tableau ----------
+  var COLS = [['t', 'Temps (h)'], ['c', 'Concentration (mg/L)'], ['dose', 'Dose administrée (mg)'], ['duree', 'Durée de perfusion (h)'], ['voie', 'Voie'], ['cov', ''], ['suppl', 'Nb de doses supplémentaires'], ['inter', 'Interdose (h)']];
+  function ligneVide() { return { t: '', c: '', dose: '', duree: '', voie: '', cov: '', suppl: '', inter: '' }; }
+  function estVide(l) { return COLS.every(function (c) { return l[c[0]] === '' || l[c[0]] == null; }); }
+  function majTexteTableau() {
+    $('texte-tableau').textContent = etat.ref ? 'Temps en heures depuis T0 = ' + new Date(etat.ref.date + 'T' + etat.ref.heure).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' }) + ' (première dose saisie). Les cellules restent modifiables.'
+      : 'Temps en heures depuis T0 (première administration). Les lignes peuvent être saisies directement dans le tableau ou ajoutées avec les formulaires ci-dessus.';
+  }
+  function dessinerTableau() {
+    var thead = $('tableau').tHead, tb = $('tableau').tBodies[0];
+    thead.innerHTML = ''; tb.innerHTML = '';
+    var tr = el('tr'); colonnes().forEach(function (c) { tr.appendChild(el('th', null, titreCol(c))); }); tr.appendChild(el('th', null, '')); thead.appendChild(tr);
+    if (!etat.lignes.length || !estVide(etat.lignes[etat.lignes.length - 1])) etat.lignes.push(ligneVide());
+    etat.lignes.forEach(function (l) { tb.appendChild(creerLigne(l)); });
+    majTexteTableau();
+  }
+  function creerLigne(l) {
+    var r = el('tr', l.equilibre ? 'equilibre' : null);
+    colonnes().forEach(function (c) {
+      var td = el('td'), inp;
+      if (c[0] === 'voie') { // vide = voie de la molécule (per os)
+        inp = el('select'); [['', ''], ['PO', 'PO'], ['IV', 'IV']].forEach(function (o) { var op = el('option', null, o[1]); op.value = o[0]; inp.appendChild(op); });
+        inp.value = l.voie || ''; inp.addEventListener('change', function () { l.voie = inp.value; invalider(); });
+        inp.setAttribute('aria-label', 'Voie'); inp.style.minWidth = '64px'; td.appendChild(inp); r.appendChild(td); return;
+      }
+      inp = el('input'); inp.type = 'number'; inp.step = 'any'; inp.value = l[c[0]];
+      inp.setAttribute('aria-label', titreCol(c));
+      inp.addEventListener('input', function () {
+        l[c[0]] = inp.value; invalider(); if (c[0] === 'cov') majClcg();
+        if (l === etat.lignes[etat.lignes.length - 1] && !estVide(l)) { var n = ligneVide(); etat.lignes.push(n); $('tableau').tBodies[0].appendChild(creerLigne(n)); }
+      });
+      td.appendChild(inp); r.appendChild(td);
+    });
+    var tdA = el('td', 'action'); var x = el('button', null, '×'); x.type = 'button'; x.title = 'Supprimer la ligne';
+    x.addEventListener('click', function () { if (l.equilibre) etat.eq = null; etat.lignes.splice(etat.lignes.indexOf(l), 1); dessinerTableau(); invalider(); });
+    tdA.appendChild(x); r.appendChild(tdA);
+    return r;
+  }
+  function ajouterLigne(l) {
+    if (etat.lignes.length && estVide(etat.lignes[etat.lignes.length - 1])) etat.lignes.pop();
+    etat.lignes.push(l);
+    etat.lignes.sort(function (a, b) { var x = nb(a.t), y = nb(b.t); return (isFinite(x) ? x : 1e9) - (isFinite(y) ? y : 1e9); });
+    dessinerTableau(); invalider();
+  }
+  $('ajouter-dose').addEventListener('click', function () {
+    var dose = nb($('d-dose').value), duree = dureeSaisie('d-duree'), t;
+    if (!(dose > 0) || !(duree >= 0) || ((!oral() || doseIV()) && $('d-duree').value === '')) { toast('Renseigne la dose et la durée de perfusion.', true); return; }
+    if (etat.mode === 'dates') {
+      if (!$('d-date').value || !$('d-heure').value) { toast('Renseigne la date et l’heure de la dose.', true); return; }
+      if (!etat.ref) { etat.ref = { date: $('d-date').value, heure: $('d-heure').value }; t = 0; } else t = heures($('d-date').value, $('d-heure').value);
+    } else { t = nb($('d-temps').value); if (!isFinite(t)) { toast('Renseigne le temps de la dose.', true); return; } }
+    ajouterLigne({ t: String(Math.round(t * 100) / 100), c: '', dose: String(dose), duree: String(duree), voie: relais() ? $('d-voie').value : '', cov: $('d-cov').value, suppl: '', inter: '' });
+    $('d-dose').value = ''; toast('Dose ajoutée à t = ' + arr(t, 2) + ' h');
+  });
+  $('ajouter-conc').addEventListener('click', function () {
+    var c = nb($('c-conc').value), t;
+    if (!(c >= 0) || $('c-conc').value === '') { toast('Renseigne la concentration.', true); return; }
+    if (etat.mode === 'dates') {
+      if (!etat.ref) { toast('Ajoute d’abord une dose pour définir le temps de référence (t = 0).', true); return; }
+      if (!$('c-date').value || !$('c-heure').value) { toast('Renseigne la date et l’heure du prélèvement.', true); return; }
+      t = heures($('c-date').value, $('c-heure').value);
+      $('n-dose-date').value = $('c-date').value; $('n-dose-heure').value = $('c-heure').value;
+    } else { t = nb($('c-temps').value); if (!isFinite(t)) { toast('Renseigne le temps du prélèvement.', true); return; } $('n-dose-temps').value = t; }
+    ajouterLigne({ t: String(Math.round(t * 100) / 100), c: String(c), dose: '', duree: '', cov: $('c-cov').value, suppl: '', inter: '' });
+    $('c-conc').value = ''; toast('Concentration ajoutée à t = ' + arr(t, 2) + ' h');
+  });
+  // Intervalle d'équilibre proposé à partir des dates saisies
+  ['d-date', 'd-heure', 'c-date', 'c-heure'].forEach(function (id) { $(id).addEventListener('change', function () {
+    if ($('d-date').value && $('d-heure').value && $('c-date').value && $('c-heure').value) {
+      var h = (new Date($('c-date').value + 'T' + $('c-heure').value) - new Date($('d-date').value + 'T' + $('d-heure').value)) / 3600000;
+      if (h > 0) $('eq-intervalle').value = Math.round(h * 10) / 10;
+    }
+  }); });
+  function majSigneEq() { $('signe-eq').textContent = $('zone-eq').hidden ? '+' : '−'; }
+  $('mettre-equilibre').addEventListener('click', function () {
+    var ouvrir = $('zone-eq').hidden; $('zone-eq').hidden = !ouvrir; majSigneEq();
+    if (ouvrir && !etat.eq && $('eq-dose').value && $('eq-intervalle').value && ($('eq-duree').value || oral())) $('eq-ajouter').click();
+  });
+  $('eq-ajouter').addEventListener('click', function () {
+    var d = nb($('eq-dose').value), tau = nb($('eq-intervalle').value), n = Math.max(1, Math.round(nb($('eq-nb').value) || 2)), du = dureeSaisie('eq-duree');
+    if (!(d > 0 && tau > 0 && (du > 0 || oral()))) { toast('Renseigne la dose, l’intervalle et la durée de perfusion de l’équilibre.', true); return; }
+    var t0 = -n * tau, tFin = -tau;
+    var premiere = Math.min.apply(null, etat.lignes.filter(function (l) { return !l.equilibre && nb(l.dose) > 0; }).map(function (l) { return nb(l.t); }).filter(isFinite).concat([Infinity]));
+    if (tFin >= premiere) { toast('La dernière dose d’équilibre (' + tFin + ' h) serait après la première dose STP. Augmente le nombre de doses ou l’intervalle.', true); return; }
+    etat.lignes = etat.lignes.filter(function (l) { return !l.equilibre; });
+    var premiereCov = (etat.lignes.filter(function (l) { return l.cov !== ''; })[0] || {}).cov || '';
+    ajouterLigne({ equilibre: true, t: String(t0), c: '', dose: String(d), duree: String(du), cov: premiereCov, suppl: String(n - 1), inter: String(tau) });
+    etat.eq = { dose: d, tau: tau, n: n, duree: du };
+    $('eq-info').textContent = n + ' doses de ' + d + ' mg espacées de ' + tau + ' h (de ' + t0 + ' h à ' + tFin + ' h)';
+    toast('Équilibre ajouté : ' + $('eq-info').textContent);
+  });
+  $('eq-desactiver').addEventListener('click', function () { etat.lignes = etat.lignes.filter(function (l) { return !l.equilibre; }); etat.eq = null; $('zone-eq').hidden = true; majSigneEq(); dessinerTableau(); invalider(); toast('Mode équilibre désactivé et ligne retirée'); });
+  $('effacer-tableau').addEventListener('click', function () { etat.lignes = []; etat.ref = null; etat.eq = null; $('zone-eq').hidden = true; majSigneEq(); dessinerTableau(); invalider(); toast('Tableau réinitialisé.'); });
+  $('export-csv').addEventListener('click', function () {
+    var lignes = etat.lignes.filter(function (l) { return !estVide(l); });
+    var csv = [colonnes().map(titreCol).join(';')].concat(lignes.map(function (l) { return colonnes().map(function (c) { return String(l[c[0]] || '').replace('.', ','); }).join(';'); })).join('\r\n');
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' }));
+    a.download = mol().libelle + '_STP_' + $('modele').value + '_' + new Date().toISOString().slice(0, 10) + '.csv'; document.body.appendChild(a); a.click(); a.remove();
+  });
+
+  // ---------- Compte-rendu à copier (texte simple, sans donnée nominative) ----------
+  function refTexte(m) { return m.reference + (m.doi ? ', doi:' + m.doi : ''); }
+  function fr(x, d) { return arr(x, d).replace('.', ','); }
+  // temps : heure depuis T0, ou date et heure réelles en saisie par dates
+  function quand(t) {
+    if (etat.mode !== 'dates' || !etat.ref) return 'H' + fr(t, 1);
+    var x = new Date(new Date(etat.ref.date + 'T' + etat.ref.heure + ':00').getTime() + t * 3600000);
+    function z(n) { return (n < 10 ? '0' : '') + n; }
+    return z(x.getDate()) + '/' + z(x.getMonth() + 1) + ' ' + z(x.getHours()) + 'h' + z(x.getMinutes());
+  }
+  function lignePatient(cov) {
+    var c = mol(), b = c.besoins, l = [];
+    if (b.indexOf('SEXE') >= 0) l.push(etat.sexe === 'F' ? 'femme' : 'homme');
+    if (b.indexOf('AGE') >= 0) l.push(fr(cov.AGE, 0) + ' ans');
+    if (b.indexOf('POIDS') >= 0) l.push(fr(cov.POIDS, 1) + ' kg');
+    if (b.indexOf('TAILLE') >= 0) l.push(fr(cov.TAILLE, 0) + ' cm');
+    if (b.indexOf('ALB') >= 0) l.push('albumine ' + fr(cov.ALB_GDL * 10, 1) + ' g/L');
+    var oui = { CHOC: 'choc septique', HEMATO: 'comorbidité hématologique', TRAUMA: 'traumatisme crânien', DIAL: 'hémodialyse', RIFAMP: 'rifampicine associée', FUMEUR: 'tabagisme actif', IH: 'insuffisance hépatique', IR: 'insuffisance rénale', FLUOX: 'fluoxétine associée', AINS: 'AINS associés' };
+    Object.keys(oui).forEach(function (k) { if (b.indexOf(k) >= 0 && etat.binaires[k]) l.push(oui[k]); });
+    texteCalcul(cov).forEach(function (x) { l.push(x.replace(' : ', ' ').replace('.', ',')); });
+    return l;
+  }
+  function texteCov(v) { var c = mol(); return c.covariable.aucune ? '' : c.covariable.court.replace(/ \(.*\)$/, '') + ' ' + fr(v, 1); }
+  function compteRenduStp() {
+    var R = etat.resultatsStp, c = mol(), d = R.d, ref = R.res[R.w.indexOf(Math.max.apply(null, R.w))], p = M.valeurs(ref.param, R.tPlvt);
+    var cov = d.covT(R.tPlvt), inter = intervalleSchema(R), L = [];
+    L.push(c.libelle + ' — adaptation posologique bayésienne (STP)');
+    L.push('Modèle : ' + (R.res.length > 1 ? 'moyenne pondérée (' + R.res.map(function (r, i) { return r.modele.nom + ' ' + Math.round(R.w[i] * 100) + ' %'; }).join(', ') + ')' : ref.modele.nom + ' (' + refTexte(ref.modele) + ')'));
+    var pat = lignePatient(cov); if (!c.covariable.aucune) pat.push(texteCov(cov[c.covariable.cle]) + ' ' + c.covariable.court.replace(/^.*\((.*)\)$/, '$1') + ' (dernière valeur)');
+    if (pat.length) L.push('Patient : ' + pat.join(', '));
+    L.push('Administrations : ' + d.doses.map(function (x) { return fr(x.montant, 0) + ' mg' + (x.voie === 'oral' ? ' per os' : x.duree > 0 ? ' en ' + fr(x.duree, 2) + ' h' : ' IV') + ' à ' + quand(x.t); }).join(' ; '));
+    if (d.obs.length) L.push('Concentrations : ' + d.obs.map(function (o) { return fr(o.c, 2) + ' ' + U() + ' à ' + quand(o.t); }).join(' ; '));
+    L.push('Paramètres individuels : Cl ' + fr(p.CL, 2) + ' L/h, Vc ' + fr(p.V1, 1) + ' L, ' + texteDemi(p, M.demiVie(ref.modele, p)).replace(/\./g, ','));
+    if (R.sansDose) L.push('Recommandation : pas de nouvelle administration à ' + quand(R.tDose) + ' (concentration prédite sans dose ' + fr(R.concSansDose, 2) + ' ' + U() + ' pour une cible de ' + fr(R.cible, 1) + ' ' + U() + (R.attente > 0 ? ' ; cible atteinte vers ' + quand(R.attente) : '') + ')');
+    else L.push('Recommandation : ' + R.dose + ' mg ' + frequence(inter) + ', ' + texteVoie(fr(R.duree, 2)) + ' (nouvelle administration à ' + quand(R.tDose) + '), pour une concentration de ' + fr(R.cible, 1) + ' ' + U() + ' à ' + quand(R.tPlvt) + (texteCible('stp') ? ' — ' + texteCible('stp') : ''));
+    var res = texteResiduelle(R, inter).replace(/<[^>]+>/g, ''); if (res) L.push(res.replace(/\./g, ','));
+    return L.join('\n');
+  }
+  function compteRenduPriori() {
+    var R = etat.resultatsPriori, c = mol(), ref = R.res[0], p = ref.param, cov = covObjet(R.cov), L = [];
+    L.push(c.libelle + ' — posologie a priori (modèle de population, sans dosage)');
+    L.push('Modèle : ' + R.res.map(function (r) { return r.modele.nom; }).join(' + ') + (R.res.length === 1 ? ' (' + refTexte(ref.modele) + ')' : ''));
+    var pat = lignePatient(cov); if (!c.covariable.aucune) pat.push(texteCov(R.cov) + ' ' + c.covariable.court.replace(/^.*\((.*)\)$/, '$1'));
+    if (pat.length) L.push('Patient : ' + pat.join(', '));
+    L.push('Paramètres de population : Cl ' + fr(p.CL, 2) + ' L/h, Vc ' + fr(p.V1, 1) + ' L');
+    L.push('Recommandation : ' + R.dose + ' mg ' + frequence(R.inter) + ', ' + texteVoie(fr(R.duree, 2)) + ', pour une concentration de ' + fr(R.cible, 1) + ' ' + U() + ' à H' + fr(R.tPlvt, 1) + (texteCible('priori') ? ' — ' + texteCible('priori') : ''));
+    return L.join('\n');
+  }
+  function copier(texte) {
+    function secours() { var t = el('textarea'); t.value = texte; t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); toast('Compte-rendu copié.'); } catch (e) { toast('Copie impossible : sélectionne le texte à la main.', true); } t.remove(); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(texte).then(function () { toast('Compte-rendu copié.'); }, secours); else secours();
+  }
+  $('copier-stp').addEventListener('click', function () { if (etat.resultatsStp) copier(compteRenduStp()); });
+  $('copier-priori').addEventListener('click', function () { if (etat.resultatsPriori) copier(compteRenduPriori()); });
+
+  // ---------- Dossier : enregistrer / ouvrir (fichier .json sur l'ordinateur, rien n'est envoyé) ----------
+  var CHAMPS_DOSSIER = ['age', 'poids', 'taille', 'albumine', 'n-duree', 'n-dose-date', 'n-dose-heure', 'n-plvt-date', 'n-plvt-heure', 'n-dose-temps', 'n-plvt-temps', 'eq-dose', 'eq-intervalle', 'eq-nb', 'eq-duree'];
+  $('enregistrer-dossier').addEventListener('click', function () {
+    var cv = $('cible-stp-val');
+    var dossier = { format: 'dossier-posologie', version: 1, molecule: $('molecule').value, modele: $('modele').value, mode: etat.mode, ref: etat.ref,
+      sexe: etat.sexe, binaires: etat.binaires, eq: etat.eq, lignes: etat.lignes.filter(function (l) { return !estVide(l); }),
+      objectif: etat.objectif.stp, cible: cv ? cv.value : '', champs: {} };
+    CHAMPS_DOSSIER.forEach(function (id) { dossier.champs[id] = $(id).value; });
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(dossier, null, 1)], { type: 'application/json' }));
+    a.download = 'Dossier_' + mol().libelle.replace(/\s+/g, '_') + '_' + new Date().toISOString().slice(0, 10) + '.json'; document.body.appendChild(a); a.click(); a.remove();
+    toast('Dossier enregistré (aucune donnée nominative).');
+  });
+  $('ouvrir-dossier').addEventListener('click', function () { $('fichier-dossier').value = ''; $('fichier-dossier').click(); });
+  $('fichier-dossier').addEventListener('change', function () {
+    var f = this.files[0]; if (!f) return;
+    var lecteur = new FileReader();
+    lecteur.onload = function () { try { ouvrirDossier(JSON.parse(lecteur.result)); } catch (e) { toast('Fichier illisible : ' + e.message, true); } };
+    lecteur.readAsText(f);
+  });
+  function ouvrirDossier(o) {
+    if (!o || o.format !== 'dossier-posologie') throw new Error('ce n’est pas un dossier de l’appli');
+    if (!MOLS[o.molecule]) throw new Error('molécule inconnue (' + o.molecule + ')');
+    effacerPatient();
+    $('molecule').value = o.molecule; majMolecule();
+    if ([].some.call($('modele').options, function (x) { return x.value === o.modele; })) { $('modele').value = o.modele; majNoteModele(); }
+    document.querySelector('[data-mode="' + (o.mode === 'dates' ? 'dates' : 'heures') + '"]').click();
+    etat.sexe = o.sexe === 'F' ? 'F' : 'H'; document.querySelectorAll('[data-sexe]').forEach(function (x) { x.classList.toggle('actif', x.dataset.sexe === etat.sexe); });
+    Object.keys(etat.binaires).forEach(function (k) { etat.binaires[k] = o.binaires && o.binaires[k] ? 1 : 0; });
+    document.querySelectorAll('[data-binaire]').forEach(function (x) { x.classList.toggle('actif', +x.dataset.val === etat.binaires[x.dataset.binaire]); });
+    Object.keys(o.champs || {}).forEach(function (id) { if ($(id) && CHAMPS_DOSSIER.indexOf(id) >= 0) $(id).value = o.champs[id]; });
+    etat.ref = o.ref || null; etat.eq = o.eq || null;
+    etat.lignes = (o.lignes || []).map(function (l) { var n = ligneVide(); Object.keys(n).forEach(function (k) { if (l[k] != null) n[k] = String(l[k]); }); if (l.equilibre) n.equilibre = true; return n; });
+    if (etat.eq) { var q = etat.eq; $('zone-eq').hidden = false; majSigneEq(); $('eq-info').textContent = q.n + ' doses de ' + q.dose + ' mg espacées de ' + q.tau + ' h (de ' + (-q.n * q.tau) + ' h à ' + (-q.tau) + ' h)'; }
+    etat.objectif.stp = ['Concentration', 'CMI', 'Probabiliste'].indexOf(o.objectif) >= 0 && (o.objectif === 'Concentration' || mol().cmiDefaut) ? o.objectif : 'Concentration';
+    document.querySelectorAll('[data-objectif="stp"] button').forEach(function (b) { b.classList.toggle('actif', b.dataset.val === etat.objectif.stp); });
+    majCibles(); if ($('cible-stp-val') && o.cible != null) $('cible-stp-val').value = o.cible;
+    dessinerTableau(); majClcg(); invalider();
+    toast('Dossier ouvert : ' + mol().libelle + '. Clique sur Calculer.');
+  }
+
+  // ---------- Objectifs ----------
+  document.querySelectorAll('[data-objectif]').forEach(function (g) { g.querySelectorAll('button').forEach(function (b) { b.addEventListener('click', function () {
+    etat.objectif[g.dataset.objectif] = b.dataset.val; g.querySelectorAll('button').forEach(function (x) { x.classList.toggle('actif', x === b); }); majCibles(); (g.dataset.objectif === 'stp' ? invalider : invaliderPriori)();
+  }); }); });
+  function htmlCible(onglet) {
+    var c = mol(), o = etat.objectif[onglet];
+    if (o === 'Concentration') return '<div class="requis"><label>Concentration cible (' + U() + ') :</label><input type="number" id="cible-' + onglet + '-val" step="0.1" placeholder=" "></div>';
+    if (o === 'CMI') return '<div class="requis"><label>CMI du germe ciblé (mg/L) :</label><input type="number" id="cible-' + onglet + '-val" step="0.01" placeholder=" "></div><div class="note"><a href="https://mic.eucast.org/search/" target="_blank" rel="noopener">Consulter EUCAST</a><br>Cible : ' + c.facteurCmi + ' × CMI</div>';
+    return '<div class="info-prob"><b>Cible probabiliste :</b><br>Valeur de CMI par défaut à ' + c.cmiDefaut + ' mg/L (' + c.cmiGerme + ') - Cible : ' + (c.cmiDefaut * c.facteurCmi) + ' mg/L</div>';
+  }
+  function majCibles() { ['stp', 'priori'].forEach(function (o) { $('cible-' + o).innerHTML = htmlCible(o); var i = $('cible-' + o + '-val'); if (i) i.addEventListener('input', o === 'stp' ? invalider : invaliderPriori); }); }
+  function valeurCible(onglet) {
+    var c = mol(), o = etat.objectif[onglet], v = nb(($('cible-' + onglet + '-val') || {}).value);
+    if (o === 'Concentration') return v;
+    if (o === 'CMI') return v * c.facteurCmi;
+    return c.cmiDefaut * c.facteurCmi;
+  }
+  function texteCible(onglet) {
+    var c = mol(), o = etat.objectif[onglet];
+    if (o === 'CMI') return 'Cible basée sur CMI = ' + nb(($('cible-' + onglet + '-val') || {}).value) + ' mg/L (' + c.facteurCmi + ' × CMI)';
+    if (o === 'Probabiliste') return 'Cible probabiliste (ECOFF ' + c.cmiGerme + ' : ' + c.cmiDefaut + ' mg/L × ' + c.facteurCmi + ')';
+    return '';
+  }
+
+  // ---------- Construction des données ----------
+  function modelesChoisis() { var v = $('modele').value; return v === 'moyenne' ? modelesMol().filter(function (m) { return m.valide; }) : MODS.filter(function (m) { return m.id === v; }); }
+  function covObjet(valeur) {
+    var c = mol(), age = nb($('age').value), poids = nb($('poids').value), taille = nb($('taille').value), alb = nb($('albumine').value);
+    var o = { AGE: age, POIDS: poids, TAILLE: taille, IMC: poids / Math.pow(taille / 100, 2), SC: window.surfaceBoyd(poids, taille),
+      ALB_GDL: alb / 10, AGE_SUP40: age > 40 ? 1 : 0, SEXE_F: etat.sexe === 'F' ? 1 : 0 };
+    Object.keys(etat.binaires).forEach(function (k) { o[k] = etat.binaires[k]; });
+    if (sansCov()) return o;
+    if (c.covariable.cle === 'CREAT') { o.CREAT = valeur; o.CLCG = clcg(valeur); o.DFG = window.ckdEpi(age, valeur, etat.sexe); } else o[c.covariable.cle] = valeur;
+    return o;
+  }
+  function donneesStp() {
+    var c = mol(), doses = [], obs = [], covPts = [];
+    etat.lignes.forEach(function (l) {
+      var t = nb(l.t); if (!isFinite(t)) return;
+      var cv = nb(l.cov);
+      if (nb(l.dose) > 0) {
+        var n = 1 + (nb(l.suppl) > 0 ? Math.round(nb(l.suppl)) : 0), tau = nb(l.inter) > 0 ? nb(l.inter) : 0;
+        for (var k = 0; k < n; k++) { var vl = l.voie === 'IV' ? 'iv' : l.voie === 'PO' ? 'oral' : VOIE();
+          doses.push({ t: t + k * tau, montant: nb(l.dose), duree: vl === 'iv' && nb(l.duree) > 0 ? nb(l.duree) : 0, voie: vl }); covPts.push([t + k * tau, cv]); }
+      } else if (l.c !== '' && isFinite(nb(l.c))) { obs.push({ t: t, c: nb(l.c) }); covPts.push([t, cv]); }
+    });
+    covPts.sort(function (a, b) { return a[0] - b[0]; });
+    var prec = c.covariable.defaut;
+    covPts.forEach(function (p) { if (isFinite(p[1]) && p[1] > 0) prec = p[1]; else p[1] = prec; });
+    var covT = function (t) { var v = covPts.length ? covPts[0][1] : c.covariable.defaut; for (var i = 0; i < covPts.length; i++) { if (covPts[i][0] <= t + 1e-9) v = covPts[i][1]; else break; } return covObjet(v); };
+    covT.ruptures = covPts.map(function (p) { return p[0]; });
+    covT.derniere = covPts.length ? covPts[covPts.length - 1][1] : c.covariable.defaut;
+    doses.sort(function (a, b) { return a.t - b.t; }); obs.sort(function (a, b) { return a.t - b.t; });
+    return { doses: doses, obs: obs, covT: covT };
+  }
+
+  // ---------- Invalidation ----------
+  function afficherConsignesStp() { $('copier-stp').hidden = true; afficherConsignesStp2(); }
+  function afficherConsignesStp2() { $('reco-stp').innerHTML = '<div class="details" style="min-height:0">' + consignes(true) + '</div>'; $('details-stp').innerHTML = ''; $('plie-stp').hidden = true; }
+  function invalider() {
+    if (etat.resultatsStp) { etat.resultatsStp = null; $('plie-stp').hidden = true; $('copier-stp').hidden = true; $('details-stp').innerHTML = ''; $('reco-stp').innerHTML = '<div class="perime"><b>⚠️ Paramètres modifiés</b><br>Les résultats précédents ne sont plus valides.<br>Clique sur « Calculer » pour obtenir les nouveaux résultats.</div>'; }
+  }
+  function invaliderPriori() {
+    $('copier-priori').hidden = true;
+    if (etat.resultatsPriori) { etat.resultatsPriori = null; $('details-priori').innerHTML = '<div class="perime"><b>⚠️ Paramètres modifiés</b><br>Les résultats précédents ne sont plus valides.<br>Clique sur « Calculer » pour obtenir les nouveaux résultats.</div>'; $('reco-priori').innerHTML = ''; }
+  }
+  ['n-duree', 'n-dose-date', 'n-dose-heure', 'n-plvt-date', 'n-plvt-heure', 'n-dose-temps', 'n-plvt-temps'].forEach(function (id) { $(id).addEventListener('input', invalider); });
+  ['p-duree', 'p-freq', 'p-temps', 'p-cov'].forEach(function (id) { $(id).addEventListener('input', invaliderPriori); });
+  function consignes(stp) {
+    return '<div style="font-weight:bold;margin-bottom:10px;color:#0066cc;font-size:13px">📋 Pour estimer ' + (stp ? 'la nouvelle posologie' : 'la posologie') + ' :</div><div style="margin-left:15px;line-height:1.8">' +
+      (stp ? '✓ <b>1.</b> Renseigne les covariables du patient<br>✓ <b>2.</b> Ajoute au moins une dose et une concentration<br>✓ <b>3.</b> Complète les paramètres de la nouvelle posologie<br>✓ <b>4.</b> Clique sur « Calculer »'
+           : '✓ <b>1.</b> Renseigne les covariables du patient<br>✓ <b>2.</b> Complète les paramètres de la nouvelle posologie<br>✓ <b>3.</b> Clique sur « Calculer »') + '</div>';
+  }
+  // Paramètres supplémentaires (3e compartiment, absorption) et libellé de la demi-vie
+  function parametresSupp(p) {
+    return (p.V3 != null ? 'Volume périphérique 2 (Vp2) : ' + arr(p.V3, 2) + ' L<br>Clairance inter-compartimentale 2 (Q2) : ' + arr(p.Q3, 2) + ' L/h<br>' : '') +
+      (oral() && p.ka != null ? 'Constante d’absorption (ka) : ' + arr(p.ka, 2) + ' h⁻¹' + (p.Ftot != null && Math.abs(p.Ftot - 1) > 1e-9 ? ' · F : ' + arr(p.Ftot, 3) : '') + (p.tlag ? ' · Tlag : ' + arr(p.tlag, 2) + ' h' : '') + '<br>' : '');
+  }
+  // Demi-vie : ln2·Vc/Cl (valeur habituelle de l'appli) ; pour plusieurs compartiments, demi-vie terminale en plus
+  function texteDemi(p, terminale) {
+    function j(h) { return arr(h, 2) + ' h' + (h > 72 ? ' (' + arr(h / 24, 1) + ' j)' : ''); }
+    if (p.V2 == null) return 'Demi-vie (T1/2) : ' + j(terminale);
+    return 'Demi-vie (T1/2) : ' + j(Math.log(2) * p.V1 / p.CL) + ' · terminale : ' + j(terminale);
+  }
+  function parametresCalculables(m, cov) {
+    var k = m.etas.filter(function (e, i) { return m.omega[i][i] > 0; }).length, q = M.parametres(m, new Array(k).fill(0), cov);
+    return q.CL > 0 && q.V1 > 0 && isFinite(q.CL) && isFinite(q.V1) && (!q._A || q._A.every(function (l) { return l.every(isFinite); }));
+  }
+  // Cible au pic (aminosides) : le prélèvement suit de près la dose, l'écart ne donne pas l'intervalle ;
+  // on suppose une administration toutes les 24 h et on affiche la résiduelle prédite avant la dose suivante.
+  function pic(R) { return !!mol().ciblePic && R.tPlvt - R.tDose < 12; }
+  function intervalleSchema(R) { return pic(R) ? 24 : R.tPlvt - R.tDose; }
+  function texteResiduelle(R, intervalle) {
+    if (!pic(R)) return '';
+    var c = mol(), t = R.tDose + 0.01 + intervalle - 0.01, v = 0;
+    R.res.forEach(function (r, j) { v += R.w[j] * M.simuler(r.modele, r.param, R.d.doses.concat([{ t: R.tDose + 0.01, montant: R.dose, duree: R.duree, voie: VOIE() }]), [t])[0]; });
+    var trop = c.residuelleMax != null && v > c.residuelleMax, delai = '';
+    if (trop) { // délai après la dose pour repasser sous le seuil (sans nouvelle administration), par pas de 0,5 h jusqu'à 120 h
+      var doses = R.d.doses.concat([{ t: R.tDose + 0.01, montant: R.dose, duree: R.duree, voie: VOIE() }]), grille = [];
+      for (var h = intervalle; h <= 120; h += 0.5) grille.push(R.tDose + 0.01 + h);
+      var cc = grille.map(function () { return 0; });
+      R.res.forEach(function (r, j) { M.simuler(r.modele, r.param, doses, grille).forEach(function (x, k) { cc[k] += R.w[j] * x; }); });
+      var k = cc.findIndex(function (x) { return x < c.residuelleMax; });
+      delai = k >= 0 ? ' ; seuil atteint vers H' + arr(grille[k] - R.tDose - 0.01, 1) : ' ; seuil non atteint à H120';
+    }
+    return '<div style="margin-top:6px;font-size:13px;color:' + (trop ? 'var(--rouge)' : 'inherit') + '">Résiduelle prédite à H' + intervalle + ' : ' + arr(v, 2) + ' ' + U() +
+      (c.residuelleMax != null ? (trop ? ' (> ' + c.residuelleMax + delai + ')' : ' (< ' + c.residuelleMax + ')') : '') + '</div>';
+  }
+  function frequence(intervalle) {
+    var f = 24 / intervalle, j = intervalle / 24;
+    if (Math.abs(f - Math.round(f)) < 1e-6 && f >= 1) return Math.round(f) + ' fois par jour';
+    if (j >= 1 && Math.abs(j - Math.round(j)) < 1e-6) { j = Math.round(j); return j % 7 === 0 ? (j === 7 ? 'toutes les semaines' : 'toutes les ' + j / 7 + ' semaines') : (j === 1 ? '1 fois par jour' : 'tous les ' + j + ' jours'); }
+    return 'toutes les ' + arr(intervalle, 1) + ' h';
+  }
+
+  // ---------- Calcul STP ----------
+  $('calculer-stp').addEventListener('click', function () {
+    var d = donneesStp(), c = mol(), mods = modelesChoisis();
+    if (!d.doses.length || !d.obs.length) { toast('Erreur : ajoute au moins une dose et une concentration.', true); return; }
+    if (manquant()) { toast(manquant(), true); return; }
+    var duree = dureeSaisie('n-duree'), tDose, tPlvt;
+    if (etat.mode === 'dates') {
+      if (!etat.ref) { toast('En saisie par dates, ajoute d’abord une dose avec le formulaire, ou passe en saisie en heures.', true); return; }
+      tDose = heures($('n-dose-date').value, $('n-dose-heure').value); tPlvt = heures($('n-plvt-date').value, $('n-plvt-heure').value);
+    } else { tDose = nb($('n-dose-temps').value); tPlvt = nb($('n-plvt-temps').value); }
+    if (!(duree > 0 || oral()) || !isFinite(tDose) || !isFinite(tPlvt)) { toast('Complète la durée de perfusion, la nouvelle administration et le nouveau prélèvement.', true); return; }
+    if (tDose >= tPlvt) { toast('Erreur : le prélèvement cible doit être après la nouvelle dose.', true); return; }
+    var cible = valeurCible('stp'); if (!(cible > 0)) { toast('Renseigne l’objectif thérapeutique.', true); return; }
+    var nouvelle = function (D) { return [{ t: tDose + 0.01, montant: D, duree: duree, voie: VOIE() }]; };
+    if (mods.some(function (m) { return !parametresCalculables(m, d.covT(tPlvt)); })) { toast('Paramètres du modèle non calculables avec ces covariables (voir la note du modèle).', true); return; }
+    var res = mods.map(function (m) { var r = M.estimer(m, d.covT, d.doses, d.obs); return r; });
+    var w = M.poids(res), base = 0, unit = 0;
+    res.forEach(function (r, i) {
+      r.base = M.simuler(r.modele, r.param, d.doses, [tPlvt])[0];
+      r.unit = M.simuler(r.modele, r.param, d.doses.concat(nouvelle(1)), [tPlvt])[0] - r.base;
+      r.dose = Math.max(0, (cible - r.base) / r.unit); base += w[i] * r.base; unit += w[i] * r.unit;
+    });
+    // Une dose ne peut pas être négative : si la concentration prédite sans nouvelle dose dépasse déjà la cible,
+    // la dose est 0 et on cherche quand la concentration redescend à la cible (par pas de 0,25 h, jusqu'à 10 jours).
+    var brute = (cible - base) / unit, dose = Math.max(0, Math.round(brute)), attente = null;
+    if (!(brute > 0)) {
+      var grille = []; for (var h = 0.25; h <= 240; h += 0.25) grille.push(tDose + h);
+      var cc = grille.map(function () { return 0; });
+      res.forEach(function (r, i) { M.simuler(r.modele, r.param, d.doses, grille).forEach(function (x, k) { cc[k] += w[i] * x; }); });
+      var k = cc.findIndex(function (x) { return x <= cible; }); attente = k >= 0 ? grille[k] : -1;
+    }
+    etat.resultatsStp = { d: d, res: res, w: w, dose: dose, cible: cible, tDose: tDose, tPlvt: tPlvt, duree: duree, sansDose: !(brute > 0), concSansDose: base, attente: attente };
+    afficherStp(); toast('Calcul terminé !');
+  });
+  function aucDerniers24h(r, d) {
+    var tFin = Math.max.apply(null, d.obs.map(function (o) { return o.t; }).concat(d.doses.map(function (x) { return x.t; })));
+    var debut = Math.min.apply(null, d.doses.map(function (x) { return x.t; }));
+    if (tFin - debut < 24) { var qf = M.valeurs(r.param, tFin); return { v: FU() * d.doses[d.doses.length - 1].montant * (qf.Ftot == null ? 1 : qf.Ftot) / qf.CL, lib: 'dose / Cl (moins de 24 h de données)' }; }
+    return { v: M.aire(r.modele, r.param, d.doses, tFin - 24, tFin), lib: 'sur les 24 h précédant ' + arr(tFin, 1) + ' h' };
+  }
+  function afficherStp() {
+    var R = etat.resultatsStp, d = R.d, c = mol();
+    var ref = R.res[R.w.indexOf(Math.max.apply(null, R.w))];
+    var p = M.valeurs(ref.param, R.tPlvt), demi = M.demiVie(ref.modele, p);
+    var nomModele = R.res.length > 1 ? 'Moyenne pondérée (' + R.res.map(function (r, i) { return r.modele.nom + ' ' + Math.round(R.w[i] * 100) + ' %'; }).join(', ') + ')' : ref.modele.nom;
+    var auc = aucDerniers24h(ref, d), intervalle = intervalleSchema(R);
+    var h = '<div class="t">ESTIMATION BAYÉSIENNE (MAP)</div>' +
+      'Modèle utilisé : ' + nomModele +
+      (etat.eq ? '<br>Équilibre : ' + etat.eq.n + ' doses de ' + etat.eq.dose + ' mg / ' + etat.eq.tau + ' h' : '') +
+      texteCalcul(covObjet(d.covT.derniere)).map(function (l) { return '<br>' + l + ' (calculé)'; }).join('') +
+      '<br>Dose optimale calculée : ' + R.dose + ' mg<br>Concentration prédite à t=' + arr(R.tPlvt, 1) + 'h : ' + arr(R.cible, 1) + ' ' + U() +
+      (texteCible('stp') ? '<br>' + texteCible('stp') : '') +
+      '<div class="t">PARAMÈTRES INDIVIDUELS' + (R.res.length > 1 ? ' (' + ref.modele.nom + ')' : '') + '</div>' +
+      'Clairance (Cl) : ' + arr(p.CL, 2) + ' L/h<br>Volume central (Vc) : ' + arr(p.V1, 2) + ' L<br>' +
+      (p.V2 != null ? 'Volume périphérique (Vp) : ' + arr(p.V2, 2) + ' L<br>Clairance inter-compartimentale (Q) : ' + arr(p.Q, 2) + ' L/h<br>' : '') +
+      parametresSupp(p) + '<span class="demi">' + texteDemi(p, demi) + '</span>' +
+      '<div class="t">EXPOSITION</div>' +
+      'AUC dose administrée : <b style="color:#dc3545">' + arr(auc.v, 0) + ' ' + UA() + '</b> <span style="color:#6c757d">(' + auc.lib + ')</span><br>' +
+      'AUC nouvelle posologie (par administration, dose/Cl) : <b style="color:#0066cc">' + arr(FU() * R.dose * (p.Ftot == null ? 1 : p.Ftot) / p.CL, 1) + ' ' + UA() + '</b><br>' +
+      'AUC nouvelle posologie sur 24 h : <b style="color:#0066cc">' + arr(FU() * R.dose * (p.Ftot == null ? 1 : p.Ftot) * (24 / intervalle) / p.CL, 0) + ' ' + UA() + '</b>';
+    $('details-stp').innerHTML = h;
+    // Fiabilité et incertitude
+    var av = el('details', 'avance'); av.appendChild(el('summary', null, 'Fiabilité et incertitude de l’estimation'));
+    var N = 300, doses = [], dans = 0;
+    R.res.forEach(function (r, i) {
+      var n = Math.max(1, Math.round(N * R.w[i]));
+      M.echantillonsEta(r, n, 77 + i).forEach(function (eta) {
+        var q = M.parametres(r.modele, eta, d.covT), b = M.simuler(r.modele, q, d.doses, [R.tPlvt])[0], u = M.simuler(r.modele, q, d.doses.concat([{ t: R.tDose + 0.01, montant: 1, duree: R.duree, voie: VOIE() }]), [R.tPlvt])[0] - b;
+        doses.push(Math.max(0, (R.cible - b) / u)); var cc = b + R.dose * u; if (cc >= c.ymin && cc <= (R.duree >= 24 && c.ymaxContinu ? c.ymaxContinu : c.ymax)) dans++;
+      });
+    });
+    var ymaxUtil = R.duree >= 24 && c.ymaxContinu ? c.ymaxContinu : c.ymax;
+    av.appendChild(el('div', 'alerte ok', 'Intervalle de crédibilité à 90 % de la dose : ' + Math.round(M.quantile(doses, 0.05)) + ' – ' + Math.round(M.quantile(doses, 0.95)) + ' mg. Probabilité d’être dans la zone ' + c.ymin + '–' + ymaxUtil + ' ' + U() + ' au prélèvement avec ' + R.dose + ' mg : ' + Math.round(dans / doses.length * 100) + ' %.'));
+    R.res.forEach(function (r, i) {
+      var maxIw = Math.max.apply(null, r.residus.map(function (x) { return Math.abs(x.iwres); }));
+      av.appendChild(el('div', 'note', r.modele.nom + (R.res.length > 1 ? ' (poids ' + Math.round(R.w[i] * 100) + ' %, dose seule ' + Math.round(r.dose) + ' mg)' : '')));
+      av.appendChild(el('div', 'alerte ' + (maxIw > 2 ? 'bad' : 'ok'), maxIw > 2 ? 'Au moins une concentration est mal décrite (résidu pondéré ' + arr(maxIw, 1) + ' > 2) : vérifier horaires et doses.' : 'Concentrations bien décrites (résidu pondéré maximal ' + arr(maxIw, 1) + ').'));
+      if (r.distance.p < 0.05) av.appendChild(el('div', 'alerte warn', 'Patient atypique pour la population du modèle (p = ' + arr(r.distance.p, 3) + ').'));
+      var cl = r.information.filter(function (x) { return x.eta === (r.modele.etaCL || 'CL'); })[0];
+      if (cl) av.appendChild(el('div', 'alerte ' + (cl.gain < 0.2 ? 'warn' : 'ok'), 'Les dosages réduisent l’incertitude sur la clairance de ' + Math.round(cl.gain * 100) + ' %' + (cl.gain < 0.2 ? ' : estimation proche de la population.' : '.')));
+    });
+    $('details-stp').appendChild(av); $('plie-stp').hidden = false; $('copier-stp').hidden = false;
+    if (R.sansDose) $('reco-stp').innerHTML = '<div class="reco" style="border-color:var(--rouge)"><h5>RECOMMANDATION POSOLOGIQUE</h5><div class="dose" style="color:var(--rouge)">Pas de nouvelle administration à ' + quand(R.tDose) + '</div>' +
+      '<div>Concentration prédite au prélèvement sans nouvelle dose : ' + arr(R.concSansDose, 2) + ' ' + U() + ', déjà au-dessus de la cible (' + arr(R.cible, 2) + ' ' + U() + ').</div>' +
+      '<div style="margin-top:4px">' + (R.attente > 0 ? 'Concentration redescendue à la cible vers ' + quand(R.attente) + ' : décaler la prochaine administration.' : 'Cible non atteinte dans les 10 jours suivants.') + '</div></div>';
+    else $('reco-stp').innerHTML = '<div class="reco"><h5>RECOMMANDATION POSOLOGIQUE</h5><div class="dose">Administrer ' + R.dose + ' mg</div><div>' + frequence(intervalle) + (pic(R) ? ' (schéma supposé, cible au pic)' : '') + '</div><div style="margin-top:4px">' + texteVoie(R.duree) + '</div>' + texteResiduelle(R, intervalle) + '</div>';
+    grapheStp();
+  }
+
+  // ---------- Graphiques ----------
+  function grapheSvg(cible, opts) {
+    var W = opts.W, H = opts.H, ml = 52, mb = 40, mt = 12, mr = 14;
+    var tMin = opts.tMin, tMax = opts.tMax, yMax = opts.yMax;
+    function X(t) { return ml + (W - ml - mr) * (t - tMin) / (tMax - tMin); } function Y(v) { return mt + (H - mt - mb) * (1 - Math.min(v, yMax) / yMax); }
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Profil de concentration">';
+    s += '<rect x="' + ml + '" y="' + Y(opts.zone[1]) + '" width="' + (W - ml - mr) + '" height="' + (Y(opts.zone[0]) - Y(opts.zone[1])) + '" fill="rgba(76,175,80,.15)" stroke="rgba(76,175,80,.3)"/>';
+    var pasY = [1, 2, 5, 10, 20, 25, 50, 100, 200, 500].filter(function (p) { return yMax / p <= 8; })[0] || 1000;
+    for (var v = 0; v <= yMax; v += pasY) s += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(v) + '" y2="' + Y(v) + '" stroke="#eee"/><text x="' + (ml - 6) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + v + '</text>';
+    var pasT = [2, 4, 6, 12, 24, 48].filter(function (p) { return (tMax - tMin) / p <= 12; })[0] || 96;
+    for (var t = Math.ceil(tMin / pasT) * pasT; t <= tMax; t += pasT) s += '<line x1="' + X(t) + '" x2="' + X(t) + '" y1="' + mt + '" y2="' + (H - mb) + '" stroke="#f3f3f3"/><text x="' + X(t) + '" y="' + (H - mb + 16) + '" text-anchor="middle">' + t + '</text>';
+    s += '<text x="' + ((W + ml) / 2) + '" y="' + (H - 6) + '" text-anchor="middle">Temps (h)</text><text transform="translate(14,' + (H / 2) + ') rotate(-90)" text-anchor="middle">Concentration (' + U() + ')</text>';
+    if (opts.ligneSup) s += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(opts.ligneSup) + '" y2="' + Y(opts.ligneSup) + '" stroke="rgba(76,175,80,.8)" stroke-dasharray="3 3" stroke-width="2"/>';
+    if (opts.bande) { var b = opts.bande; s += '<polygon fill="rgba(0,102,204,.12)" points="' + b.map(function (x) { return X(x[0]) + ',' + Y(x[2]); }).concat(b.slice().reverse().map(function (x) { return X(x[0]) + ',' + Y(x[1]); })).join(' ') + '"/>'; }
+    opts.traces.forEach(function (tr) { if (tr.pts.length > 1) s += '<polyline fill="none" stroke="' + tr.couleur + '" stroke-width="' + (tr.epaisseur || 2) + '"' + (tr.pointille ? ' stroke-dasharray="6 4"' : '') + ' points="' + tr.pts.map(function (p) { return X(p[0]) + ',' + Y(p[1]); }).join(' ') + '"/>'; });
+    if (opts.verticale != null) s += '<line x1="' + X(opts.verticale) + '" x2="' + X(opts.verticale) + '" y1="' + mt + '" y2="' + (H - mb) + '" stroke="#000" stroke-dasharray="5 4"/>';
+    (opts.points || []).forEach(function (p) { s += '<circle cx="' + X(p[0]) + '" cy="' + Y(p[1]) + '" r="5" fill="#6f42c1"/>'; });
+    s += '<rect x="' + ml + '" y="' + mt + '" width="' + (W - ml - mr) + '" height="' + (H - mt - mb) + '" fill="transparent" class="survol"/></svg>';
+    return { svg: s, X: X, inv: function (px) { return tMin + (px - ml) / (W - ml - mr) * (tMax - tMin); } };
+  }
+  function monter(zone, g, opts, legende) {
+    zone.innerHTML = g.svg + '<div class="bulle"></div>';
+    var lg = el('div', 'legende'); legende.forEach(function (x) { var s = el('span', null, x[1]); s.style.setProperty('--c', x[0]); lg.appendChild(s); }); zone.appendChild(lg);
+    var svg = zone.querySelector('svg'), bulle = zone.querySelector('.bulle');
+    svg.addEventListener('mousemove', function (e) {
+      var r = svg.getBoundingClientRect(), px = (e.clientX - r.left) * opts.W / r.width, t = g.inv(px);
+      var tr = opts.traces.filter(function (x) { return x.pts.length && t >= x.pts[0][0] && t <= x.pts[x.pts.length - 1][0]; })[0];
+      if (!tr) { bulle.style.display = 'none'; return; }
+      var p = tr.pts.reduce(function (a, b) { return Math.abs(b[0] - t) < Math.abs(a[0] - t) ? b : a; });
+      bulle.innerHTML = tr.nom + '<br>Temps : ' + arr(p[0], 1) + ' h<br>Concentration : ' + arr(p[1], 1) + ' ' + U();
+      bulle.style.display = 'block'; bulle.style.left = Math.min(e.clientX - r.left + 12, r.width - 150) + 'px'; bulle.style.top = (e.clientY - r.top + 12) + 'px';
+    });
+    svg.addEventListener('mouseleave', function () { bulle.style.display = 'none'; });
+  }
+  // Graphique STP à la largeur réelle de sa colonne (textes lisibles), redessiné si la fenêtre change
+  function grapheStp() { var w = Math.max(340, Math.round($('graphe-stp').clientWidth || 900)); dessinerGrapheStp($('graphe-stp'), w, Math.round(Math.max(260, w * 0.62))); }
+  window.addEventListener('resize', function () { clearTimeout(grapheStp.t); grapheStp.t = setTimeout(function () { if (etat.resultatsStp) grapheStp(); }, 200); });
+  function dessinerGrapheStp(zone, W, H) {
+    var R = etat.resultatsStp; if (!R) return;
+    var d = R.d, c = mol(), affEq = $('aff-eq').checked;
+    var intervalle = intervalleSchema(R), nbN = intervalle >= 8 ? 3 : 5, nouvelles = [];
+    for (var k = 0; k < nbN; k++) nouvelles.push({ t: R.tDose + 0.01 + k * intervalle, montant: R.dose, duree: R.duree, voie: VOIE() });
+    var tout = d.doses.concat(nouvelles);
+    var tMin = affEq ? Math.min(0, d.doses[0].t) : 0, tMax = R.tDose + 0.01 + nbN * intervalle;
+    var grille = []; for (var i = 0; i <= 500; i++) grille.push(tMin + (tMax - tMin) * i / 500);
+    grille = grille.concat(d.doses.map(function (x) { return x.t + x.duree; }), nouvelles.map(function (x) { return x.t + x.duree; })).filter(function (t) { return t >= tMin && t <= tMax; }).sort(function (a, b) { return a - b; });
+    var conc = grille.map(function () { return 0; });
+    R.res.forEach(function (r, j) { var cc = M.simuler(r.modele, r.param, tout, grille); cc.forEach(function (v, k) { conc[k] += R.w[j] * v; }); });
+    var pts = grille.map(function (t, k) { return [t, conc[k]]; });
+    var traces = [
+      { nom: 'Phase d’équilibre', couleur: '#adb5bd', pts: pts.filter(function (p) { return p[0] < 0; }), pointille: true },
+      { nom: 'Cinétique estimée (STP)', couleur: '#0066cc', pts: pts.filter(function (p) { return p[0] >= 0 && p[0] <= R.tDose + 0.01; }) },
+      { nom: 'Nouvelle posologie', couleur: '#17a2b8', pts: pts.filter(function (p) { return p[0] >= R.tDose; }) }
+    ];
+    var bande = null;
+    if ($('aff-incert').checked) {
+      var courbes = [];
+      R.res.forEach(function (r, j) { M.echantillonsEta(r, Math.max(1, Math.round(150 * R.w[j])), 5 + j).forEach(function (eta) { courbes.push(M.simuler(r.modele, M.parametres(r.modele, eta, d.covT), tout, grille)); }); });
+      bande = grille.map(function (t, k) { var v = courbes.map(function (cc) { return cc[k]; }); return [t, M.quantile(v, 0.05), M.quantile(v, 0.95)]; });
+    }
+    var yMax = Math.max(c.ymax * 1.15, Math.max.apply(null, conc) * 1.05, Math.max.apply(null, d.obs.map(function (o) { return o.c; })) * 1.1);
+    if (bande) yMax = Math.max(yMax, Math.max.apply(null, bande.map(function (b) { return b[2]; })) * 1.02);
+    var opts = { W: W, H: H, tMin: tMin, tMax: tMax, yMax: yMax, zone: [c.ymin, c.ymax], ligneSup: (c.ymaxContinu && R.duree >= 24) ? c.ymaxContinu : null, traces: traces, bande: bande, verticale: R.tPlvt, points: d.obs.filter(function (o) { return affEq || o.t >= 0; }).map(function (o) { return [o.t, o.c]; }) };
+    var leg = [['rgba(76,175,80,.6)', 'Zone cible (' + c.ymin + '–' + c.ymax + ' ' + U() + ')'], ['#0066cc', 'Cinétique estimée (STP)'], ['#17a2b8', 'Nouvelle posologie'], ['#6f42c1', 'Observations'], ['#000', 'Nouveau prélèvement']];
+    if (etat.eq && affEq) leg.splice(1, 0, ['#adb5bd', 'Phase d’équilibre']);
+    if (opts.ligneSup) leg.push(['rgba(76,175,80,.9)', 'Cible max. continu (' + c.ymaxContinu + ' ' + U() + ')']);
+    if (bande) leg.push(['rgba(0,102,204,.3)', 'Incertitude à 90 %']);
+    monter(zone, grapheSvg(null, opts), opts, leg);
+  }
+  $('aff-eq').addEventListener('change', function () { grapheStp(); });
+  $('aff-incert').addEventListener('change', function () { grapheStp(); });
+
+  // ---------- A priori ----------
+  function intervalleCmin(m, p, D, duree, cible) {
+    var demi = M.demiVie(m, p);
+    function creux(tau) { var n = Math.max(12, Math.ceil(10 * demi / tau) + 2), ds = []; for (var k = 0; k < n; k++) ds.push({ t: k * tau, montant: D, duree: duree, voie: VOIE() }); return M.simuler(m, p, ds, [n * tau - 1e-6])[0]; }
+    var a = Math.max(duree + 0.1, 0.5), b = 96;
+    if (creux(a) < cible) return a; if (creux(b) > cible) return b;
+    for (var i = 0; i < 60; i++) { var mid = (a + b) / 2; if (creux(mid) > cible) a = mid; else b = mid; }
+    return (a + b) / 2;
+  }
+  $('calculer-priori').addEventListener('click', function () {
+    var c = mol(), duree = dureeSaisie('p-duree'), freq = nb($('p-freq').value), tPlvt = nb($('p-temps').value);
+    if (!(duree > 0 || oral()) || !(freq > 0) || !(tPlvt > 0)) { toast('Complète la durée de perfusion, la fréquence et le temps du prélèvement.', true); return; }
+    if (manquant()) { toast(manquant(), true); return; }
+    var cible = valeurCible('priori'); if (!(cible > 0)) { toast('Renseigne l’objectif thérapeutique.', true); return; }
+    var covV = nb($('p-cov').value); if (!(covV > 0)) covV = c.covariable.defaut;
+    var cov = covObjet(covV), mods = modelesChoisis(), ii = 24 / freq;
+    var schema = function (D) { var ds = [], n = Math.floor((tPlvt + 24) / ii); for (var k = 0; k <= n; k++) ds.push({ t: k * ii, montant: D, duree: duree, voie: VOIE() }); return ds; };
+    if (mods.some(function (m) { return !parametresCalculables(m, cov); })) { toast('Paramètres du modèle non calculables avec ces covariables (voir la note du modèle).', true); return; }
+    var res = mods.map(function (m) { return M.estimer(m, cov, [], []); });
+    var dose = Math.max(0, Math.round(cible / (res.reduce(function (s, r) { return s + M.simuler(r.modele, r.param, schema(1), [tPlvt])[0]; }, 0) / res.length)));
+    var ref = res[0], p = ref.param, inter = Math.round(intervalleCmin(ref.modele, p, dose, duree, cible));
+    etat.resultatsPriori = { res: res, dose: dose, cible: cible, tPlvt: tPlvt, duree: duree, ii: ii, freq: freq, inter: inter, schema: schema, cov: covV };
+    var demi = M.demiVie(ref.modele, p);
+    $('details-priori').innerHTML = '<div class="t">ESTIMATION A PRIORI (POPULATION)</div>Modèle utilisé : ' + res.map(function (r) { return r.modele.nom; }).join(' + ') +
+      texteCalcul(cov).map(function (l) { return '<br>' + l + ' (calculé)'; }).join('') +
+      '<br>Dose optimale calculée : ' + dose + ' mg<br>Concentration prédite à t=' + tPlvt + 'h : ' + arr(cible, 1) + ' ' + U() + (texteCible('priori') ? '<br>' + texteCible('priori') : '') +
+      '<div class="t">PARAMÈTRES INDIVIDUELS</div>Clairance (Cl) : ' + arr(p.CL, 2) + ' L/h<br>Volume central (Vc) : ' + arr(p.V1, 2) + ' L<br>' +
+      (p.V2 != null ? 'Volume périphérique (Vp) : ' + arr(p.V2, 2) + ' L<br>Clairance inter-compartimentale (Q) : ' + arr(p.Q, 2) + ' L/h<br>' : '') +
+      parametresSupp(p) + '<span class="demi">' + texteDemi(p, demi) + '</span><div class="t">EXPOSITION (AUC 0-24h)</div>AUC estimée : <b style="color:#0066cc">' + arr(FU() * dose * freq * (p.Ftot == null ? 1 : p.Ftot) / p.CL, 0) + ' ' + UA() + '</b>';
+    $('reco-priori').innerHTML = '<div class="reco"><h5>RECOMMANDATION POSOLOGIQUE</h5><div class="dose">Administrer ' + dose + ' mg</div><div>' + frequence(inter) + '</div><div style="margin-top:4px">' + texteVoie(duree) + '</div></div>';
+    dessinerGraphePriori($('graphe-priori'), 520, 440); $('copier-priori').hidden = false; toast('Calcul terminé !');
+  });
+  function dessinerGraphePriori(zone, W, H) {
+    var R = etat.resultatsPriori; if (!R) return; var c = mol();
+    var tMax = R.tPlvt + 24, grille = []; for (var i = 0; i <= 400; i++) grille.push(tMax * i / 400);
+    var ds = R.schema(R.dose); grille = grille.concat(ds.map(function (x) { return x.t + x.duree; })).filter(function (t) { return t <= tMax; }).sort(function (a, b) { return a - b; });
+    var conc = grille.map(function () { return 0; });
+    R.res.forEach(function (r) { M.simuler(r.modele, r.param, ds, grille).forEach(function (v, k) { conc[k] += v / R.res.length; }); });
+    var opts = { W: W, H: H, tMin: 0, tMax: tMax, yMax: Math.max(c.ymax * 1.15, Math.max.apply(null, conc) * 1.05), zone: [c.ymin, c.ymax], ligneSup: (c.ymaxContinu && R.duree >= 24) ? c.ymaxContinu : null,
+      traces: [{ nom: 'A priori', couleur: '#17a2b8', pts: grille.map(function (t, k) { return [t, conc[k]]; }) }], verticale: R.tPlvt, points: [] };
+    var leg = [['#17a2b8', 'Cinétique estimée'], ['rgba(76,175,80,.6)', 'Zone cible'], ['#000', 'Temps du prélèvement']];
+    if (opts.ligneSup) leg.push(['rgba(76,175,80,.9)', 'Cible max. continu (' + c.ymaxContinu + ' ' + U() + ')']);
+    monter(zone, grapheSvg(null, opts), opts, leg);
+  }
+
+  // ---------- Effacer, onglets, agrandir ----------
+  // Remise à zéro de la carte patient (sexe, âge, poids, taille, albumine, cases Oui/Non)
+  function effacerPatient() {
+    ['age', 'poids', 'taille', 'albumine'].forEach(function (id) { $(id).value = ''; });
+    etat.sexe = 'H'; document.querySelectorAll('[data-sexe]').forEach(function (x) { x.classList.toggle('actif', x.dataset.sexe === 'H'); });
+    Object.keys(etat.binaires).forEach(function (k) { etat.binaires[k] = 0; });
+    document.querySelectorAll('[data-binaire]').forEach(function (x) { x.classList.toggle('actif', x.dataset.val === '0'); });
+    majClcg();
+  }
+  function reinitStp() {
+    $('d-voie').value = 'PO'; majVoieDose();
+    etat.lignes = []; etat.ref = null; etat.eq = null; etat.resultatsStp = null; $('zone-eq').hidden = true; majSigneEq();
+    ['n-duree', 'n-dose-date', 'n-dose-heure', 'n-plvt-date', 'n-plvt-heure', 'n-dose-temps', 'n-plvt-temps', 'd-dose', 'd-duree', 'd-cov', 'c-conc', 'c-cov', 'd-date', 'd-heure', 'c-date', 'c-heure', 'd-temps', 'c-temps', 'eq-dose', 'eq-intervalle', 'eq-duree'].forEach(function (id) { $(id).value = ''; });
+    $('eq-nb').value = 2; etat.objectif.stp = 'Concentration'; document.querySelectorAll('[data-objectif="stp"] button').forEach(function (b) { b.classList.toggle('actif', b.dataset.val === 'Concentration'); });
+    majCibles(); dessinerTableau(); afficherConsignesStp(); $('graphe-stp').innerHTML = '<div class="note centre" style="padding:80px 0">Aucune donnée à afficher</div>';
+  }
+  function reinitPriori() {
+    $('copier-priori').hidden = true;
+    ['p-duree', 'p-freq', 'p-temps', 'p-cov'].forEach(function (id) { $(id).value = ''; }); etat.resultatsPriori = null; etat.objectif.priori = 'Concentration';
+    document.querySelectorAll('[data-objectif="priori"] button').forEach(function (b) { b.classList.toggle('actif', b.dataset.val === 'Concentration'); });
+    majCibles(); $('details-priori').innerHTML = consignes(false); $('reco-priori').innerHTML = ''; $('graphe-priori').innerHTML = '<div class="note centre" style="padding:80px 0">Aucune donnée à afficher</div>';
+  }
+  // Tout effacer : patient, tableau STP, équilibre, nouvelle posologie, a priori et résultats (molécule et mode de saisie conservés)
+  function toutEffacer() { effacerPatient(); reinitStp(); reinitPriori(); toast('Toutes les données sont effacées.'); }
+  $('tout-effacer').addEventListener('click', toutEffacer);
+  // Effacer de « Nouvelle posologie à estimer » : uniquement cette carte et les résultats (patient et tableau conservés)
+  $('effacer-stp').addEventListener('click', function () {
+    ['n-duree', 'n-dose-date', 'n-dose-heure', 'n-plvt-date', 'n-plvt-heure', 'n-dose-temps', 'n-plvt-temps'].forEach(function (id) { $(id).value = ''; });
+    etat.objectif.stp = 'Concentration'; document.querySelectorAll('[data-objectif="stp"] button').forEach(function (b) { b.classList.toggle('actif', b.dataset.val === 'Concentration'); });
+    etat.resultatsStp = null; etat.ref = null; majCibles(); afficherConsignesStp();
+    $('graphe-stp').innerHTML = '<div class="note centre" style="padding:80px 0">Aucune donnée à afficher</div>';
+    toast('Nouvelle posologie effacée (patient et tableau conservés).');
+  });
+  // Effacer de l'onglet a priori : uniquement la carte « Posologie à estimer » et les résultats
+  $('effacer-priori').addEventListener('click', function () { reinitPriori(); toast('Posologie a priori effacée (patient conservé).'); });
+  document.querySelectorAll('.onglet').forEach(function (b) { b.addEventListener('click', function () {
+    document.querySelectorAll('.onglet').forEach(function (x) { x.classList.toggle('actif', x === b); });
+    $('onglet-stp').hidden = b.dataset.onglet !== 'stp'; $('onglet-priori').hidden = b.dataset.onglet !== 'priori';
+  }); });
+  document.querySelectorAll('[data-agrandir]').forEach(function (b) { b.addEventListener('click', function () {
+    var stp = b.dataset.agrandir === 'stp'; if (stp ? !etat.resultatsStp : !etat.resultatsPriori) return;
+    $('modal-titre').textContent = stp ? 'Profil pharmacocinétique individualisé' : 'Profil pharmacocinétique a priori';
+    $('modal').classList.add('ouvert'); if (stp) dessinerGrapheStp($('modal-graphe'), 1250, 620); else dessinerGraphePriori($('modal-graphe'), 1250, 620);
+  }); });
+  $('modal-fermer').addEventListener('click', function () { $('modal').classList.remove('ouvert'); });
+  $('modal').addEventListener('click', function (e) { if (e.target === $('modal')) $('modal').classList.remove('ouvert'); });
+
+  majCibles(); majMolecule(); majClcg();
+  document.querySelector('[data-mode="heures"]').click(); // saisie en heures depuis T0 par défaut
+  if (window.ERREURS_CONVERSION && window.ERREURS_CONVERSION.length) toast('Modèle non chargé : ' + window.ERREURS_CONVERSION.join(' ; '), true);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1493 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Veille du jour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#F2F3EF; --card:#FFFFFF; --ink:#16181D; --muted:#4A4F59;
+  --rule:#DADDD6; --accent:#2D4FC4; --dark:#16181D; --dark-2:#262A33; --dark-muted:#C3C7CF;
+  --up:#1F6F4A; --down:#A3321F;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#121419; --card:#1B1E25; --ink:#ECEDE8; --muted:#A9AEB8;
+    --rule:#2C313B; --accent:#8EA6FF; --dark:#0B0D11; --dark-2:#1F232B; --dark-muted:#A9AEB8;
+    --up:#6FCF9B; --down:#FF9A85; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#121419; --card:#1B1E25; --ink:#ECEDE8; --muted:#A9AEB8;
+  --rule:#2C313B; --accent:#8EA6FF; --dark:#0B0D11; --dark-2:#1F232B; --dark-muted:#A9AEB8;
+  --up:#6FCF9B; --down:#FF9A85; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:'IBM Plex Sans',system-ui,sans-serif}
+.wrap{max-width:1320px;margin:0 auto;padding:32px 20px 56px;display:flex;flex-direction:column;gap:24px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px;padding-bottom:24px;border-bottom:2px solid var(--ink)}
+.date{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{margin:6px 0;font-family:'Space Grotesk',sans-serif;font-size:clamp(36px,6vw,52px);line-height:1;font-weight:700;letter-spacing:-.02em}
+.now{display:flex;align-items:center;gap:16px;background:var(--card);border-radius:16px;padding:14px 20px}
+.now-temp{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:600;line-height:1}
+.now-label{font-size:14px;color:var(--muted)}
+.cols{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+main{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:24px}
+aside{flex:1 1 340px;min-width:0;display:flex;flex-direction:column;gap:24px}
+.card{background:var(--card);border-radius:18px;padding:20px 24px;display:flex;flex-direction:column;gap:10px}
+h2{margin:0;font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700}
+.soon{font-size:15px;line-height:1.5;color:var(--muted);padding-top:12px;border-top:1px solid var(--rule)}
+.weather{background:var(--dark);color:#F2F3EF}
+.days{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.day{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 2px;border-radius:12px;background:var(--dark-2);text-align:center}
+.day-name{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--dark-muted);white-space:nowrap}
+.day-icon svg{width:24px;height:24px;display:block}
+.day-max{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600}
+.day-min{font-size:13px;color:var(--dark-muted)}
+.day-rain{font-size:11px;color:var(--dark-muted)}
+.now-icon{color:var(--accent);display:flex}
+.now-icon svg{width:40px;height:40px}
+.advice{font-size:14px;line-height:1.5;color:var(--dark-muted)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--rule)}
+.row-name{font-size:15px;font-weight:500;white-space:nowrap}
+.row-vals{display:flex;align-items:baseline;gap:12px}
+.mono{font-family:'IBM Plex Mono',monospace;font-size:15px}
+.chg{min-width:72px;text-align:right;font-size:14px}
+.chg.up{color:var(--up)} .chg.down{color:var(--down)} .chg.flat{color:var(--muted)}
+.news{display:flex;gap:16px;align-items:flex-start;padding-top:14px;border-top:1px solid var(--rule);text-decoration:none;color:inherit}
+.news:hover .news-title{color:var(--accent)}
+.news-tag{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);min-width:92px;padding-top:3px;text-transform:uppercase;letter-spacing:.04em}
+.news-title{font-size:17px;font-weight:600;line-height:1.35}
+.news-sum{font-size:14px;line-height:1.5;color:var(--muted);margin-top:4px}
+.match{display:flex;flex-direction:column;gap:4px;padding:12px 0;border-top:1px solid var(--rule)}
+.match-comp{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.match-line{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:15px;font-weight:500}
+.subhead{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;margin-top:12px}
+.rank{display:flex;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--rule);font-size:15px}
+.rank-n{font-family:'IBM Plex Mono',monospace;color:var(--muted);min-width:20px}
+.rank-team{flex:1;font-weight:500}
+@media (max-width:560px){.news{flex-direction:column;gap:4px}.news-tag{min-width:0}}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.toggle{flex:none;width:32px;height:32px;border-radius:999px;border:1px solid var(--rule);background:transparent;color:inherit;font-family:'IBM Plex Mono',monospace;font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.toggle:hover{border-color:currentColor}
+.toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.weather .toggle{border-color:#3A3F4A}
+.card.collapsed{gap:0}
+.card.collapsed > :not(.card-head){display:none}
+.note{font-size:13px;color:var(--muted);padding-top:12px;border-top:1px solid var(--rule)}
+.head-links{display:flex;flex-wrap:wrap;align-items:center;gap:16px}
+.date-btn{background:none;border:none;padding:0 0 2px;margin:0;cursor:pointer;color:var(--muted);border-bottom:1px dashed currentColor;display:inline-flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.date-btn:hover{color:var(--accent)}
+.date-btn svg{width:14px;height:14px}
+.date-btn.has-note::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.outlook{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);text-decoration:none}
+.outlook:hover{text-decoration:underline}
+dialog{border:none;border-radius:20px;padding:24px;width:min(520px,calc(100vw - 32px));background:var(--card);color:var(--ink)}
+dialog::backdrop{background:rgba(10,12,16,.45)}
+.ag-head{display:flex;align-items:center;gap:8px}
+.ag-head h2{flex:1;text-align:center;font-size:20px}
+.ag-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin:16px 0}
+.ag-dow{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);text-align:center;padding:4px 0}
+.ag-day{aspect-ratio:1;border:none;border-radius:10px;background:transparent;color:inherit;font:inherit;font-size:15px;cursor:pointer;position:relative}
+.ag-day:hover{background:var(--ground)}
+.ag-day.is-today{font-weight:700;color:var(--accent)}
+.ag-day.is-sel{background:var(--ink);color:var(--card)}
+.ag-day.has-note::after{content:"";position:absolute;bottom:5px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--accent)}
+.ag-day.is-sel.has-note::after{background:var(--card)}
+.ag-label{display:block;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;margin-bottom:8px}
+#ag-note{width:100%;border:1px solid var(--rule);border-radius:12px;padding:12px;font:inherit;font-size:15px;line-height:1.5;background:var(--ground);color:var(--ink);resize:vertical}
+.ag-foot{font-size:12px;color:var(--muted);margin-top:8px}
+.favs{display:flex;flex-wrap:wrap;gap:8px}
+.fav{padding:8px 14px;border-radius:999px;background:var(--ground);color:var(--ink);text-decoration:none;font-size:14px;font-weight:500}
+.fav:hover{color:var(--accent)}
+.note-top{font-size:14px;color:var(--muted)}
+.top{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:14px;background:var(--ground)}
+.top-link{font-size:15px;font-weight:600;line-height:1.35;color:var(--ink);text-decoration:none}
+.top-link:hover{color:var(--accent)}
+.paper{display:flex;flex-direction:column;gap:8px;padding-top:18px;border-top:1px solid var(--rule)}
+.paper-meta{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.badge{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;padding:4px 10px;border-radius:999px}
+.badge.p3{background:var(--ink);color:var(--card)}
+.badge.p2{background:#E4E8F7;color:#1F3FA8}
+.badge.p1{background:var(--ground);color:var(--muted)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .badge.p2{background:#26305A;color:#C9D4FF}}
+:root[data-theme="dark"] .badge.p2{background:#26305A;color:#C9D4FF}
+.paper-theme{font-size:13px;color:var(--muted)}
+.paper-title{font-size:18px;font-weight:600;line-height:1.35;color:var(--ink);text-decoration:none}
+.paper-title:hover{color:var(--accent)}
+.paper-src{font-size:13px;color:var(--muted)}
+.paper-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.lbl{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.lbl.acc{color:var(--accent)}
+.txt{font-size:15px;line-height:1.5;margin-top:4px}
+@media (max-width:560px){.paper-grid{grid-template-columns:1fr}}
+.team{display:flex;flex-direction:column}
+.match.next .match-comp{color:var(--accent)}
+.rank-side{font-size:13px;color:var(--muted)}
+a.row{color:inherit;text-decoration:none}
+a.row:hover .row-name{color:var(--accent)}
+.card-link{align-self:flex-start;font-size:14px;font-weight:500;color:var(--accent);text-decoration:none;margin-top:4px}
+.card-link:hover{text-decoration:underline}
+.weather .card-link{color:#C9D4FF}
+.as-btn{background:none;border:none;padding:0;cursor:pointer;font:inherit}
+.reg-form{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.reg-form label,.reg-l{font-size:13px;font-weight:600;color:var(--muted);margin-top:8px}
+.reg-form input{width:100%;border:1px solid var(--rule);border-radius:10px;padding:10px 12px;font:inherit;font-size:15px;background:var(--ground);color:var(--ink)}
+.reg-fav{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) minmax(0,1fr) auto;gap:6px;align-items:center}
+.fleches{display:flex;gap:4px}
+.reg-btn.mini{padding:8px 10px}
+@media (max-width:560px){.reg-fav{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto}.reg-fav input:nth-child(2){grid-column:1 / -1;grid-row:2}}
+.reg-btn{border:1px solid var(--rule);background:transparent;color:inherit;border-radius:10px;padding:10px 14px;font:inherit;font-size:14px;cursor:pointer}
+.reg-btn:hover{border-color:currentColor}
+.reg-save{background:var(--ink);color:var(--card);border-color:var(--ink);font-weight:600;margin-top:12px}
+.reg-token{font-size:14px;color:var(--muted);margin-top:8px}
+.reg-token summary{cursor:pointer;font-weight:600}
+.reg-token p{line-height:1.5}
+.reg-status{font-size:14px;line-height:1.5;min-height:1.5em}
+.rank.is-suivi .rank-team,.rank.is-suivi .rank-n{color:var(--accent);font-weight:700}
+.paper-grid.solo{grid-template-columns:1fr}
+.fav-cat{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+.subhead.first{margin-top:0}
+.sport-title{font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;margin-top:16px;padding-top:14px;border-top:2px solid var(--ink)}
+.sport-title.first{margin-top:0;padding-top:0;border-top:none}
+.txt.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
+.txt.clamp.ouvert{display:block;-webkit-line-clamp:unset}
+.more{border-top:1px solid var(--rule);padding-top:12px}
+.more > summary{cursor:pointer;font-size:14px;font-weight:600;color:var(--accent);list-style:none}
+.more > summary::-webkit-details-marker{display:none}
+.more[open] > summary{margin-bottom:4px}
+.paper{gap:6px;padding-top:14px}
+.paper-title{font-size:16px}
+.paper-meta .paper-src{margin-left:auto}
+.txt{font-size:14px}
+.hint{font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:400;color:var(--muted);margin-left:6px}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.tile{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:14px;background:var(--ground);color:var(--ink);text-decoration:none}
+a.tile:hover{outline:1px solid var(--accent)}
+.tile-name{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.tile-value{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;white-space:nowrap}
+.tile-chg{font-family:'IBM Plex Mono',monospace;font-size:13px}
+.tile-chg.up{color:var(--up)} .tile-chg.down{color:var(--down)} .tile-chg.flat{color:var(--muted);font-family:'IBM Plex Sans',sans-serif}
+.row-name.wrap{white-space:normal;font-weight:400;font-size:14px;line-height:1.4}
+.zone{display:inline-block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--accent);margin-right:4px}
+.avis{display:flex;gap:6px;flex-wrap:wrap}
+.avis-btn{border:1px solid var(--rule);background:transparent;color:var(--muted);border-radius:999px;padding:4px 12px;font:inherit;font-size:12px;cursor:pointer}
+.avis-btn:hover{border-color:currentColor}
+.avis-btn.choisi[data-avis="1"]{background:var(--up);border-color:var(--up);color:#fff}
+.avis-btn.choisi[data-avis="-1"]{background:var(--muted);border-color:var(--muted);color:var(--card)}
+.todo-add{display:flex;gap:6px}
+.todo-add input,.pane input,.pane select{width:100%;border:1px solid var(--rule);border-radius:10px;padding:9px 12px;font:inherit;font-size:15px;background:var(--ground);color:var(--ink)}
+.todo{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.todo li{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--rule);font-size:15px}
+.todo li.fait span{text-decoration:line-through;color:var(--muted)}
+.todo li span{flex:1}
+.todo li button{border:none;background:none;color:var(--muted);cursor:pointer;font-size:16px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{border:1px solid var(--rule);background:transparent;color:inherit;border-radius:999px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
+.tab.actif{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.pane{display:none;flex-direction:column;gap:10px}
+.pane.actif{display:flex}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.form-grid label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--muted)}
+.resultat{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;padding:10px 14px;border-radius:12px;background:var(--ground)}
+.reg-section{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;margin-top:18px;padding-top:12px;border-top:1px solid var(--rule)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer;color:var(--ink)}
+.chip input{margin:0;accent-color:var(--accent)}
+.reg-form select{width:100%;border:1px solid var(--rule);border-radius:10px;padding:10px 12px;font:inherit;font-size:15px;background:var(--ground);color:var(--ink)}
+.reg-fav-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) minmax(0,1fr) 120px;gap:6px;font-size:12px;font-weight:600;color:var(--muted)}
+@media (max-width:560px){.reg-fav-head{display:none}}
+.carb{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--rule);text-decoration:none;color:inherit}
+.carb:hover .carb-adr{color:var(--accent)}
+.carb-lieu{display:flex;flex-direction:column;gap:2px;min-width:0}
+.carb-adr{font-size:14px;line-height:1.35}
+.carb-prix{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;white-space:nowrap}
+.bandeau{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);max-width:min(560px,calc(100vw - 32px));background:var(--ink);color:var(--card);padding:12px 18px;border-radius:14px;font-size:14px;line-height:1.4;box-shadow:0 6px 24px rgba(0,0,0,.2);z-index:20}
+.badge-new{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--accent);color:var(--card)}
+.garder-btn{border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:999px;padding:4px 12px;font:inherit;font-size:12px;font-weight:600;cursor:pointer;margin-left:auto}
+.garder-btn.garde{background:var(--accent);color:var(--card)}
+.biblio-outils{display:flex;flex-wrap:wrap;gap:8px}
+.biblio-outils input{flex:1 1 220px;border:1px solid var(--rule);border-radius:10px;padding:9px 12px;font:inherit;font-size:15px;background:var(--ground);color:var(--ink)}
+.biblio-item{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-top:1px solid var(--rule)}
+.biblio-texte{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.biblio-titre{font-size:15px;font-weight:600;line-height:1.35;color:var(--ink);text-decoration:none}
+.biblio-titre:hover{color:var(--accent)}
+.ref-resultats:empty{display:none}
+.ref-item{display:block;padding:8px 0;border-top:1px solid var(--rule);text-decoration:none;color:var(--ink)}
+.ref-item:hover .ref-nom{color:var(--accent)}
+.ref-nom{font-size:15px;font-weight:600;line-height:1.35}
+.ref-info{font-size:13px;color:var(--muted)}
+.ref-vide{font-size:14px;color:var(--muted)}
+.ref-complet{font-size:14px;color:var(--accent);text-decoration:none;align-self:flex-start}
+.ref-complet:hover{text-decoration:underline}
+.ref-poso{display:inline-block;font-size:13px;color:var(--accent);text-decoration:none;margin:0 14px 8px 0}
+.ref-poso:hover{text-decoration:underline}
+.biblio-suppr{border:none;background:none;color:var(--muted);font-size:18px;cursor:pointer;padding:0 4px}
+.recherche{display:flex;flex-direction:column;gap:8px;margin-top:14px;max-width:640px}
+.recherche input{border:1px solid var(--rule);border-radius:12px;padding:11px 14px;font:inherit;font-size:16px;background:var(--card);color:var(--ink)}
+.moteurs{display:flex;flex-wrap:wrap;gap:6px}
+.moteur{border:1px solid var(--rule);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer}
+.moteur:hover{border-color:var(--accent);color:var(--accent)}
+.nuancier{display:flex;flex-wrap:wrap;gap:8px}
+.pastille{width:34px;height:34px;border-radius:50%;border:3px solid transparent;cursor:pointer}
+.pastille.choisie{border-color:var(--ink)}
+.ordre{display:flex;flex-direction:column;gap:4px}
+.ordre-ligne{display:flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--rule);border-radius:10px;font-size:14px}
+.ordre-ligne span{flex:1}
+.ordre-col{font-size:12px;font-weight:600;color:var(--muted);margin-top:6px}
+.outlook.as-btn{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.reg-btn:disabled{opacity:.35;cursor:default}
+.news-heure{display:block;margin-top:4px;font-size:11px;letter-spacing:0;text-transform:none;color:var(--muted)}
+a.moteur{text-decoration:none;display:inline-block}
+.sous{border-top:1px solid var(--rule)}
+.sous > summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:2px;padding:12px 28px 12px 0;position:relative}
+.sous > summary::-webkit-details-marker{display:none}
+.sous > summary::after{content:"+";position:absolute;right:0;top:12px;font-family:'IBM Plex Mono',monospace;font-size:18px;color:var(--muted)}
+.sous[open] > summary::after{content:"−"}
+.sous-titre{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700}
+.sous-resume{font-size:13px;color:var(--muted);line-height:1.4}
+.sous[open]{padding-bottom:8px}
+.conseil{margin-top:6px;font-size:13px;font-weight:600;color:var(--accent);line-height:1.35}
+footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <div class="head-links">
+      <button class="date-btn" id="date-btn" type="button" aria-haspopup="dialog">{{date}}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path></svg></button>
+      <a class="outlook" href="https://outlook.office.com/calendar/" target="_blank" rel="noopener">Mon agenda Outlook ↗</a>
+      <button type="button" class="outlook as-btn" data-open-reglages>Réglages</button>
+    </div>
+    <h1>Veille du jour</h1>
+    <form class="recherche" id="recherche" role="search">
+      <input type="search" id="recherche-champ" placeholder="Rechercher…" aria-label="Rechercher">
+      <div class="moteurs">
+        <button type="submit" class="moteur" data-url="https://www.google.com/search?q=">Google</button>
+        <button type="submit" class="moteur" data-url="https://pubmed.ncbi.nlm.nih.gov/?term=">PubMed</button>
+        <button type="submit" class="moteur" data-url="https://www.google.com/search?q=site%3Aansm.sante.fr+">ANSM</button>
+        <button type="submit" class="moteur" data-url="https://www.google.com/search?q=site%3Abase-donnees-publique.medicaments.gouv.fr+">Médicaments</button>
+        <button type="submit" class="moteur" data-url="https://fr.wikipedia.org/w/index.php?search=">Wikipédia</button>
+        <button type="submit" class="moteur" data-url="https://www.youtube.com/results?search_query=">YouTube</button>
+      </div>
+    </form>
+  </div>
+  <div class="now">
+    <span class="now-icon" id="now-icon">{{{now_icon}}}</span>
+    <div>
+      <div class="now-temp" id="now-temp">{{now_temp}}</div>
+      <div class="now-label" id="now-label">{{now_label}}</div>
+    </div>
+  </div>
+</header>
+
+<div class="cols">
+  <main>
+    
+    <section class="card" data-section="veille" data-open>
+      <div class="card-head"><h2>Veille scientifique · pharmacologie</h2><button class="toggle" type="button">−</button></div>
+      {{#has_veille_note}}<div class="note-top">{{veille_note}}</div>{{/has_veille_note}}
+      {{#has_top}}
+      <div class="top">
+        <div class="lbl">À lire en priorité</div>
+        {{#top}}<a class="top-link" href="{{lien}}" target="_blank" rel="noopener">{{titre}}</a>{{/top}}
+      </div>
+      {{/has_top}}
+      {{#veille}}
+        <article class="paper">
+          <div class="paper-meta">{{#nouveau}}<span class="badge-new">Nouveau</span>{{/nouveau}}{{#has_badge}}<span class="badge p{{prio}}">{{badge}}</span>{{/has_badge}}<span class="paper-theme">{{theme}}</span><span class="paper-src">{{source}}</span></div>
+          <a class="paper-title" href="{{lien}}" target="_blank" rel="noopener">{{titre}}</a>
+          {{#has_brief}}
+          <div class="paper-grid{{^has_pour_toi}} solo{{/has_pour_toi}}">
+            <div><div class="lbl">{{brief_label}}</div><div class="txt clamp" title="Cliquer pour tout lire">{{brief}}</div></div>
+            {{#has_pour_toi}}<div><div class="lbl acc">Pour toi</div><div class="txt clamp">{{pour_toi}}</div></div>{{/has_pour_toi}}
+          </div>
+          {{/has_brief}}
+          <div class="avis" data-pmid="{{pmid}}">
+            <button type="button" class="avis-btn" data-avis="1">Utile</button>
+            <button type="button" class="avis-btn" data-avis="-1">Pas pour moi</button>
+            <button type="button" class="garder-btn" data-pmid="{{pmid}}" data-titre="{{titre}}" data-source="{{source}}" data-lien="{{lien}}" data-theme="{{theme}}">À garder</button>
+          </div>
+        </article>
+      {{/veille}}
+      {{^veille}}<div class="soon">Aucun nouvel article trouvé ces 7 derniers jours.</div>{{/veille}}
+      {{#has_suite}}
+      <details class="more">
+        <summary>Afficher les {{n_suite}} autres articles</summary>
+        {{#has_suite_nouveaux}}<div class="lbl" style="margin-top:8px">Nouveaux depuis hier</div>{{/has_suite_nouveaux}}
+        {{#veille_suite}}
+        <article class="paper">
+          <div class="paper-meta">{{#nouveau}}<span class="badge-new">Nouveau</span>{{/nouveau}}{{#has_badge}}<span class="badge p{{prio}}">{{badge}}</span>{{/has_badge}}<span class="paper-theme">{{theme}}</span><span class="paper-src">{{source}}</span></div>
+          <a class="paper-title" href="{{lien}}" target="_blank" rel="noopener">{{titre}}</a>
+          {{#has_brief}}
+          <div class="paper-grid{{^has_pour_toi}} solo{{/has_pour_toi}}">
+            <div><div class="lbl">{{brief_label}}</div><div class="txt clamp" title="Cliquer pour tout lire">{{brief}}</div></div>
+            {{#has_pour_toi}}<div><div class="lbl acc">Pour toi</div><div class="txt clamp">{{pour_toi}}</div></div>{{/has_pour_toi}}
+          </div>
+          {{/has_brief}}
+          <div class="avis" data-pmid="{{pmid}}">
+            <button type="button" class="avis-btn" data-avis="1">Utile</button>
+            <button type="button" class="avis-btn" data-avis="-1">Pas pour moi</button>
+            <button type="button" class="garder-btn" data-pmid="{{pmid}}" data-titre="{{titre}}" data-source="{{source}}" data-lien="{{lien}}" data-theme="{{theme}}">À garder</button>
+          </div>
+        </article>
+        {{/veille_suite}}
+        {{#has_anciens}}<div class="lbl" style="margin-top:12px">Parus plus tôt cette semaine</div>{{/has_anciens}}
+        {{#veille_anciens}}
+        <article class="paper">
+          <div class="paper-meta">{{#nouveau}}<span class="badge-new">Nouveau</span>{{/nouveau}}{{#has_badge}}<span class="badge p{{prio}}">{{badge}}</span>{{/has_badge}}<span class="paper-theme">{{theme}}</span><span class="paper-src">{{source}}</span></div>
+          <a class="paper-title" href="{{lien}}" target="_blank" rel="noopener">{{titre}}</a>
+          {{#has_brief}}
+          <div class="paper-grid{{^has_pour_toi}} solo{{/has_pour_toi}}">
+            <div><div class="lbl">{{brief_label}}</div><div class="txt clamp" title="Cliquer pour tout lire">{{brief}}</div></div>
+            {{#has_pour_toi}}<div><div class="lbl acc">Pour toi</div><div class="txt clamp">{{pour_toi}}</div></div>{{/has_pour_toi}}
+          </div>
+          {{/has_brief}}
+          <div class="avis" data-pmid="{{pmid}}">
+            <button type="button" class="avis-btn" data-avis="1">Utile</button>
+            <button type="button" class="avis-btn" data-avis="-1">Pas pour moi</button>
+            <button type="button" class="garder-btn" data-pmid="{{pmid}}" data-titre="{{titre}}" data-source="{{source}}" data-lien="{{lien}}" data-theme="{{theme}}">À garder</button>
+          </div>
+        </article>
+        {{/veille_anciens}}
+      </details>
+      {{/has_suite}}
+    </section>
+    <section class="card" data-section="referentiel" data-open>
+      <div class="card-head"><h2>Référentiel STP</h2><button class="toggle" type="button">−</button></div>
+      <div class="biblio-outils">
+        <input type="search" id="ref-recherche" placeholder="Rechercher une molécule…" aria-label="Rechercher une molécule dans le référentiel" autocomplete="off">
+      </div>
+      <div id="ref-resultats" class="ref-resultats" aria-live="polite"></div>
+      <a class="ref-complet" href="referentiel.html">Ouvrir le référentiel complet ↗</a>
+      <a class="ref-complet" href="posologie.html">Adaptation de posologie ↗</a>
+    </section>
+    <section class="card" data-section="actu">
+      <div class="card-head"><h2>Actualité</h2><button class="toggle" type="button">−</button></div>
+      {{#news}}
+      <a class="news" href="{{link}}" target="_blank" rel="noopener">
+        <span class="news-tag">{{tag}}<span class="news-heure" data-ts="{{ts}}">{{heure}}</span></span>
+        <div>
+          <div class="news-title">{{title}}</div>
+          <div class="news-sum">{{summary}}</div>
+        </div>
+      </a>
+      {{/news}}
+      {{#has_news_suite}}
+      <details class="more">
+        <summary>Afficher {{n_news_suite}} autres actualités</summary>
+        {{#news_suite}}
+      <a class="news" href="{{link}}" target="_blank" rel="noopener">
+        <span class="news-tag">{{tag}}<span class="news-heure" data-ts="{{ts}}">{{heure}}</span></span>
+        <div>
+          <div class="news-title">{{title}}</div>
+          <div class="news-sum">{{summary}}</div>
+        </div>
+      </a>
+      {{/news_suite}}
+      </details>
+      {{/has_news_suite}}
+      {{^news}}<div class="soon">Les actualités n'ont pas pu être récupérées ce matin.</div>{{/news}}
+    </section>
+
+    <section class="card" data-section="biblio">
+      <div class="card-head"><h2>Ma bibliothèque</h2><button class="toggle" type="button">−</button></div>
+      <div class="biblio-outils">
+        <input type="search" id="biblio-recherche" placeholder="Rechercher dans mes articles gardés…" aria-label="Rechercher dans la bibliothèque">
+        <button type="button" class="reg-btn" id="biblio-export">Exporter pour Zotero (.ris)</button>
+      </div>
+      <div class="note-top" id="biblio-compte">{{n_bibliotheque}} article(s) gardé(s)</div>
+      <div id="biblio-liste">
+        {{#bibliotheque}}
+        <div class="biblio-item" data-pmid="{{pmid}}" data-titre="{{titre}}" data-source="{{source}}" data-lien="{{lien}}" data-theme="{{theme}}" data-ajoute="{{ajoute}}">
+          <div class="biblio-texte">
+            <a class="biblio-titre" href="{{lien}}" target="_blank" rel="noopener">{{titre}}</a>
+            <div class="paper-src">{{theme}} · {{source}} · gardé le {{ajoute}}</div>
+          </div>
+          <button type="button" class="biblio-suppr" aria-label="Retirer de la bibliothèque">×</button>
+        </div>
+        {{/bibliotheque}}
+      </div>
+      {{^has_bibliotheque}}<div class="soon" id="biblio-vide">Clique sur « À garder » sous un article de la veille pour le ranger ici.</div>{{/has_bibliotheque}}
+    </section>
+
+    </main>
+
+  <aside>
+    <section class="card weather" data-section="meteo">
+      <div class="card-head"><h2>Météo des prochains jours</h2><button class="toggle" type="button">−</button></div>
+      <div class="days" id="days">
+        {{#days}}
+        <div class="day">
+          <div class="day-name">{{day}}</div>
+          <div class="day-icon">{{{icon}}}</div>
+          <div class="day-max">{{max}}</div>
+          <div class="day-min">{{min}}</div>
+          <div class="day-rain">{{rain}}</div>
+        </div>
+        {{/days}}
+      </div>
+      <div class="advice" id="advice">{{advice}}</div>
+      {{#has_air}}<div class="advice">{{air}}</div>{{/has_air}}
+      <a class="card-link" id="meteo-lien" href="{{meteo_lien}}" target="_blank" rel="noopener">Météo détaillée ↗</a>
+    </section>
+
+    <section class="card" data-section="favoris">
+      <div class="card-head"><h2>Favoris</h2><button class="toggle" type="button">−</button></div>
+      {{#favoris_groupes}}
+      <div class="fav-cat">{{categorie}}</div>
+      <div class="favs">
+        {{#liens}}<a class="fav" href="{{lien}}" target="_blank" rel="noopener">{{nom}}</a>
+        {{/liens}}
+      </div>
+      {{/favoris_groupes}}
+      {{^favoris_groupes}}<div class="soon">Aucun favori pour l'instant.</div>{{/favoris_groupes}}
+      <button type="button" class="card-link as-btn" data-open-reglages data-vers-favoris>Ajouter ou modifier des favoris</button>
+    </section>
+
+    <section class="card" data-section="taches">
+      <div class="card-head"><h2>À faire</h2><button class="toggle" type="button">−</button></div>
+      <div class="todo-add"><input id="todo-champ" type="text" placeholder="Ajouter une tâche…" aria-label="Nouvelle tâche"><button type="button" class="reg-btn" id="todo-ajout">Ajouter</button></div>
+      <ul class="todo" id="todo-liste"></ul>
+      <div class="note">Gardé sur cet appareil uniquement.</div>
+    </section>
+
+    <section class="card" data-section="invest">
+      <div class="card-head"><h2>Investissement</h2><button class="toggle" type="button">−</button></div>
+      <div class="subhead first">Bourse <span class="hint">clôture de la veille</span></div>
+      <div class="tiles">
+        {{#markets}}
+        <a class="tile" href="{{lien}}" target="_blank" rel="noopener">
+          <span class="tile-name">{{name}}</span>
+          <span class="tile-value">{{value}}</span>
+          <span class="tile-chg {{dir}}">{{change}}</span>
+        </a>
+        {{/markets}}
+      </div>
+      <div class="subhead">Cryptos <span class="hint">sur un jour, en euros</span></div>
+      <div class="tiles">
+        {{#cryptos}}
+        <a class="tile" href="{{lien}}" target="_blank" rel="noopener">
+          <span class="tile-name">{{name}}</span>
+          <span class="tile-value">{{value}}</span>
+          <span class="tile-chg {{dir}}">{{change}}</span>
+        </a>
+        {{/cryptos}}
+      </div>
+      <div class="subhead">Taux immobiliers · Île-de-France {{#has_taux}}<span class="hint">{{taux_mois}}</span>{{/has_taux}}</div>
+      {{#has_taux}}
+      <div class="tiles">
+        {{#taux}}<div class="tile"><span class="tile-name">{{profil}}</span><span class="tile-value">{{taux}}</span><span class="tile-chg flat">meilleurs profils</span></div>{{/taux}}
+        {{#has_moyenne}}<div class="tile"><span class="tile-name">Moyenne France</span><span class="tile-value">{{taux_moyenne}}</span><span class="tile-chg flat">sur 25 ans</span></div>{{/has_moyenne}}
+      </div>
+      {{/has_taux}}
+      {{^has_taux}}<div class="soon">Le baromètre n'a pas pu être lu ce matin.</div>{{/has_taux}}
+      <a class="card-link" href="{{taux_lien}}" target="_blank" rel="noopener">Baromètre CAFPI ↗</a>
+    </section>
+
+    <section class="card" data-section="trajet">
+      <div class="card-head"><h2>Trajet et carburant</h2><button class="toggle" type="button">−</button></div>
+      {{#has_trajets}}
+      <div class="tiles">
+        {{#trajets}}
+        <div class="tile"><span class="tile-name">{{libelle}}</span><span class="tile-value">{{duree}}</span><span class="tile-chg flat">{{details}}</span>{{#has_conseil}}<span class="conseil">{{conseil}}</span>{{/has_conseil}}</div>
+        {{/trajets}}
+      </div>
+      <div class="note">{{#trajet_trafic}}Temps de trajet avec le trafic au moment de la dernière mise à jour.{{/trajet_trafic}}{{^trajet_trafic}}Temps de référence, hors embouteillages.{{/trajet_trafic}} Itinéraire sans péage.</div>
+      {{/has_trajets}}
+      {{^has_trajets}}
+      {{#has_domicile}}<div class="soon">Le temps de trajet n'a pas pu être calculé ce matin.</div>{{/has_domicile}}
+      {{^has_domicile}}<div class="soon">Ajoute ton adresse dans les secrets GitHub pour voir ton temps de trajet.</div>{{/has_domicile}}
+      {{/has_trajets}}
+      <div class="subhead">Carburant le moins cher <span class="hint">{{carburant_nom}}, à 5 km</span></div>
+      {{#carburant}}
+      <a class="carb" href="{{lien}}" target="_blank" rel="noopener">
+        <span class="carb-lieu"><span class="zone">{{zone}}</span><span class="carb-adr">{{adresse}}</span><span class="paper-src">{{maj}}</span></span>
+        <span class="carb-prix">{{prix}}</span>
+      </a>
+      {{/carburant}}
+      {{^carburant}}<div class="soon">Les prix n'ont pas pu être récupérés ce matin.</div>{{/carburant}}
+    </section>
+<section class="card" data-section="sport">
+      <div class="card-head"><h2>Sport</h2><button class="toggle" type="button">−</button></div>
+      {{#sport_foot}}<details class="sous"><summary><span class="sous-titre">Football</span><span class="sous-resume">{{foot_resume}}</span></summary>
+      {{#foot}}
+      <div class="team">
+        <div class="subhead">{{equipe}}</div>
+        {{#resultats}}
+        <div class="match">
+          <div class="match-comp">{{comp}} · {{quand}}</div>
+          <div class="match-line"><span>{{affiche}}</span><span class="mono">{{score}}</span></div>
+        </div>
+        {{/resultats}}
+        {{#prochain}}
+        <div class="match next">
+          <div class="match-comp">Prochain match · {{comp}} · {{quand}}</div>
+          <div class="match-line"><span>{{affiche}}</span></div>
+        </div>
+        {{/prochain}}
+        {{#rien}}<div class="soon">Aucun match trouvé ces derniers jours ni dans les prochains.</div>{{/rien}}
+      </div>
+      {{/foot}}
+      {{#has_standings}}<div class="subhead">Classement Ligue des champions</div>{{/has_standings}}
+      {{#standings}}
+      <div class="rank{{#suivi}} is-suivi{{/suivi}}"><span class="rank-n">{{rank}}</span><span class="rank-team">{{team}}</span><span class="mono">{{pts}}</span></div>
+      {{/standings}}
+      <a class="card-link" href="https://www.lequipe.fr/Football/" target="_blank" rel="noopener">Toute l'actualité du football ↗</a></details>{{/sport_foot}}
+      {{#sport_f1}}<details class="sous"><summary><span class="sous-titre">Formule 1</span><span class="sous-resume">{{f1_resume}}</span></summary>
+      {{#has_f1_dernier}}
+      <div class="subhead">Dernier Grand Prix · {{f1_dernier_gp}}</div>
+      {{#f1_podium}}
+      <div class="rank"><span class="rank-n">{{pos}}</span><span class="rank-team">{{pilote}}</span><span class="rank-side">{{ecurie}}</span></div>
+      {{/f1_podium}}
+      {{/has_f1_dernier}}
+      {{#has_f1_pilotes}}
+      <div class="subhead">Championnat pilotes</div>
+      {{#f1_pilotes}}
+      <div class="rank"><span class="rank-n">{{pos}}</span><span class="rank-team">{{nom}}</span><span class="mono">{{pts}}</span></div>
+      {{/f1_pilotes}}
+      {{/has_f1_pilotes}}
+      {{#has_f1_ecuries}}
+      <div class="subhead">Championnat constructeurs</div>
+      {{#f1_ecuries}}
+      <div class="rank"><span class="rank-n">{{pos}}</span><span class="rank-team">{{nom}}</span><span class="mono">{{pts}}</span></div>
+      {{/f1_ecuries}}
+      {{/has_f1_ecuries}}
+      {{#has_f1_calendrier}}
+      <div class="subhead">Prochains Grands Prix</div>
+      {{#f1_calendrier}}
+      <div class="match">
+        <div class="match-comp">{{quand}}</div>
+        <div class="match-line"><span>{{gp}}</span></div>
+        <div class="rank-side">{{lieu}}</div>
+      </div>
+      {{/f1_calendrier}}
+      {{/has_f1_calendrier}}
+      {{^has_f1}}<div class="soon">Les données de Formule 1 n'ont pas pu être récupérées ce matin.</div>{{/has_f1}}
+      <a class="card-link" href="https://www.lequipe.fr/Formule-1/" target="_blank" rel="noopener">Toute l'actualité de la F1 ↗</a></details>{{/sport_f1}}
+      {{#sport_nba}}<details class="sous"><summary><span class="sous-titre">NBA</span><span class="sous-resume">{{nba_resume}}</span></summary>
+      {{#nba}}<div class="match"><div class="match-comp">{{quand}}</div><div class="match-line"><span>{{affiche}}</span><span class="mono">{{score}}</span></div></div>{{/nba}}
+      {{^has_nba}}<div class="soon">Pas de résultat ces derniers jours.</div>{{/has_nba}}</details>{{/sport_nba}}
+      {{#sport_rugby}}<details class="sous"><summary><span class="sous-titre">Rugby</span><span class="sous-resume">{{rugby_resume}}</span></summary>
+      {{#rugby}}<div class="match"><div class="match-comp">{{comp}} · {{quand}}</div><div class="match-line"><span>{{affiche}}</span><span class="mono">{{score}}</span></div></div>{{/rugby}}
+      {{^has_rugby}}<div class="soon">Pas de résultat ces derniers jours.</div>{{/has_rugby}}</details>{{/sport_rugby}}
+    </section>
+
+    <section class="card" data-section="outils">
+      <div class="card-head"><h2>Outils</h2><button class="toggle" type="button">−</button></div>
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab actif" data-onglet="calc">Calculatrice</button>
+        <button type="button" class="tab" data-onglet="clcr">Clairance</button>
+        <button type="button" class="tab" data-onglet="conv">mg/L ↔ µmol/L</button>
+        <button type="button" class="tab" data-onglet="demi">Demi-vie</button>
+        <button type="button" class="tab" data-onglet="sc">Surface corporelle</button>
+      </div>
+      <div class="pane actif" data-pane="calc">
+        <input id="calc-expr" type="text" inputmode="decimal" placeholder="Exemple : (12,5 + 3) * 4 / 2" aria-label="Calcul">
+        <div class="resultat" id="calc-res">=</div>
+      </div>
+      <div class="pane" data-pane="clcr">
+        <div class="form-grid">
+          <label>Âge (ans)<input data-f="age" type="number" inputmode="decimal"></label>
+          <label>Poids (kg)<input data-f="poids" type="number" inputmode="decimal"></label>
+          <label>Créatinine (µmol/L)<input data-f="creat" type="number" inputmode="decimal"></label>
+          <label>Sexe<select data-f="sexe"><option value="h">Homme</option><option value="f">Femme</option></select></label>
+        </div>
+        <div class="resultat" id="clcr-res">Renseigne les champs</div>
+      </div>
+      <div class="pane" data-pane="conv">
+        <div class="form-grid">
+          <label>Masse molaire (g/mol)<input data-f="mm" type="number" inputmode="decimal"></label>
+          <label>Concentration<input data-f="val" type="number" inputmode="decimal"></label>
+          <label>Unité saisie<select data-f="unite"><option value="mg">mg/L</option><option value="umol">µmol/L</option></select></label>
+        </div>
+        <div class="resultat" id="conv-res">Renseigne les champs</div>
+      </div>
+      <div class="pane" data-pane="demi">
+        <div class="form-grid">
+          <label>Concentration 1<input data-f="c1" type="number" inputmode="decimal"></label>
+          <label>Concentration 2<input data-f="c2" type="number" inputmode="decimal"></label>
+          <label>Délai entre les deux (h)<input data-f="dt" type="number" inputmode="decimal"></label>
+        </div>
+        <div class="resultat" id="demi-res">Renseigne les champs</div>
+      </div>
+      <div class="pane" data-pane="sc">
+        <div class="form-grid">
+          <label>Taille (cm)<input data-f="taille" type="number" inputmode="decimal"></label>
+          <label>Poids (kg)<input data-f="poids" type="number" inputmode="decimal"></label>
+        </div>
+        <div class="resultat" id="sc-res">Renseigne les champs</div>
+      </div>
+      <div class="note">Aide au calcul uniquement : vérifie toujours les résultats.</div>
+    </section>
+</aside>
+</div>
+
+<footer>
+  <span>Dernière mise à jour à {{updated}}</span>
+  <span>Sources : PubMed, Google Actualités, Le Monde, Open-Meteo, Yahoo Finance, ESPN, Jolpica-F1</span>
+</footer>
+
+</div>
+<dialog id="agenda" aria-labelledby="agenda-titre">
+  <div class="ag-head">
+    <button type="button" class="toggle" id="ag-prev" aria-label="Mois précédent">‹</button>
+    <h2 id="agenda-titre">Agenda</h2>
+    <button type="button" class="toggle" id="ag-next" aria-label="Mois suivant">›</button>
+    <button type="button" class="toggle" id="ag-close" aria-label="Fermer">×</button>
+  </div>
+  <div class="ag-grid" id="ag-grid"></div>
+  <label class="ag-label" for="ag-note" id="ag-jour">Notes du jour</label>
+  <textarea id="ag-note" rows="6" placeholder="Écris tes notes pour ce jour…"></textarea>
+  <div class="ag-foot">Enregistré automatiquement, uniquement sur cet appareil. Rien n'est publié en ligne.</div>
+</dialog>
+<dialog id="reglages" aria-labelledby="reg-titre">
+  <div class="ag-head">
+    <h2 id="reg-titre" style="text-align:left">Réglages</h2>
+    <button type="button" class="toggle" id="reg-close" aria-label="Fermer">×</button>
+  </div>
+  <div class="reg-form">
+    <div class="reg-section" style="margin-top:0;padding-top:0;border-top:none">Lieux</div>
+    <label for="reg-ville">Ma ville (actualité locale, météo, carburant)</label>
+    <input id="reg-ville" type="text">
+    <label for="reg-travail">Ville de travail (carburant sur le trajet)</label>
+    <input id="reg-travail" type="text">
+
+    <div class="reg-section">Veille scientifique</div>
+    <div class="reg-l">Spécialités suivies</div>
+    <div class="chips" id="reg-specialites"></div>
+    <label for="reg-mots">Mots-clés en plus, en anglais, séparés par un point-virgule</label>
+    <input id="reg-mots" type="text" placeholder="meropenem; augmented renal clearance">
+    <label for="reg-revues">Revues en plus (abréviation PubMed), séparées par un point-virgule</label>
+    <input id="reg-revues" type="text" placeholder="Br J Clin Pharmacol; Antimicrob Agents Chemother">
+
+    <div class="reg-section">Actualité</div>
+    <div class="reg-l">Rubriques</div>
+    <div class="chips" id="reg-rubriques"></div>
+    <label for="reg-themes">Thèmes libres, séparés par un point-virgule</label>
+    <input id="reg-themes" type="text" placeholder="intelligence artificielle; montres">
+
+    <div class="reg-section">Sport</div>
+    <div class="chips" id="reg-sports"></div>
+    <label for="reg-equipes">Équipes de football, séparées par un point-virgule</label>
+    <input id="reg-equipes" type="text" placeholder="Paris Saint-Germain; France">
+
+    <div class="reg-section">Carburant</div>
+    <label for="reg-carburant">Carburant de ta voiture</label>
+    <select id="reg-carburant">
+      <option value="E10">SP95-E10</option><option value="SP95">SP95</option><option value="SP98">SP98</option>
+      <option value="GAZOLE">Gazole</option><option value="E85">E85</option><option value="GPLC">GPL</option>
+    </select>
+
+    <div class="reg-section">Apparence <span class="hint">sur cet appareil, appliquée tout de suite</span></div>
+    <div class="reg-l">Couleur principale</div>
+    <div class="nuancier" id="reg-couleurs"></div>
+    <label for="reg-theme">Thème</label>
+    <select id="reg-theme"><option value="auto">Automatique (selon le téléphone)</option><option value="light">Clair</option><option value="dark">Sombre</option></select>
+    <div class="reg-l">Ordre des blocs (flèches pour déplacer)</div>
+    <div id="reg-ordre" class="ordre"></div>
+
+    <div class="reg-section">Favoris</div>
+    <div class="reg-l">Pour chaque lien : un nom, son adresse et sa catégorie (Pro, Perso, Pharmaco ou celle que tu veux)</div>
+    <datalist id="reg-cats"></datalist>
+    <div class="reg-fav-head"><span>Nom</span><span>Adresse</span><span>Catégorie</span><span>Ordre</span></div>
+    <div id="reg-favs" style="display:flex;flex-direction:column;gap:6px"></div>
+    <button type="button" class="reg-btn" id="reg-add">+ Ajouter un favori</button>
+
+    <details class="reg-token" id="reg-token-zone">
+      <summary>Connexion à GitHub</summary>
+      <p>Pour enregistrer depuis cette page, colle ici ton jeton d'accès GitHub. Il est gardé uniquement sur cet appareil.</p>
+      <input id="reg-token" type="password" autocomplete="off" placeholder="github_pat_…">
+    </details>
+    <button type="button" class="reg-btn reg-save" id="reg-save">Enregistrer</button>
+    <div class="reg-status" id="reg-status" role="status"></div>
+  </div>
+</dialog>
+<script type="application/json" id="config" data-genere="{{genere_ms}}">{{{config_json}}}</script>
+<div class="bandeau" id="bandeau" role="status" hidden></div>
+<script>
+(function () {
+  var sections = document.querySelectorAll('[data-section]');
+  for (var i = 0; i < sections.length; i++) (function (sec) {
+    var cle = 'veille-du-jour:' + sec.getAttribute('data-section');
+    var btn = sec.querySelector('.toggle');
+    var titre = sec.querySelector('h2').textContent;
+    var etat = null;
+    try { etat = localStorage.getItem(cle); } catch (e) {}
+    if (etat === 'masque' || (etat === null && !sec.hasAttribute('data-open'))) sec.classList.add('collapsed');
+    function maj() {
+      var ferme = sec.classList.contains('collapsed');
+      btn.textContent = ferme ? '+' : '−';
+      btn.setAttribute('aria-expanded', ferme ? 'false' : 'true');
+      btn.setAttribute('aria-label', (ferme ? 'Afficher ' : 'Masquer ') + titre);
+    }
+    maj();
+    btn.addEventListener('click', function () {
+      sec.classList.toggle('collapsed');
+      try { localStorage.setItem(cle, sec.classList.contains('collapsed') ? 'masque' : 'visible'); } catch (e) {}
+      maj();
+    });
+  })(sections[i]);
+})();
+</script>
+<script>
+(function () {
+  var NUAGE = '<path d="M7 18h10a4 4 0 0 0 0-8 5.5 5.5 0 0 0-10.6 1.6A3.2 3.2 0 0 0 7 18z"></path>';
+  var ICONES = {
+    soleil: '<circle cx="12" cy="12" r="4"></circle><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"></path>',
+    eclaircies: '<circle cx="9" cy="9" r="3.5"></circle><path d="M9 2.5v1.5M2.5 9H4M4.4 4.4l1 1M13.6 4.4l-1 1"></path><path d="M10.5 20.5h7a3.5 3.5 0 0 0 0-7 4.5 4.5 0 0 0-8.6 1.6A2.7 2.7 0 0 0 10.5 20.5z"></path>',
+    nuages: NUAGE,
+    pluie: NUAGE + '<path d="M9 20.5l-1 2M13 20.5l-1 2M17 20.5l-1 2"></path>',
+    neige: NUAGE + '<path d="M9 21.5h.01M13 21.5h.01M17 21.5h.01"></path>',
+    orage: NUAGE + '<path d="M12.5 18.5l-2 3h3l-2 3"></path>',
+    brouillard: '<path d="M4 9h16M3 13h18M5 17h14"></path>'
+  };
+  function icone(c) {
+    var n = c == null ? 'nuages' : c <= 1 ? 'soleil' : c === 2 ? 'eclaircies' : c === 3 ? 'nuages'
+      : (c === 45 || c === 48) ? 'brouillard' : ((c >= 71 && c <= 77) || c === 85 || c === 86) ? 'neige'
+      : c >= 95 ? 'orage' : 'pluie';
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONES[n] + '</svg>';
+  }
+  function libelle(c) {
+    if (c === 0) return 'ciel dégagé'; if (c === 1) return 'plutôt dégagé';
+    if (c === 2) return 'partiellement nuageux'; if (c === 3) return 'couvert';
+    if (c === 45 || c === 48) return 'brouillard'; if (c >= 51 && c <= 57) return 'bruine';
+    if (c >= 61 && c <= 67) return 'pluie'; if (c >= 71 && c <= 77) return 'neige';
+    if (c >= 80 && c <= 82) return 'averses'; if (c === 85 || c === 86) return 'averses de neige';
+    if (c >= 95) return 'orage'; return 'conditions variables';
+  }
+  var JOURS = ['dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.'];
+  function afficher(m, lieu) {
+    var d = m.daily, html = '';
+    for (var i = 0; i < d.time.length; i++) {
+      var dt = new Date(d.time[i] + 'T12:00:00');
+      var nom = i === 0 ? 'Auj.' : JOURS[dt.getDay()] + ' ' + dt.getDate();
+      var p = d.precipitation_probability_max[i];
+      html += '<div class="day"><div class="day-name">' + nom + '</div><div class="day-icon">' + icone(d.weather_code[i]) +
+        '</div><div class="day-max">' + Math.round(d.temperature_2m_max[i]) + '°</div><div class="day-min">' +
+        Math.round(d.temperature_2m_min[i]) + '°</div><div class="day-rain">' + (p == null ? '–' : p + ' %') + '</div></div>';
+    }
+    document.getElementById('days').innerHTML = html;
+    document.getElementById('now-temp').textContent = Math.round(m.current.temperature_2m) + '°';
+    document.getElementById('now-label').textContent = lieu + ', ' + libelle(m.current.weather_code);
+    document.getElementById('now-icon').innerHTML = icone(m.current.weather_code);
+    var lienMeteo = document.getElementById('meteo-lien');
+    if (lienMeteo) lienMeteo.href = 'https://www.google.com/search?q=' + encodeURIComponent('météo ' + lieu);
+    var p0 = d.precipitation_probability_max[0];
+    var base = "Aujourd'hui entre " + Math.round(d.temperature_2m_min[0]) + '° et ' + Math.round(d.temperature_2m_max[0]) + '°';
+    document.getElementById('advice').textContent = (p0 != null && p0 >= 50)
+      ? base + ', risque de pluie jusqu\'à ' + p0 + ' % : prends un parapluie.'
+      : base + ', faible risque de pluie.';
+  }
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(function (pos) {
+    var lat = pos.coords.latitude.toFixed(3), lon = pos.coords.longitude.toFixed(3);
+    var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon +
+      '&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_min,temperature_2m_max,precipitation_probability_max&timezone=auto&forecast_days=5';
+    fetch(url).then(function (r) { return r.json(); }).then(function (m) {
+      fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=' + lat + '&longitude=' + lon + '&localityLanguage=fr')
+        .then(function (r) { return r.json(); })
+        .then(function (g) { afficher(m, g.city || g.locality || 'Ta position'); })
+        .catch(function () { afficher(m, 'Ta position'); });
+    }).catch(function () {});
+  }, function () {}, { timeout: 8000, maximumAge: 600000 });
+})();
+</script>
+<script>
+(function () {
+  var dlg = document.getElementById('agenda');
+  var bouton = document.getElementById('date-btn');
+  if (!dlg || !bouton) return;
+  var CLE = 'veille-du-jour:notes';
+  var MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+  var JOURS = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
+  function lire() { try { return JSON.parse(localStorage.getItem(CLE) || '{}'); } catch (e) { return {}; } }
+  function ecrire(n) { try { localStorage.setItem(CLE, JSON.stringify(n)); } catch (e) {} }
+  function cle(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  var auj = new Date();
+  var vue = new Date(auj.getFullYear(), auj.getMonth(), 1);
+  var sel = new Date(auj.getFullYear(), auj.getMonth(), auj.getDate());
+  var grille = document.getElementById('ag-grid');
+  var note = document.getElementById('ag-note');
+  var titre = document.getElementById('agenda-titre');
+  var etiquette = document.getElementById('ag-jour');
+  function marquerBouton() { bouton.classList.toggle('has-note', !!lire()[cle(auj)]); }
+  function rendre() {
+    var notes = lire();
+    var m = MOIS[vue.getMonth()];
+    titre.textContent = m.charAt(0).toUpperCase() + m.slice(1) + ' ' + vue.getFullYear();
+    var html = '';
+    ['L', 'M', 'M', 'J', 'V', 'S', 'D'].forEach(function (j) { html += '<div class="ag-dow" aria-hidden="true">' + j + '</div>'; });
+    var decalage = (vue.getDay() + 6) % 7;
+    for (var i = 0; i < decalage; i++) html += '<div></div>';
+    var nb = new Date(vue.getFullYear(), vue.getMonth() + 1, 0).getDate();
+    for (var d = 1; d <= nb; d++) {
+      var k = cle(new Date(vue.getFullYear(), vue.getMonth(), d));
+      var cls = 'ag-day' + (k === cle(auj) ? ' is-today' : '') + (k === cle(sel) ? ' is-sel' : '') + (notes[k] ? ' has-note' : '');
+      html += '<button type="button" class="' + cls + '" data-k="' + k + '" aria-label="' + d + ' ' + m + (notes[k] ? ', avec une note' : '') + '">' + d + '</button>';
+    }
+    grille.innerHTML = html;
+    etiquette.textContent = 'Notes du ' + JOURS[(sel.getDay() + 6) % 7] + ' ' + sel.getDate() + ' ' + MOIS[sel.getMonth()];
+    note.value = notes[cle(sel)] || '';
+  }
+  grille.addEventListener('click', function (e) {
+    var b = e.target.closest('.ag-day');
+    if (!b) return;
+    var p = b.getAttribute('data-k').split('-');
+    sel = new Date(+p[0], +p[1] - 1, +p[2]);
+    rendre();
+    note.focus();
+  });
+  note.addEventListener('input', function () {
+    var n = lire(), k = cle(sel);
+    if (note.value.trim()) n[k] = note.value; else delete n[k];
+    ecrire(n);
+    var b = grille.querySelector('[data-k="' + k + '"]');
+    if (b) b.classList.toggle('has-note', !!note.value.trim());
+    marquerBouton();
+  });
+  document.getElementById('ag-prev').addEventListener('click', function () { vue = new Date(vue.getFullYear(), vue.getMonth() - 1, 1); rendre(); });
+  document.getElementById('ag-next').addEventListener('click', function () { vue = new Date(vue.getFullYear(), vue.getMonth() + 1, 1); rendre(); });
+  document.getElementById('ag-close').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+  bouton.addEventListener('click', function () {
+    auj = new Date();
+    sel = new Date(auj.getFullYear(), auj.getMonth(), auj.getDate());
+    vue = new Date(auj.getFullYear(), auj.getMonth(), 1);
+    rendre();
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+  });
+  marquerBouton();
+})();
+</script>
+<script>
+(function () {
+  var CLE_JETON = 'veille-du-jour:jeton';
+  function jeton() { try { return localStorage.getItem(CLE_JETON) || ''; } catch (e) { return ''; } }
+  function b64(txt) { return btoa(unescape(encodeURIComponent(txt))); }
+  function deb64(txt) { return decodeURIComponent(escape(atob(txt.replace(/\n/g, '')))); }
+  function depot() {
+    var hote = location.hostname;
+    if (!/\.github\.io$/.test(hote)) return null;
+    var proprio = hote.split('.')[0];
+    var nom = location.pathname.split('/')[1] || (proprio + '.github.io');
+    return { proprio: proprio, nom: nom, base: 'https://api.github.com/repos/' + proprio + '/' + nom };
+  }
+  async function api(url, options) {
+    var opts = options || {};
+    opts.headers = { 'Authorization': 'Bearer ' + jeton(), 'Accept': 'application/vnd.github+json' };
+    var r = await fetch(url, opts);
+    if (!r.ok) { var err = new Error('HTTP ' + r.status); err.status = r.status; throw err; }
+    return r.status === 204 ? null : r.json();
+  }
+  var brancheCache = null;
+  async function branche(d) { if (!brancheCache) brancheCache = (await api(d.base)).default_branch; return brancheCache; }
+  async function lire(chemin) {
+    var d = depot(); var br = await branche(d);
+    try { var f = await api(d.base + '/contents/' + chemin + '?ref=' + br); return { texte: deb64(f.content), sha: f.sha }; }
+    catch (e) { if (e.status === 404) return { texte: '', sha: undefined }; throw e; }
+  }
+  async function ecrire(chemin, contenu, message, sha) {
+    var d = depot(); var br = await branche(d);
+    if (sha === null) sha = (await lire(chemin)).sha;
+    await api(d.base + '/contents/' + chemin, { method: 'PUT', body: JSON.stringify({ message: message, content: b64(contenu), sha: sha, branch: br }) });
+  }
+  async function relancer() {
+    var d = depot(); var br = await branche(d);
+    await api(d.base + '/actions/workflows/page-du-matin.yml/dispatches', { method: 'POST', body: JSON.stringify({ ref: br }) });
+  }
+  window.veilleGitHub = { jeton: jeton, depot: depot, lire: lire, ecrire: ecrire, relancer: relancer };
+})();
+</script>
+<script>
+(function () {
+  var dlg = document.getElementById('reglages');
+  if (!dlg) return;
+  var gh = window.veilleGitHub;
+  var conf = {};
+  var elConf = document.getElementById('config');
+  try { conf = JSON.parse(elConf.textContent); } catch (e) {}
+  var CLE_ATTENTE = 'veille-du-jour:en-attente';
+  var genere = Number(elConf.getAttribute('data-genere')) || 0;
+  var attente = null;
+  try { attente = JSON.parse(localStorage.getItem(CLE_ATTENTE) || 'null'); } catch (e) {}
+  if (attente && (attente.t < genere || Date.now() - attente.t > 3600000)) {
+    attente = null; try { localStorage.removeItem(CLE_ATTENTE); } catch (e) {}
+  }
+  function afficherFavoris(liste) {
+    var carte = document.querySelector('[data-section="favoris"]');
+    if (!carte) return;
+    carte.querySelectorAll('.fav-cat, .favs, .soon').forEach(function (n) { n.remove(); });
+    var bouton = carte.querySelector('[data-vers-favoris]');
+    var groupes = {}; var ordre = [];
+    liste.forEach(function (f) { var c = f.categorie || 'Favoris'; if (!groupes[c]) { groupes[c] = []; ordre.push(c); } groupes[c].push(f); });
+    ordre.forEach(function (c) {
+      var t = document.createElement('div'); t.className = 'fav-cat'; t.textContent = c;
+      var z = document.createElement('div'); z.className = 'favs';
+      groupes[c].forEach(function (f) { var a = document.createElement('a'); a.className = 'fav'; a.href = f.lien; a.target = '_blank'; a.rel = 'noopener'; a.textContent = f.nom; z.appendChild(a); });
+      carte.insertBefore(t, bouton); carte.insertBefore(z, bouton);
+    });
+  }
+  var bandeau = document.getElementById('bandeau');
+  function montrerBandeau(txt, duree) {
+    bandeau.textContent = txt; bandeau.hidden = false;
+    clearTimeout(montrerBandeau.minuteur);
+    if (duree) montrerBandeau.minuteur = setTimeout(function () { bandeau.hidden = true; }, duree);
+  }
+  if (attente) {
+    Object.keys(attente.conf).forEach(function (k) { conf[k] = attente.conf[k]; });
+    afficherFavoris(conf.favoris || []);
+    montrerBandeau('Tes derniers réglages sont en cours de publication : le reste de la page sera à jour dans quelques minutes.', 8000);
+  }
+  var zoneFavs = document.getElementById('reg-favs');
+  var statut = document.getElementById('reg-status');
+  var champJeton = document.getElementById('reg-token');
+  var SPORTS = [{ code: 'foot', nom: 'Football' }, { code: 'f1', nom: 'Formule 1' }, { code: 'nba', nom: 'NBA' }, { code: 'rugby', nom: 'Rugby' }];
+
+  function chips(zone, options, choisis) {
+    zone.innerHTML = '';
+    options.forEach(function (o) {
+      var lab = document.createElement('label'); lab.className = 'chip';
+      var cb = document.createElement('input'); cb.type = 'checkbox'; cb.value = o.code; cb.checked = (choisis || []).indexOf(o.code) >= 0;
+      lab.appendChild(cb); lab.appendChild(document.createTextNode(o.nom));
+      zone.appendChild(lab);
+    });
+  }
+  function coches(zone) { return Array.prototype.map.call(zone.querySelectorAll('input:checked'), function (c) { return c.value; }).join('; '); }
+
+  function ligneFavori(nom, lien, categorie) {
+    var div = document.createElement('div'); div.className = 'reg-fav';
+    var a = document.createElement('input'); a.type = 'text'; a.placeholder = 'Nom'; a.value = nom || ''; a.setAttribute('aria-label', 'Nom du favori');
+    var b = document.createElement('input'); b.type = 'url'; b.placeholder = 'https://…'; b.value = lien || ''; b.setAttribute('aria-label', 'Adresse du favori');
+    var c = document.createElement('input'); c.type = 'text'; c.placeholder = 'Catégorie'; c.value = categorie || ''; c.setAttribute('list', 'reg-cats'); c.setAttribute('aria-label', 'Catégorie du favori');
+    var x = document.createElement('button'); x.type = 'button'; x.className = 'reg-btn'; x.textContent = '×'; x.setAttribute('aria-label', 'Supprimer ce favori');
+    x.addEventListener('click', function () { div.remove(); });
+    var fl = document.createElement('span'); fl.className = 'fleches';
+    var h = document.createElement('button'); h.type = 'button'; h.className = 'reg-btn mini'; h.textContent = '↑'; h.setAttribute('aria-label', 'Monter');
+    h.addEventListener('click', function () { if (div.previousElementSibling) div.parentNode.insertBefore(div, div.previousElementSibling); });
+    var bas = document.createElement('button'); bas.type = 'button'; bas.className = 'reg-btn mini'; bas.textContent = '↓'; bas.setAttribute('aria-label', 'Descendre');
+    bas.addEventListener('click', function () { if (div.nextElementSibling) div.parentNode.insertBefore(div.nextElementSibling, div); });
+    fl.appendChild(h); fl.appendChild(bas); fl.appendChild(x);
+    div.appendChild(a); div.appendChild(b); div.appendChild(c); div.appendChild(fl);
+    zoneFavs.appendChild(div);
+  }
+  function remplir() {
+    document.getElementById('reg-ville').value = conf.ville || '';
+    document.getElementById('reg-travail').value = conf.ville_travail || '';
+    document.getElementById('reg-mots').value = conf.mots_cles_veille || '';
+    document.getElementById('reg-revues').value = conf.revues_veille || '';
+    document.getElementById('reg-themes').value = conf.themes_actu || '';
+    document.getElementById('reg-equipes').value = conf.equipes_foot || '';
+    document.getElementById('reg-carburant').value = conf.carburant || 'E10';
+    chips(document.getElementById('reg-specialites'), conf.options_specialites || [], [].concat(conf.specialites || []));
+    chips(document.getElementById('reg-rubriques'), conf.options_rubriques || [], [].concat(conf.rubriques_actu || []));
+    chips(document.getElementById('reg-sports'), SPORTS, [].concat(conf.sports || []));
+    zoneFavs.innerHTML = '';
+    var cats = [];
+    (conf.favoris || []).forEach(function (f) {
+      ligneFavori(f.nom, f.lien, f.categorie === 'Favoris' ? '' : f.categorie);
+      if (f.categorie && f.categorie !== 'Favoris' && cats.indexOf(f.categorie) < 0) cats.push(f.categorie);
+    });
+    ['Pro', 'Perso', 'Pharmaco'].forEach(function (c) { if (cats.indexOf(c) < 0) cats.push(c); });
+    document.getElementById('reg-cats').innerHTML = cats.map(function (c) { return '<option value="' + c.replace(/"/g, '&quot;') + '"></option>'; }).join('');
+    champJeton.value = gh.jeton();
+    document.getElementById('reg-token-zone').open = !gh.jeton();
+    statut.textContent = '';
+  }
+  function ouvrir(e) {
+    remplir();
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+    if (e && e.currentTarget && e.currentTarget.hasAttribute('data-vers-favoris')) {
+      setTimeout(function () { zoneFavs.scrollIntoView({ block: 'center' }); }, 50);
+    }
+  }
+  var boutons = document.querySelectorAll('[data-open-reglages]');
+  for (var i = 0; i < boutons.length; i++) boutons[i].addEventListener('click', ouvrir);
+  document.getElementById('reg-close').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+  document.getElementById('reg-add').addEventListener('click', function () { ligneFavori('', '', ''); });
+  function csv(v) { return '"' + String(v).replace(/"/g, '""') + '"'; }
+
+  document.getElementById('reg-save').addEventListener('click', async function () {
+    var tok = champJeton.value.trim();
+    if (!tok) { statut.textContent = 'Colle d\'abord ton jeton GitHub dans « Connexion à GitHub ».'; document.getElementById('reg-token-zone').open = true; return; }
+    try { localStorage.setItem('veille-du-jour:jeton', tok); } catch (e) {}
+    var d = gh.depot();
+    if (!d) { statut.textContent = 'L\'enregistrement fonctionne uniquement depuis ta page en ligne.'; return; }
+    var val = function (id) { return document.getElementById(id).value.trim(); };
+    var reglagesTxt = [
+      '# Réglages de ta Veille du jour (modifiables depuis la page, bouton Réglages)',
+      'ville = ' + (val('reg-ville') || 'Asnières-sur-Seine'),
+      'ville_travail = ' + val('reg-travail'),
+      'specialites = ' + coches(document.getElementById('reg-specialites')),
+      'mots_cles_veille = ' + val('reg-mots'),
+      'revues_veille = ' + val('reg-revues'),
+      'rubriques_actu = ' + coches(document.getElementById('reg-rubriques')),
+      'themes_actu = ' + val('reg-themes'),
+      'sports = ' + coches(document.getElementById('reg-sports')),
+      'equipes_foot = ' + val('reg-equipes'),
+      'carburant = ' + document.getElementById('reg-carburant').value,
+      'modele_ia = mistral-large-latest',
+      ''
+    ].join('\n');
+    var lignes = ['nom,lien,categorie'];
+    zoneFavs.querySelectorAll('.reg-fav').forEach(function (div) {
+      var champs = div.querySelectorAll('input');
+      var nom = champs[0].value.trim(), lien = champs[1].value.trim(), cat = champs[2].value.trim();
+      if (!nom || !lien) return;
+      if (!/^https?:\/\//i.test(lien)) lien = 'https://' + lien;
+      lignes.push(csv(nom) + ',' + csv(lien) + ',' + csv(cat));
+    });
+    var nouveauxFavoris = [];
+    zoneFavs.querySelectorAll('.reg-fav').forEach(function (div) {
+      var c = div.querySelectorAll('input'); var n = c[0].value.trim(), l = c[1].value.trim();
+      if (!n || !l) return; if (!/^https?:\/\//i.test(l)) l = 'https://' + l;
+      nouveauxFavoris.push({ nom: n, lien: l, categorie: c[2].value.trim() || 'Favoris' });
+    });
+    var nouvelleConf = {
+      ville: val('reg-ville'), ville_travail: val('reg-travail'), mots_cles_veille: val('reg-mots'),
+      revues_veille: val('reg-revues'), themes_actu: val('reg-themes'), equipes_foot: val('reg-equipes'),
+      carburant: document.getElementById('reg-carburant').value,
+      specialites: coches(document.getElementById('reg-specialites')).split('; ').filter(Boolean),
+      rubriques_actu: coches(document.getElementById('reg-rubriques')).split('; ').filter(Boolean),
+      sports: coches(document.getElementById('reg-sports')).split('; ').filter(Boolean),
+      favoris: nouveauxFavoris
+    };
+    var bouton = this; bouton.disabled = true;
+    statut.textContent = 'Enregistrement en cours…';
+    var etape = 'accès au dépôt';
+    try {
+      etape = 'écriture de reglages.txt';
+      await gh.ecrire('reglages.txt', reglagesTxt, 'Réglages modifiés depuis la page', null);
+      etape = 'écriture de favoris.csv';
+      await gh.ecrire('favoris.csv', lignes.join('\n') + '\n', 'Favoris modifiés depuis la page', null);
+      etape = 'lancement de la mise à jour';
+      await gh.relancer();
+      try { localStorage.setItem(CLE_ATTENTE, JSON.stringify({ t: Date.now(), conf: nouvelleConf })); } catch (e) {}
+      Object.keys(nouvelleConf).forEach(function (k) { conf[k] = nouvelleConf[k]; });
+      afficherFavoris(nouveauxFavoris);
+      statut.textContent = 'C\'est enregistré. Tes favoris sont déjà à jour ; le reste de la page se met à jour dans 3 à 5 minutes.';
+    } catch (e) {
+      statut.textContent = ((e.status === 401) ? 'Le jeton est refusé : il est peut-être expiré ou mal copié.'
+        : (e.status === 403 || e.status === 404) ? 'Le jeton n\'a pas les droits nécessaires pour cette étape.'
+        : 'L\'enregistrement a échoué. Réessaie dans un instant.') + ' [étape : ' + etape + ', code ' + (e.status || e.message) + ']';
+    }
+    bouton.disabled = false;
+  });
+})();
+</script>
+<script>
+(function () {
+  // Avis sur les articles : enregistrés dans avis.csv pour que la veille apprenne
+  var gh = window.veilleGitHub;
+  var CLE = 'veille-du-jour:avis';
+  var memo = {};
+  try { memo = JSON.parse(localStorage.getItem(CLE) || '{}'); } catch (e) {}
+  document.querySelectorAll('.avis').forEach(function (z) {
+    var v = memo[z.getAttribute('data-pmid')];
+    if (v) z.querySelectorAll('.avis-btn').forEach(function (b) { b.classList.toggle('choisi', b.getAttribute('data-avis') === String(v)); });
+  });
+  var file = Promise.resolve();
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('.avis-btn');
+    if (!b) return;
+    var zone = b.closest('.avis');
+    var pmid = zone.getAttribute('data-pmid');
+    var avis = b.getAttribute('data-avis');
+    if (!gh.jeton() || !gh.depot()) { alert('Pour enregistrer ton avis, ajoute d\'abord ton jeton GitHub dans les Réglages.'); return; }
+    zone.querySelectorAll('.avis-btn').forEach(function (x) { x.classList.toggle('choisi', x === b); });
+    memo[pmid] = avis;
+    try { localStorage.setItem(CLE, JSON.stringify(memo)); } catch (err) {}
+    file = file.then(async function () {
+      var f = await gh.lire('avis.csv');
+      var texte = f.texte || 'pmid,avis,date\n';
+      if (!/\n$/.test(texte)) texte += '\n';
+      texte += pmid + ',' + avis + ',' + new Date().toISOString().slice(0, 10) + '\n';
+      await gh.ecrire('avis.csv', texte, 'Avis sur un article', f.sha);
+    }).catch(function (err) { alert('Ton avis n\'a pas pu être enregistré (' + (err.status || err.message) + ').'); });
+  });
+})();
+</script>
+<script>
+(function () {
+  // Liste de tâches, gardée sur l'appareil
+  var CLE = 'veille-du-jour:taches';
+  var liste = document.getElementById('todo-liste'), champ = document.getElementById('todo-champ');
+  if (!liste) return;
+  var taches = [];
+  try { taches = JSON.parse(localStorage.getItem(CLE) || '[]'); } catch (e) {}
+  function sauver() { try { localStorage.setItem(CLE, JSON.stringify(taches)); } catch (e) {} }
+  function rendre() {
+    liste.innerHTML = '';
+    taches.forEach(function (t, i) {
+      var li = document.createElement('li'); if (t.fait) li.className = 'fait';
+      var cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = !!t.fait; cb.setAttribute('aria-label', 'Tâche faite');
+      cb.addEventListener('change', function () { t.fait = cb.checked; sauver(); rendre(); });
+      var sp = document.createElement('span'); sp.textContent = t.texte;
+      var x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Supprimer la tâche');
+      x.addEventListener('click', function () { taches.splice(i, 1); sauver(); rendre(); });
+      li.appendChild(cb); li.appendChild(sp); li.appendChild(x); liste.appendChild(li);
+    });
+  }
+  function ajouter() { var v = champ.value.trim(); if (!v) return; taches.push({ texte: v, fait: false }); champ.value = ''; sauver(); rendre(); }
+  document.getElementById('todo-ajout').addEventListener('click', ajouter);
+  champ.addEventListener('keydown', function (e) { if (e.key === 'Enter') ajouter(); });
+  rendre();
+})();
+</script>
+<script>
+(function () {
+  // Outils : calculatrice et calculs de pharmacologie
+  var carte = document.querySelector('[data-section="outils"]');
+  if (!carte) return;
+  carte.querySelectorAll('.tab').forEach(function (t) {
+    t.addEventListener('click', function () {
+      carte.querySelectorAll('.tab').forEach(function (x) { x.classList.toggle('actif', x === t); });
+      carte.querySelectorAll('.pane').forEach(function (p) { p.classList.toggle('actif', p.getAttribute('data-pane') === t.getAttribute('data-onglet')); });
+    });
+  });
+  function fr(x, d) { return Number(x).toLocaleString('fr-FR', { maximumFractionDigits: d === undefined ? 2 : d }); }
+  function lireNb(pane, nom) { var el = pane.querySelector('[data-f="' + nom + '"]'); var v = parseFloat(String(el.value).replace(',', '.')); return isNaN(v) ? null : v; }
+  var expr = document.getElementById('calc-expr'), res = document.getElementById('calc-res');
+  expr.addEventListener('input', function () {
+    var e = expr.value.replace(/,/g, '.').replace(/×/g, '*').replace(/÷/g, '/').replace(/\^/g, '**');
+    if (!e.trim()) { res.textContent = '='; return; }
+    if (!/^[0-9+\-*/().\s%*]+$/.test(e)) { res.textContent = 'Caractère non autorisé'; return; }
+    try { var v = Function('"use strict";return (' + e + ')')(); res.textContent = isFinite(v) ? '= ' + fr(v, 6) : '…'; }
+    catch (err) { res.textContent = '…'; }
+  });
+  function lier(nom, calcul) {
+    var pane = carte.querySelector('[data-pane="' + nom + '"]'), sortie = document.getElementById(nom + '-res');
+    pane.addEventListener('input', function () { sortie.textContent = calcul(pane) || 'Renseigne les champs'; });
+  }
+  lier('clcr', function (p) {
+    var age = lireNb(p, 'age'), poids = lireNb(p, 'poids'), cr = lireNb(p, 'creat'), f = p.querySelector('[data-f="sexe"]').value === 'f';
+    if (!age || !cr) return '';
+    var txt = '';
+    if (poids) txt += 'Cockcroft-Gault : ' + fr(((140 - age) * poids * (f ? 1.04 : 1.23)) / cr, 0) + ' mL/min';
+    var scr = cr / 88.42, k = f ? 0.7 : 0.9, alpha = f ? -0.241 : -0.302;
+    var dfg = 142 * Math.pow(Math.min(scr / k, 1), alpha) * Math.pow(Math.max(scr / k, 1), -1.2) * Math.pow(0.9938, age) * (f ? 1.012 : 1);
+    txt += (txt ? ' · ' : '') + 'CKD-EPI 2021 : ' + fr(dfg, 0) + ' mL/min/1,73 m²';
+    return txt;
+  });
+  lier('conv', function (p) {
+    var mm = lireNb(p, 'mm'), v = lireNb(p, 'val'), u = p.querySelector('[data-f="unite"]').value;
+    if (!mm || v === null) return '';
+    return u === 'mg' ? fr(v * 1000 / mm, 2) + ' µmol/L' : fr(v * mm / 1000, 3) + ' mg/L';
+  });
+  lier('demi', function (p) {
+    var c1 = lireNb(p, 'c1'), c2 = lireNb(p, 'c2'), dt = lireNb(p, 'dt');
+    if (!c1 || !c2 || !dt || c1 === c2) return '';
+    var ke = Math.log(c1 / c2) / dt;
+    return 'Demi-vie : ' + fr(Math.LN2 / Math.abs(ke), 1) + ' h · constante d\'élimination : ' + fr(Math.abs(ke), 3) + ' h⁻¹';
+  });
+  lier('sc', function (p) {
+    var t = lireNb(p, 'taille'), w = lireNb(p, 'poids');
+    if (!t || !w) return '';
+    return 'Mosteller : ' + fr(Math.sqrt(t * w / 3600), 2) + ' m²';
+  });
+})();
+</script>
+<script>
+document.addEventListener('click', function (e) {
+  var t = e.target.closest('.txt.clamp');
+  if (t) t.classList.toggle('ouvert');
+});
+</script>
+<script>
+(function () {
+  // Si le navigateur a affiché une ancienne version gardée en mémoire, on recharge la plus récente
+  var el = document.getElementById('config');
+  var actuelle = el ? Number(el.getAttribute('data-genere')) || 0 : 0;
+  if (!actuelle || !/^https?:/.test(location.protocol)) return;
+  fetch(location.href.split('#')[0], { cache: 'reload' })
+    .then(function (r) { return r.ok ? r.text() : ''; })
+    .then(function (html) {
+      var m = html.match(/data-genere="(\d+)"/);
+      if (m && Number(m[1]) > actuelle) location.reload();
+    })
+    .catch(function () {});
+})();
+</script>
+<script>
+(function () {
+  // Référentiel STP : recherche rapide d'une molécule (referentiel.json chargé au premier usage)
+  var champ = document.getElementById('ref-recherche');
+  var zone = document.getElementById('ref-resultats');
+  if (!champ || !zone) return;
+  var molecules = null, chargement = null, echec = false;
+  // Molécules disponibles dans l'appli d'adaptation de posologie : identifiant de fiche → [clé de l'appli, libellé]
+  // (même liste que dans referentiel.html)
+  var POSOLOGIE = {
+    amoxicilline: [['amoxicilline', 'Amoxicilline']],
+    cefazoline: [['cefazoline', 'Céfazoline']],
+    cefepime: [['cefepime', 'Céfépime']],
+    cefotaxime: [['cefotaxime', 'Céfotaxime']],
+    ceftazidime: [['ceftazidime', 'Ceftazidime']],
+    ceftriaxone: [['ceftriaxone', 'Ceftriaxone']],
+    piperacilline: [['piperacilline', 'Pipéracilline']],
+    meropeneme: [['meropeneme', 'Méropénème']],
+    imipenem: [['imipenem', 'Imipénem']],
+    amikacine: [['amikacine', 'Amikacine']],
+    gentamicine: [['gentamicine', 'Gentamicine']],
+    tobramycine: [['tobramycine', 'Tobramycine']],
+    vancomycine: [['vancomycine', 'Vancomycine']],
+    dalbavancine: [['dalbavancine', 'Dalbavancine']],
+    linezolide: [['linezolide', 'Linézolide']],
+    ciprofloxacine: [['ciprofloxacine', 'Ciprofloxacine IV'], ['ciprofloxacine_po', 'Ciprofloxacine per os']],
+    levofloxacine: [['levofloxacine', 'Lévofloxacine per os']],
+    sulfamethoxazole: [['sulfamethoxazole', 'Sulfaméthoxazole per os']],
+    voriconazole: [['voriconazole', 'Voriconazole IV'], ['voriconazole_po', 'Voriconazole per os']],
+    leviteracetam: [['levetiracetam', 'Lévétiracétam per os']],
+    "mpa-mypa-acide-mycophenolique": [['mycophenolate', 'Acide mycophénolique per os']],
+    clozapine: [['clozapine', 'Clozapine per os']],
+    olanzapine: [['olanzapine', 'Olanzapine per os']],
+    aripiprazole: [['aripiprazole', 'Aripiprazole per os']],
+    clindamycine: [['clindamycine', 'Clindamycine per os']],
+    ganciclovir: [['ganciclovir', 'Ganciclovir IV']],
+    haloperidol: [['haloperidol', 'Halopéridol per os']]
+  };
+  function sansAccent(t) { return String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); }
+  function charger() {
+    if (!chargement) chargement = fetch('referentiel.json', { cache: 'no-cache' })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function (d) {
+        molecules = (d.molecules || []).map(function (m) {
+          var marques = [].concat(m.marques || []).join(', ');
+          return { id: m.id, nom: m.nom || m.id, marques: marques, classe: m.classe || '',
+                   cle: sansAccent([m.nom, marques, m.classe].join(' ')) };
+        });
+        afficher();
+      })
+      .catch(function () { echec = true; afficher(); });
+    return chargement;
+  }
+  function message(txt) {
+    zone.innerHTML = '';
+    var d = document.createElement('div'); d.className = 'ref-vide'; d.textContent = txt; zone.appendChild(d);
+  }
+  function afficher() {
+    var q = sansAccent(champ.value.trim());
+    if (!q) { zone.innerHTML = ''; return; }
+    if (echec) { message('Le référentiel n\'a pas pu être chargé.'); return; }
+    if (!molecules) { message('Chargement…'); return; }
+    var trouvees = molecules.filter(function (m) { return m.cle.indexOf(q) >= 0; }).slice(0, 8);
+    if (!trouvees.length) { message('Aucune molécule trouvée.'); return; }
+    zone.innerHTML = '';
+    trouvees.forEach(function (m) {
+      var a = document.createElement('a'); a.className = 'ref-item'; a.href = 'referentiel.html#' + encodeURIComponent(m.id);
+      var n = document.createElement('div'); n.className = 'ref-nom'; n.textContent = m.nom;
+      var i = document.createElement('div'); i.className = 'ref-info'; i.textContent = [m.marques, m.classe].filter(Boolean).join(' · ');
+      a.appendChild(n); if (i.textContent) a.appendChild(i);
+      zone.appendChild(a);
+      (POSOLOGIE[m.id] || []).forEach(function (p, k, tous) {
+        var l = document.createElement('a'); l.className = 'ref-poso'; l.href = 'posologie.html?mol=' + p[0];
+        l.textContent = 'Adapter la posologie' + (tous.length > 1 ? ' (' + p[1].replace(/^\S+ /, '') + ')' : '') + ' →';
+        zone.appendChild(l);
+      });
+    });
+  }
+  champ.addEventListener('focus', charger);
+  champ.addEventListener('input', function () { charger(); afficher(); });
+})();
+</script>
+<script>
+(function () {
+  // Barre de recherche : chaque bouton envoie vers son site
+  var f = document.getElementById('recherche');
+  if (!f) return;
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var q = document.getElementById('recherche-champ').value.trim();
+    if (!q) return;
+    var b = e.submitter || f.querySelector('.moteur');
+    window.open(b.getAttribute('data-url') + encodeURIComponent(q), '_blank', 'noopener');
+  });
+})();
+</script>
+<script>
+(function () {
+  // Bibliothèque : garder, retirer, rechercher, exporter
+  var gh = window.veilleGitHub;
+  var CLE = 'veille-du-jour:gardes';
+  var gardes = {};
+  try { gardes = JSON.parse(localStorage.getItem(CLE) || '{}'); } catch (e) {}
+  var liste = document.getElementById('biblio-liste');
+  var compte = document.getElementById('biblio-compte');
+  document.querySelectorAll('.biblio-item').forEach(function (it) { gardes[it.getAttribute('data-pmid')] = true; });
+  function marquer() {
+    document.querySelectorAll('.garder-btn').forEach(function (b) {
+      var g = !!gardes[b.getAttribute('data-pmid')];
+      b.classList.toggle('garde', g); b.textContent = g ? 'Gardé' : 'À garder';
+    });
+    if (compte) compte.textContent = liste.querySelectorAll('.biblio-item').length + ' article(s) gardé(s)';
+    var vide = document.getElementById('biblio-vide');
+    if (vide) vide.hidden = liste.querySelectorAll('.biblio-item').length > 0;
+  }
+  function sauverLocal() { try { localStorage.setItem(CLE, JSON.stringify(gardes)); } catch (e) {} }
+  function csv(v) { return '"' + String(v || '').replace(/"/g, '""') + '"'; }
+  function aujourdhui() { return new Date().toISOString().slice(0, 10); }
+  function element(d) {
+    var it = document.createElement('div'); it.className = 'biblio-item';
+    ['pmid', 'titre', 'source', 'lien', 'theme', 'ajoute'].forEach(function (k) { it.setAttribute('data-' + k, d[k] || ''); });
+    var tx = document.createElement('div'); tx.className = 'biblio-texte';
+    var a = document.createElement('a'); a.className = 'biblio-titre'; a.href = d.lien; a.target = '_blank'; a.rel = 'noopener'; a.textContent = d.titre;
+    var m = document.createElement('div'); m.className = 'paper-src'; m.textContent = d.theme + ' · ' + d.source + ' · gardé le ' + d.ajoute;
+    tx.appendChild(a); tx.appendChild(m);
+    var x = document.createElement('button'); x.type = 'button'; x.className = 'biblio-suppr'; x.textContent = '×'; x.setAttribute('aria-label', 'Retirer de la bibliothèque');
+    it.appendChild(tx); it.appendChild(x);
+    return it;
+  }
+  var file = Promise.resolve();
+  function enFile(tache) {
+    file = file.then(tache).catch(function (err) { alert('La bibliothèque n\'a pas pu être mise à jour (' + (err.status || err.message) + ').'); });
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('.garder-btn');
+    if (b) {
+      var pmid = b.getAttribute('data-pmid');
+      if (gardes[pmid]) return;
+      if (!gh.jeton() || !gh.depot()) { alert('Pour garder un article, ajoute d\'abord ton jeton GitHub dans les Réglages.'); return; }
+      var d = { pmid: pmid, titre: b.getAttribute('data-titre'), source: b.getAttribute('data-source'),
+                lien: b.getAttribute('data-lien'), theme: b.getAttribute('data-theme'), ajoute: aujourdhui() };
+      gardes[pmid] = true; sauverLocal();
+      liste.insertBefore(element(d), liste.firstChild); marquer();
+      enFile(async function () {
+        var f = await gh.lire('bibliotheque.csv');
+        var t = f.texte || 'pmid,titre,source,lien,theme,ajoute\n';
+        if (!/\n$/.test(t)) t += '\n';
+        t += [d.pmid, d.titre, d.source, d.lien, d.theme, d.ajoute].map(csv).join(',') + '\n';
+        await gh.ecrire('bibliotheque.csv', t, 'Article ajouté à la bibliothèque', f.sha);
+      });
+      return;
+    }
+    var x = e.target.closest('.biblio-suppr');
+    if (x) {
+      if (!gh.jeton() || !gh.depot()) { alert('Ajoute d\'abord ton jeton GitHub dans les Réglages.'); return; }
+      var it = x.closest('.biblio-item'); var id = it.getAttribute('data-pmid');
+      it.remove(); delete gardes[id]; sauverLocal(); marquer();
+      enFile(async function () {
+        var f = await gh.lire('bibliotheque.csv');
+        var lignes = (f.texte || '').split('\n').filter(function (l) {
+          return l && l.indexOf('"' + id + '",') !== 0 && l.indexOf(id + ',') !== 0;
+        });
+        await gh.ecrire('bibliotheque.csv', lignes.join('\n') + '\n', 'Article retiré de la bibliothèque', f.sha);
+      });
+    }
+  });
+  var champ = document.getElementById('biblio-recherche');
+  if (champ) champ.addEventListener('input', function () {
+    var q = champ.value.trim().toLowerCase();
+    liste.querySelectorAll('.biblio-item').forEach(function (it) {
+      var txt = (it.getAttribute('data-titre') + ' ' + it.getAttribute('data-source') + ' ' + it.getAttribute('data-theme')).toLowerCase();
+      it.hidden = q && txt.indexOf(q) < 0;
+    });
+  });
+  var exp = document.getElementById('biblio-export');
+  if (exp) exp.addEventListener('click', function () {
+    var items = liste.querySelectorAll('.biblio-item');
+    if (!items.length) { alert('Ta bibliothèque est vide.'); return; }
+    var ris = Array.prototype.map.call(items, function (it) {
+      var source = it.getAttribute('data-source') || '';
+      var revue = source.split(' · ')[0];
+      var annee = (source.match(/(19|20)\d{2}/) || [''])[0];
+      return ['TY  - JOUR', 'TI  - ' + it.getAttribute('data-titre'), 'JO  - ' + revue, annee ? 'PY  - ' + annee : '',
+              'UR  - ' + it.getAttribute('data-lien'), 'AN  - ' + it.getAttribute('data-pmid'), 'KW  - ' + it.getAttribute('data-theme'), 'ER  - ']
+        .filter(Boolean).join('\r\n');
+    }).join('\r\n\r\n');
+    var lien = document.createElement('a');
+    lien.href = URL.createObjectURL(new Blob([ris], { type: 'application/x-research-info-systems' }));
+    lien.download = 'ma-bibliotheque.ris';
+    document.body.appendChild(lien); lien.click(); lien.remove();
+  });
+  marquer();
+})();
+</script>
+<script>
+(function () {
+  // Apparence : couleur, thème et ordre des blocs, gardés sur l'appareil
+  var CLE = 'veille-du-jour:apparence';
+  var COULEURS = [
+    { nom: 'Bleu', clair: '#2D4FC4', sombre: '#8EA6FF' }, { nom: 'Vert', clair: '#0F766E', sombre: '#5EEAD4' },
+    { nom: 'Ambre', clair: '#B45309', sombre: '#FBBF24' }, { nom: 'Violet', clair: '#7C3AED', sombre: '#C4B5FD' },
+    { nom: 'Framboise', clair: '#BE123C', sombre: '#FDA4AF' }, { nom: 'Ardoise', clair: '#334155', sombre: '#CBD5E1' }
+  ];
+  var ap = { couleur: 0, theme: 'auto', ordre: null };
+  try { var lu = JSON.parse(localStorage.getItem(CLE) || 'null'); if (lu) ap = Object.assign(ap, lu); } catch (e) {}
+  var racine = document.documentElement;
+  var colonnes = { main: document.querySelector('main'), aside: document.querySelector('aside') };
+  function sombre() { return ap.theme === 'dark' || (ap.theme === 'auto' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches); }
+  function appliquer() {
+    if (ap.theme === 'auto') racine.removeAttribute('data-theme'); else racine.setAttribute('data-theme', ap.theme);
+    var c = COULEURS[ap.couleur] || COULEURS[0];
+    racine.style.setProperty('--accent', sombre() ? c.sombre : c.clair);
+    if (ap.ordre) Object.keys(colonnes).forEach(function (k) {
+      var col = colonnes[k]; if (!col || !ap.ordre[k]) return;
+      ap.ordre[k].forEach(function (id) { var sec = col.querySelector(':scope > [data-section="' + id + '"]'); if (sec) col.appendChild(sec); });
+    });
+  }
+  function sauver() { try { localStorage.setItem(CLE, JSON.stringify(ap)); } catch (e) {} appliquer(); }
+  function ordreActuel() {
+    var o = {};
+    Object.keys(colonnes).forEach(function (k) {
+      o[k] = colonnes[k] ? Array.prototype.map.call(colonnes[k].querySelectorAll(':scope > [data-section]'), function (s) { return s.getAttribute('data-section'); }) : [];
+    });
+    return o;
+  }
+  function titre(id) { var s = document.querySelector('[data-section="' + id + '"] h2'); return s ? s.textContent : id; }
+  function remplirUI() {
+    var nu = document.getElementById('reg-couleurs'); if (!nu) return;
+    nu.innerHTML = '';
+    COULEURS.forEach(function (c, i) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'pastille' + (i === ap.couleur ? ' choisie' : '');
+      b.style.background = c.clair; b.setAttribute('aria-label', c.nom); b.title = c.nom;
+      b.addEventListener('click', function () { ap.couleur = i; sauver(); remplirUI(); });
+      nu.appendChild(b);
+    });
+    var th = document.getElementById('reg-theme'); th.value = ap.theme;
+    th.onchange = function () { ap.theme = th.value; sauver(); };
+    var zone = document.getElementById('reg-ordre'); zone.innerHTML = '';
+    var o = ordreActuel();
+    [['main', 'Colonne principale'], ['aside', 'Colonne de droite']].forEach(function (paire) {
+      var k = paire[0];
+      var t = document.createElement('div'); t.className = 'ordre-col'; t.textContent = paire[1]; zone.appendChild(t);
+      o[k].forEach(function (id, i) {
+        var l = document.createElement('div'); l.className = 'ordre-ligne';
+        var sp = document.createElement('span'); sp.textContent = titre(id);
+        var h = document.createElement('button'); h.type = 'button'; h.className = 'reg-btn mini'; h.textContent = '↑'; h.disabled = i === 0;
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'reg-btn mini'; b.textContent = '↓'; b.disabled = i === o[k].length - 1;
+        function bouger(d) { var arr = o[k].slice(); var j = i + d; var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp; ap.ordre = ap.ordre || {}; ap.ordre.main = (k === 'main') ? arr : o.main; ap.ordre.aside = (k === 'aside') ? arr : o.aside; sauver(); remplirUI(); }
+        h.addEventListener('click', function () { bouger(-1); });
+        b.addEventListener('click', function () { bouger(1); });
+        l.appendChild(sp); l.appendChild(h); l.appendChild(b); zone.appendChild(l);
+      });
+    });
+  }
+  appliquer();
+  if (window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListener('change', appliquer);
+  document.querySelectorAll('[data-open-reglages]').forEach(function (b) { b.addEventListener('click', function () { setTimeout(remplirUI, 0); }); });
+})();
+</script>
+<script>
+(function () {
+  // Heure des actualités en relatif (« il y a 2 h ») tant qu'elle date d'aujourd'hui
+  function maj() {
+    var maintenant = Date.now();
+    document.querySelectorAll('.news-heure[data-ts]').forEach(function (el) {
+      var ts = Number(el.getAttribute('data-ts')); if (!ts) return;
+      var min = Math.round((maintenant - ts) / 60000);
+      if (min < 0) return;
+      if (min < 60) el.textContent = 'il y a ' + Math.max(1, min) + ' min';
+      else if (min < 12 * 60) el.textContent = 'il y a ' + Math.round(min / 60) + ' h';
+    });
+  }
+  maj(); setInterval(maj, 60000);
+})();
+</script>
+</body>
+</html>
