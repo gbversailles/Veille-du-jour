@@ -47,7 +47,23 @@ main{flex:999 1 520px;min-width:0}
 .bouton{border:1px solid var(--rule);background:transparent;color:var(--ink);border-radius:10px;padding:8px 14px;font:inherit;font-size:14px;cursor:pointer}
 .bouton:hover{border-color:currentColor}
 .bouton.plein{background:var(--ink);color:var(--card);border-color:var(--ink)}
-.cible{border-radius:14px;background:var(--info-bg);padding:16px 18px}
+.cible{border:1px solid var(--rule);border-radius:14px;padding:16px 18px;background:var(--card)}
+.cible-table{border-collapse:separate;border-spacing:0;width:100%;font-size:14px;border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+.cible-table th,.cible-table td{border:none;border-bottom:1px solid var(--rule);padding:8px 12px;vertical-align:middle}
+.cible-table tr:last-child td{border-bottom:none}
+.cible-table thead th{background:var(--ground);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.cible-table .col-val{width:42%;text-align:left}
+.cible-table .val{font-weight:600;font-variant-numeric:tabular-nums}
+.cible-table tr.groupe td{background:var(--info-bg);font-weight:600;font-size:13px;color:var(--ink);border-left:3px solid var(--accent);padding-top:7px;padding-bottom:7px}
+.cible-table tr.note-ligne td{font-size:13px;color:var(--muted);font-style:italic}
+.cible-table td.sans-ctx{color:var(--muted)}
+.cible-table tr.tox td{background:var(--bad-bg)}
+.cible-table tr.tox .val{color:var(--bad)}
+.badge-tox{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--bad);border:1px solid var(--bad);border-radius:999px;padding:1px 7px;margin-right:8px;vertical-align:1px}
+.cible-table.brut td{border-right:1px solid var(--rule)}
+.cible-table.brut td:last-child{border-right:none}
+.cible-table.brut tr.groupe-entete td{background:var(--ground);font-weight:600}
+@media (max-width:560px){.cible-table .col-val{width:auto}.cible-table th,.cible-table td{padding:7px 9px}}
 .cible h3,.interp h3{margin:0 0 8px;font-family:'Space Grotesk',sans-serif;font-size:18px}
 .cible ul{margin:0;padding-left:18px}
 .cible li{margin:2px 0}
@@ -103,13 +119,13 @@ details.classe > summary .nb{font-weight:500;margin-left:6px;letter-spacing:0}
 .cible-ligne.seule{grid-template-columns:1fr}
 .cible-ligne .val{font-weight:600}
 .complement{border-left:3px solid var(--warn);padding-left:12px}
-.essentiels{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
-.essentiel{background:var(--ink);color:var(--card);border-radius:14px;padding:12px 16px}
-.essentiel b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.7}
-.essentiel .valeur{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;line-height:1.15}
+.essentiels{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.essentiel{background:var(--ink);color:var(--card);border-radius:12px;padding:8px 14px}
+.essentiel b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.7}
+.essentiel .valeur{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;line-height:1.2}
 .essentiel .contexte{font-size:12px;opacity:.75;margin-top:2px}
 .essentiel.absent{background:var(--ground);color:var(--muted)}
-.essentiel.absent .valeur{font-size:18px}
+.essentiel.absent .valeur{font-size:15px}
 .secondaires{display:flex;flex-wrap:wrap;gap:6px}
 .secondaire{background:var(--ground);border-radius:999px;padding:4px 12px;font-size:13px}
 .secondaire b{color:var(--muted);font-weight:600;margin-right:4px}
@@ -391,26 +407,50 @@ details.classe > summary .nb{font-weight:500;margin-left:6px;letter-spacing:0}
       var largeur = Math.max.apply(null, lignes.map(function (l) { return l.length; }));
       var utiles = [];
       for (var c = 0; c < largeur; c++) if (lignes.some(function (l) { return l[c]; })) utiles.push(c);
-      var tw = el('div', 'tableau'); var tb = el('table');
-      lignes.forEach(function (l) {
-        var tr = el('tr');
+      var tw = el('div', 'tableau'); var tb = el('table', 'cible-table brut');
+      lignes.forEach(function (l, n) {
+        var tr = el('tr', n === 0 ? 'groupe-entete' : null);
         utiles.forEach(function (i) { tr.appendChild(el('td', null, l[i] || '')); });
         tb.appendChild(tr);
       });
       tw.appendChild(tb); bloc.appendChild(tw);
       return bloc;
     }
-    var grille = el('div', 'cible-grille');
+    // Présentation en tableau : une ligne d'en-tête par type de prélèvement (résiduelle, Css, pic…),
+    // puis « contexte | valeur » ; seuils toxiques mis en évidence ; phrases sans valeur en note.
+    var estValeur = function (x) { return /\d\s*[-–à]\s*\d|mg|ng|µg|ug\/|mmol|µmol|mol\/l|[<>≤≥]\s*\d|\d\s*x\s*cmi|cmi/i.test(x) && !/recommand/i.test(x); };
+    var estEntete = function (x) { return /recommand|concentration|r[ée]siduelle|\bcss\b|\bpic\b|\bauc\b|mi-intervalle|cible/i.test(x); };
+    var tw2 = el('div', 'tableau'); var tb2 = el('table', 'cible-table');
+    var thead = el('thead'); var trh = el('tr');
+    trh.appendChild(el('th', null, 'Contexte')); trh.appendChild(el('th', 'col-val', 'Valeur'));
+    thead.appendChild(trh); tb2.appendChild(thead);
+    var tbody = el('tbody');
+    function ligneValeur(contexte, valeur, tox) {
+      var tr = el('tr', tox ? 'tox' : null);
+      var td1 = el('td', contexte ? null : 'sans-ctx', contexte || 'Cible');
+      var td2 = el('td', 'col-val');
+      if (tox) td2.appendChild(el('span', 'badge-tox', 'Toxique'));
+      td2.appendChild(el('span', 'val', valeur));
+      tr.appendChild(td1); tr.appendChild(td2); tbody.appendChild(tr);
+    }
     lignes.forEach(function (l) {
-      var cellules = l.filter(Boolean);
-      var estValeur = function (x) { return /\d\s*[-–]\s*\d|mg|ng|µg|ug\/|mmol|µmol|mol\/l|[<>≤≥]\s*\d/i.test(x) && !/recommand/i.test(x); };
-      if (cellules.length === 1 && !estValeur(cellules[0])) { grille.appendChild(el('div', 'cible-titre', cellules[0])); return; }
-      var ligne = el('div', 'cible-ligne' + (cellules.length === 1 ? ' seule' : ''));
-      if (cellules.length === 1) ligne.appendChild(el('span', 'val', cellules[0]));
-      else { ligne.appendChild(el('span', null, cellules.slice(0, -1).join(' · '))); ligne.appendChild(el('span', 'val', cellules[cellules.length - 1])); }
-      grille.appendChild(ligne);
+      var cellules = l.map(function (x) { return String(x || '').trim(); }).filter(Boolean);
+      if (!cellules.length) return;
+      var texte = cellules.join(' ');
+      var tox = /toxicit|toxique/i.test(texte);
+      if (cellules.length > 1) { ligneValeur(cellules.slice(0, -1).join(' · '), cellules[cellules.length - 1], tox); return; }
+      var t = cellules[0];
+      if (!estValeur(t)) {
+        var tr = el('tr', estEntete(t) && !/^activit/i.test(t) ? 'groupe' : 'note-ligne');
+        var td = el('td', null, t); td.colSpan = 2; tr.appendChild(td); tbody.appendChild(tr); return;
+      }
+      var mt = t.match(/^(toxicit[ée]s?|seuil toxique|toxique)\s*:?\s*(.+)$/i);
+      if (mt) { ligneValeur('Seuil de toxicité', mt[2], true); return; }
+      var mc = t.match(/^(.+?)\s*:\s+(.+)$/) || t.match(/^([^:]*[a-zA-Zé)])\s*:\s*(\S.*)$/);
+      if (mc && /[a-zA-Zàâçéèêëîïôûùüÿœ]/.test(mc[1])) ligneValeur(mc[1], mc[2], tox);
+      else ligneValeur('', t, tox);
     });
-    bloc.appendChild(grille);
+    tb2.appendChild(tbody); tw2.appendChild(tb2); bloc.appendChild(tw2);
     return bloc;
   }
   function complementDe(m) { return complements[m.id] || complements[sansAccent(m.nom).replace(/[^a-z0-9]+/g, '-')]; }

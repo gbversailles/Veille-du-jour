@@ -246,6 +246,9 @@ a.tile:hover{outline:1px solid var(--accent)}
 .ordre{display:flex;flex-direction:column;gap:4px}
 .ordre-ligne{display:flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--rule);border-radius:10px;font-size:14px}
 .ordre-ligne span{flex:1}
+.ordre-ligne input[type=checkbox]{width:18px;height:18px;margin:0;accent-color:var(--accent);cursor:pointer}
+.ordre-ligne.masque span{color:var(--muted);text-decoration:line-through}
+[data-section][hidden]{display:none!important}
 .ordre-col{font-size:12px;font-weight:600;color:var(--muted);margin-top:6px}
 .outlook.as-btn{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
 .reg-btn:disabled{opacity:.35;cursor:default}
@@ -714,7 +717,7 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
     <div class="nuancier" id="reg-couleurs"></div>
     <label for="reg-theme">Thème</label>
     <select id="reg-theme"><option value="auto">Automatique (selon le téléphone)</option><option value="light">Clair</option><option value="dark">Sombre</option></select>
-    <div class="reg-l">Ordre des blocs (flèches pour déplacer)</div>
+    <div class="reg-l">Blocs affichés et ordre (décocher pour masquer un bloc, flèches pour déplacer)</div>
     <div id="reg-ordre" class="ordre"></div>
 
     <div class="reg-section">Favoris</div>
@@ -1449,7 +1452,7 @@ document.addEventListener('click', function (e) {
     { nom: 'Ambre', clair: '#B45309', sombre: '#FBBF24' }, { nom: 'Violet', clair: '#7C3AED', sombre: '#C4B5FD' },
     { nom: 'Framboise', clair: '#BE123C', sombre: '#FDA4AF' }, { nom: 'Ardoise', clair: '#334155', sombre: '#CBD5E1' }
   ];
-  var ap = { couleur: 0, theme: 'auto', ordre: null };
+  var ap = { couleur: 0, theme: 'auto', ordre: null, masques: [] };
   try { var lu = JSON.parse(localStorage.getItem(CLE) || 'null'); if (lu) ap = Object.assign(ap, lu); } catch (e) {}
   var racine = document.documentElement;
   var colonnes = { main: document.querySelector('main'), aside: document.querySelector('aside') };
@@ -1461,6 +1464,13 @@ document.addEventListener('click', function (e) {
     if (ap.ordre) Object.keys(colonnes).forEach(function (k) {
       var col = colonnes[k]; if (!col || !ap.ordre[k]) return;
       ap.ordre[k].forEach(function (id) { var sec = col.querySelector(':scope > [data-section="' + id + '"]'); if (sec) col.appendChild(sec); });
+    });
+    var masques = [].concat(ap.masques || []);
+    Object.keys(colonnes).forEach(function (k) {
+      if (!colonnes[k]) return;
+      colonnes[k].querySelectorAll(':scope > [data-section]').forEach(function (sec) {
+        sec.hidden = masques.indexOf(sec.getAttribute('data-section')) >= 0;
+      });
     });
   }
   function sauver() { try { localStorage.setItem(CLE, JSON.stringify(ap)); } catch (e) {} appliquer(); }
@@ -1489,14 +1499,22 @@ document.addEventListener('click', function (e) {
       var k = paire[0];
       var t = document.createElement('div'); t.className = 'ordre-col'; t.textContent = paire[1]; zone.appendChild(t);
       o[k].forEach(function (id, i) {
-        var l = document.createElement('div'); l.className = 'ordre-ligne';
+        var masque = [].concat(ap.masques || []).indexOf(id) >= 0;
+        var l = document.createElement('div'); l.className = 'ordre-ligne' + (masque ? ' masque' : '');
+        var cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = !masque; cb.title = 'Afficher ce bloc';
+        cb.setAttribute('aria-label', 'Afficher le bloc ' + titre(id));
+        cb.addEventListener('change', function () {
+          var m = [].concat(ap.masques || []).filter(function (x) { return x !== id; });
+          if (!cb.checked) m.push(id);
+          ap.masques = m; sauver(); remplirUI();
+        });
         var sp = document.createElement('span'); sp.textContent = titre(id);
         var h = document.createElement('button'); h.type = 'button'; h.className = 'reg-btn mini'; h.textContent = '↑'; h.disabled = i === 0;
         var b = document.createElement('button'); b.type = 'button'; b.className = 'reg-btn mini'; b.textContent = '↓'; b.disabled = i === o[k].length - 1;
         function bouger(d) { var arr = o[k].slice(); var j = i + d; var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp; ap.ordre = ap.ordre || {}; ap.ordre.main = (k === 'main') ? arr : o.main; ap.ordre.aside = (k === 'aside') ? arr : o.aside; sauver(); remplirUI(); }
         h.addEventListener('click', function () { bouger(-1); });
         b.addEventListener('click', function () { bouger(1); });
-        l.appendChild(sp); l.appendChild(h); l.appendChild(b); zone.appendChild(l);
+        l.appendChild(cb); l.appendChild(sp); l.appendChild(h); l.appendChild(b); zone.appendChild(l);
       });
     });
   }
