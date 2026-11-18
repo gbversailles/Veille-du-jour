@@ -58,7 +58,10 @@ main{flex:999 1 520px;min-width:0}
 .cp-val .v{font-variant-numeric:tabular-nums}
 .cp-val.tox .v{color:var(--bad)}
 .cp-note{font-size:13px;color:var(--muted);font-style:italic}
-.cible-table{border-collapse:collapse;width:100%;font-size:14px}
+.cible-table{border-collapse:collapse;width:100%;font-size:14px;border:1px solid var(--ink)}
+.cible-table td:first-child{font-weight:600}
+.cible-table td:not(:first-child){font-weight:700;font-variant-numeric:tabular-nums}
+.cible-table tr.groupe-entete td{font-weight:700}
 .cible-table td{border:1px solid var(--rule);padding:7px 10px;vertical-align:middle;text-align:center}
 .cible-table tr.groupe-entete td{background:#D4D5D1;color:#16181D;font-weight:700}
 @media (prefers-color-scheme: dark){.cible-table tr.groupe-entete td{background:#3A3F4A;color:#ECEDE8}}
@@ -400,6 +403,27 @@ details.classe > summary .nb{font-weight:500;margin-left:6px;letter-spacing:0}
     bloc.appendChild(el('h3', null, 'Cible thérapeutique et seuils'));
     var lignes = m.cible || [];
     if (!lignes.length) { bloc.appendChild(el('div', 'note', 'Aucune cible renseignée.')); return bloc; }
+    var estValeur = function (x) { return !/recommand/i.test(x) && (/\d\s*[-–à]\s*\d|mg|ng\/|µg|ug\/|mmol|µmol|mol\/l|[<>≤≥]\s*\d|\d\s*x\s*cmi/i.test(x) || /:\s*[\d<>≤≥]/.test(x)); };
+    var estEntete = function (x) { return /recommand|concentration|r[ée]siduelle|\bcss\b|\bpic\b|\bauc\b|\bcmax\b|ratio|mi-intervalle|cible|^pour efficacit/i.test(x) && !/^[a-zà-ÿ]|non d[ée]fini|pr[ée]diction/.test(x); };
+    // Tableau à colonnes « Résiduelle | Css » (ex. céfépime) : remis à plat en bandeaux + « contexte : valeur »
+    lignes = (function (ls) {
+      var tx = function (x) { return String(x || '').trim(); };
+      for (var h = 0; h < ls.length; h++) {
+        var l = ls[h], idx = [];
+        l.forEach(function (x, i) { if (tx(x)) idx.push(i); });
+        if (idx.length < 2 || idx.length > 3 || tx(l[0]) || !idx.every(function (i) { return estEntete(tx(l[i])); })) continue;
+        var fin = h + 1;
+        while (fin < ls.length && tx(ls[fin][0]) && idx.some(function (i) { return tx(ls[fin][i]); })) fin++;
+        if (fin === h + 1) continue;
+        var sortie = ls.slice(0, h);
+        idx.forEach(function (i) {
+          sortie.push([tx(l[i])]);
+          for (var r = h + 1; r < fin; r++) if (tx(ls[r][i])) sortie.push([tx(ls[r][0]) + ' : ' + tx(ls[r][i])]);
+        });
+        return sortie.concat(ls.slice(fin));
+      }
+      return ls;
+    })(lignes);
     var enTableau = lignes.filter(function (l) { return l.filter(Boolean).length >= 3; }).length >= 2;
     if (enTableau) {
       var largeur = Math.max.apply(null, lignes.map(function (l) { return l.length; }));
@@ -416,8 +440,6 @@ details.classe > summary .nb{font-weight:500;margin-left:6px;letter-spacing:0}
     }
     // Présentation en tableau : une ligne d'en-tête par type de prélèvement (résiduelle, Css, pic…),
     // puis « contexte | valeur » ; seuils toxiques mis en évidence ; phrases sans valeur en note.
-    var estValeur = function (x) { return !/recommand/i.test(x) && (/\d\s*[-–à]\s*\d|mg|ng\/|µg|ug\/|mmol|µmol|mol\/l|[<>≤≥]\s*\d|\d\s*x\s*cmi/i.test(x) || /:\s*[\d<>≤≥]/.test(x)); };
-    var estEntete = function (x) { return /recommand|concentration|r[ée]siduelle|\bcss\b|\bpic\b|\bauc\b|\bcmax\b|ratio|mi-intervalle|cible|^pour efficacit/i.test(x) && !/^[a-zà-ÿ]|non d[ée]fini|pr[ée]diction/.test(x); };
     // Présentation « à la manière du fichier Excel » : bandeaux gris centrés par type de prélèvement,
     // valeurs centrées en gras dessous ; seuils toxiques en rouge ; phrases sans valeur en note.
     var pile = el('div', 'cible-pile');
