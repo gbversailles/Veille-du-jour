@@ -48,22 +48,20 @@ main{flex:999 1 520px;min-width:0}
 .bouton:hover{border-color:currentColor}
 .bouton.plein{background:var(--ink);color:var(--card);border-color:var(--ink)}
 .cible{border:1px solid var(--rule);border-radius:14px;padding:16px 18px;background:var(--card)}
-.cible-table{border-collapse:separate;border-spacing:0;width:100%;font-size:14px;border:1px solid var(--rule);border-radius:10px;overflow:hidden}
-.cible-table th,.cible-table td{border:none;border-bottom:1px solid var(--rule);padding:8px 12px;vertical-align:middle}
-.cible-table tr:last-child td{border-bottom:none}
-.cible-table thead th{background:var(--ground);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.cible-table .col-val{width:42%;text-align:left}
-.cible-table .val{font-weight:600;font-variant-numeric:tabular-nums}
-.cible-table tr.groupe td{background:var(--info-bg);font-weight:600;font-size:13px;color:var(--ink);border-left:3px solid var(--accent);padding-top:7px;padding-bottom:7px}
-.cible-table tr.note-ligne td{font-size:13px;color:var(--muted);font-style:italic}
-.cible-table td.sans-ctx{color:var(--muted)}
-.cible-table tr.tox td{background:var(--bad-bg)}
-.cible-table tr.tox .val{color:var(--bad)}
-.badge-tox{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--bad);border:1px solid var(--bad);border-radius:999px;padding:1px 7px;margin-right:8px;vertical-align:1px}
-.cible-table.brut td{border-right:1px solid var(--rule)}
-.cible-table.brut td:last-child{border-right:none}
-.cible-table.brut tr.groupe-entete td{background:var(--ground);font-weight:600}
-@media (max-width:560px){.cible-table .col-val{width:auto}.cible-table th,.cible-table td{padding:7px 9px}}
+.cible-pile{border:1px solid var(--ink);border-radius:10px;overflow:hidden;max-width:560px;margin:0 auto;width:100%}
+.cible-pile > div{text-align:center;padding:7px 14px;border-top:1px solid var(--rule)}
+.cible-pile > div:first-child{border-top:none}
+.cp-entete{background:#D4D5D1;color:#16181D;font-weight:700;font-size:15px;border-top:1px solid var(--ink)!important}
+.cible-pile > .cp-entete:first-child{border-top:none!important}
+@media (prefers-color-scheme: dark){.cp-entete{background:#3A3F4A;color:#ECEDE8}}
+.cp-val{font-size:17px;font-weight:700;line-height:1.35}
+.cp-val .v{font-variant-numeric:tabular-nums}
+.cp-val.tox .v{color:var(--bad)}
+.cp-note{font-size:13px;color:var(--muted);font-style:italic}
+.cible-table{border-collapse:collapse;width:100%;font-size:14px}
+.cible-table td{border:1px solid var(--rule);padding:7px 10px;vertical-align:middle;text-align:center}
+.cible-table tr.groupe-entete td{background:#D4D5D1;color:#16181D;font-weight:700}
+@media (prefers-color-scheme: dark){.cible-table tr.groupe-entete td{background:#3A3F4A;color:#ECEDE8}}
 .cible h3,.interp h3{margin:0 0 8px;font-family:'Space Grotesk',sans-serif;font-size:18px}
 .cible ul{margin:0;padding-left:18px}
 .cible li{margin:2px 0}
@@ -119,13 +117,13 @@ details.classe > summary .nb{font-weight:500;margin-left:6px;letter-spacing:0}
 .cible-ligne.seule{grid-template-columns:1fr}
 .cible-ligne .val{font-weight:600}
 .complement{border-left:3px solid var(--warn);padding-left:12px}
-.essentiels{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
-.essentiel{background:var(--ink);color:var(--card);border-radius:12px;padding:8px 14px}
-.essentiel b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.7}
-.essentiel .valeur{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;line-height:1.2}
-.essentiel .contexte{font-size:12px;opacity:.75;margin-top:2px}
-.essentiel.absent{background:var(--ground);color:var(--muted)}
-.essentiel.absent .valeur{font-size:15px}
+.essentiels{display:flex;flex-wrap:wrap;gap:8px}
+.essentiel{display:inline-flex;align-items:baseline;gap:8px;background:var(--ground);border:1px solid var(--rule);border-radius:999px;padding:5px 14px}
+.essentiel b{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.essentiel .valeur{font-weight:700;font-size:15px}
+.essentiel .contexte{font-size:12px;color:var(--muted)}
+.essentiel.absent{opacity:.7}
+.essentiel.absent .valeur{font-weight:500;font-size:13px;color:var(--muted)}
 .secondaires{display:flex;flex-wrap:wrap;gap:6px}
 .secondaire{background:var(--ground);border-radius:999px;padding:4px 12px;font-size:13px}
 .secondaire b{color:var(--muted);font-weight:600;margin-right:4px}
@@ -418,20 +416,16 @@ details.classe > summary .nb{font-weight:500;margin-left:6px;letter-spacing:0}
     }
     // Présentation en tableau : une ligne d'en-tête par type de prélèvement (résiduelle, Css, pic…),
     // puis « contexte | valeur » ; seuils toxiques mis en évidence ; phrases sans valeur en note.
-    var estValeur = function (x) { return /\d\s*[-–à]\s*\d|mg|ng|µg|ug\/|mmol|µmol|mol\/l|[<>≤≥]\s*\d|\d\s*x\s*cmi|cmi/i.test(x) && !/recommand/i.test(x); };
-    var estEntete = function (x) { return /recommand|concentration|r[ée]siduelle|\bcss\b|\bpic\b|\bauc\b|mi-intervalle|cible/i.test(x); };
-    var tw2 = el('div', 'tableau'); var tb2 = el('table', 'cible-table');
-    var thead = el('thead'); var trh = el('tr');
-    trh.appendChild(el('th', null, 'Contexte')); trh.appendChild(el('th', 'col-val', 'Valeur'));
-    thead.appendChild(trh); tb2.appendChild(thead);
-    var tbody = el('tbody');
+    var estValeur = function (x) { return !/recommand/i.test(x) && (/\d\s*[-–à]\s*\d|mg|ng\/|µg|ug\/|mmol|µmol|mol\/l|[<>≤≥]\s*\d|\d\s*x\s*cmi/i.test(x) || /:\s*[\d<>≤≥]/.test(x)); };
+    var estEntete = function (x) { return /recommand|concentration|r[ée]siduelle|\bcss\b|\bpic\b|\bauc\b|\bcmax\b|ratio|mi-intervalle|cible|^pour efficacit/i.test(x) && !/^[a-zà-ÿ]|non d[ée]fini|pr[ée]diction/.test(x); };
+    // Présentation « à la manière du fichier Excel » : bandeaux gris centrés par type de prélèvement,
+    // valeurs centrées en gras dessous ; seuils toxiques en rouge ; phrases sans valeur en note.
+    var pile = el('div', 'cible-pile');
     function ligneValeur(contexte, valeur, tox) {
-      var tr = el('tr', tox ? 'tox' : null);
-      var td1 = el('td', contexte ? null : 'sans-ctx', contexte || 'Cible');
-      var td2 = el('td', 'col-val');
-      if (tox) td2.appendChild(el('span', 'badge-tox', 'Toxique'));
-      td2.appendChild(el('span', 'val', valeur));
-      tr.appendChild(td1); tr.appendChild(td2); tbody.appendChild(tr);
+      var d = el('div', 'cp-val' + (tox ? ' tox' : ''));
+      if (contexte) d.appendChild(el('span', 'ctx', contexte + ' : '));
+      d.appendChild(el('span', 'v', valeur));
+      pile.appendChild(d);
     }
     lignes.forEach(function (l) {
       var cellules = l.map(function (x) { return String(x || '').trim(); }).filter(Boolean);
@@ -440,17 +434,16 @@ details.classe > summary .nb{font-weight:500;margin-left:6px;letter-spacing:0}
       var tox = /toxicit|toxique/i.test(texte);
       if (cellules.length > 1) { ligneValeur(cellules.slice(0, -1).join(' · '), cellules[cellules.length - 1], tox); return; }
       var t = cellules[0];
-      if (!estValeur(t)) {
-        var tr = el('tr', estEntete(t) && !/^activit/i.test(t) ? 'groupe' : 'note-ligne');
-        var td = el('td', null, t); td.colSpan = 2; tr.appendChild(td); tbody.appendChild(tr); return;
+      if (!estValeur(t) && !/^[<>≤≥]?\s*\d+(?:[.,]\d+)?\s*%?$/.test(t)) {
+        pile.appendChild(el('div', estEntete(t) && !/^activit/i.test(t) ? 'cp-entete' : 'cp-note', t)); return;
       }
-      var mt = t.match(/^(toxicit[ée]s?|seuil toxique|toxique)\s*:?\s*(.+)$/i);
-      if (mt) { ligneValeur('Seuil de toxicité', mt[2], true); return; }
+      var mt = t.match(/^(toxicit[ée]s?(?:\s+\S+)?|seuil toxique|toxique)\s*:?\s*([<>≤≥].+)$/i);
+      if (mt) { ligneValeur(mt[1].charAt(0).toUpperCase() + mt[1].slice(1), mt[2], true); return; }
       var mc = t.match(/^(.+?)\s*:\s+(.+)$/) || t.match(/^([^:]*[a-zA-Zé)])\s*:\s*(\S.*)$/);
       if (mc && /[a-zA-Zàâçéèêëîïôûùüÿœ]/.test(mc[1])) ligneValeur(mc[1], mc[2], tox);
       else ligneValeur('', t, tox);
     });
-    tb2.appendChild(tbody); tw2.appendChild(tb2); bloc.appendChild(tw2);
+    bloc.appendChild(pile);
     return bloc;
   }
   function complementDe(m) { return complements[m.id] || complements[sansAccent(m.nom).replace(/[^a-z0-9]+/g, '-')]; }
