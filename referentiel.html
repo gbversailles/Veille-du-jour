@@ -54,7 +54,10 @@ main{flex:999 1 520px;min-width:0}
 .cp-entete{background:#D4D5D1;color:#16181D;font-weight:700;font-size:15px;border-top:1px solid var(--ink)!important}
 .cible-pile > .cp-entete:first-child{border-top:none!important}
 @media (prefers-color-scheme: dark){.cp-entete{background:#3A3F4A;color:#ECEDE8}}
-.cp-val{font-size:17px;font-weight:700;line-height:1.35}
+.cp-val{font-size:20px;font-weight:700;line-height:1.3;padding:9px 14px!important}
+.cp-val .ctx{font-weight:600;font-size:15px}
+.cp-aide{font-size:13.5px;font-weight:500;color:var(--muted);line-height:1.35}
+.cp-aide .v{font-weight:600}
 .cp-val .v{font-variant-numeric:tabular-nums}
 .cp-val.tox .v{color:var(--bad)}
 .cp-note{font-size:13px;color:var(--muted);font-style:italic}
@@ -443,28 +446,56 @@ details.classe > summary .nb{font-weight:500;margin-left:6px;letter-spacing:0}
     // Présentation « à la manière du fichier Excel » : bandeaux gris centrés par type de prélèvement,
     // valeurs centrées en gras dessous ; seuils toxiques en rouge ; phrases sans valeur en note.
     var pile = el('div', 'cible-pile');
-    function ligneValeur(contexte, valeur, tox) {
-      var d = el('div', 'cp-val' + (tox ? ' tox' : ''));
-      if (contexte) d.appendChild(el('span', 'ctx', contexte + ' : '));
-      d.appendChild(el('span', 'v', valeur));
-      pile.appendChild(d);
+    // On classe chaque ligne : bandeau, note, cible (gros), aide à la cible (petit : règles × CMI, Cmax orale…), toxicité (gros, rouge).
+    // Dans chaque bandeau, les vraies cibles passent en premier ; les bandeaux sans vraie cible passent après.
+    var groupes = [{ titre: null, lignes: [] }], notesFin = [];
+    var estAide = function (txt, titre) {
+      return /x\s*cmi|cmi critique|c°\s*plasmatique|^pour dose|^infections? document[ée]es?\s/i.test(txt) || /voie orale/i.test(titre || '');
+    };
+    function ajouter(contexte, valeur, tox) {
+      var g = groupes[groupes.length - 1], txt = (contexte ? contexte + ' ' : '') + valeur;
+      g.lignes.push({ contexte: contexte, valeur: valeur, type: tox ? 'tox' : (estAide(txt, g.titre) ? 'aide' : 'cible') });
     }
     lignes.forEach(function (l) {
       var cellules = l.map(function (x) { return String(x || '').trim(); }).filter(Boolean);
       if (!cellules.length) return;
       var texte = cellules.join(' ');
       var tox = /toxicit|toxique/i.test(texte);
-      if (cellules.length > 1) { ligneValeur(cellules.slice(0, -1).join(' · '), cellules[cellules.length - 1], tox); return; }
+      if (cellules.length > 1) { ajouter(cellules.slice(0, -1).join(' · '), cellules[cellules.length - 1], tox); return; }
       var t = cellules[0];
       if (!estValeur(t) && !/^[<>≤≥]?\s*\d+(?:[.,]\d+)?\s*%?$/.test(t)) {
-        pile.appendChild(el('div', estEntete(t) && !/^activit/i.test(t) ? 'cp-entete' : 'cp-note', t)); return;
+        if (estEntete(t) && !/^activit/i.test(t)) groupes.push({ titre: t, lignes: [] });
+        else notesFin.push(t);
+        return;
       }
-      var mt = t.match(/^(toxicit[ée]s?(?:\s+\S+)?|seuil toxique|toxique)\s*:?\s*([<>≤≥].+)$/i);
-      if (mt) { ligneValeur(mt[1].charAt(0).toUpperCase() + mt[1].slice(1), mt[2], true); return; }
+      var mt = t.match(/^(toxicit[ée]s?(?:\s+\S+)?|seuil toxique|toxique|c°\s*toxique)\s*:?\s*([<>≤≥].+)$/i);
+      if (mt) { ajouter(mt[1].charAt(0).toUpperCase() + mt[1].slice(1), mt[2], true); return; }
       var mc = t.match(/^(.+?)\s*:\s+(.+)$/) || t.match(/^([^:]*[a-zA-Zé)])\s*:\s*(\S.*)$/);
-      if (mc && /[a-zA-Zàâçéèêëîïôûùüÿœ]/.test(mc[1])) ligneValeur(mc[1], mc[2], tox);
-      else ligneValeur('', t, tox);
+      if (mc && /[a-zA-Zàâçéèêëîïôûùüÿœ]/.test(mc[1])) ajouter(mc[1], mc[2], tox);
+      else ajouter('', t, tox);
     });
+    var rang = { cible: 0, aide: 1, tox: 2 };
+    groupes = groupes.filter(function (g) { return g.titre || g.lignes.length; });
+    groupes.forEach(function (g, i) {
+      g.ordre = i;
+      g.lignes = g.lignes.map(function (x, k) { x.k = k; return x; }).sort(function (x, y) { return rang[x.type] - rang[y.type] || x.k - y.k; });
+      g.aCible = g.lignes.some(function (x) { return x.type === 'cible'; });
+      g.queTox = g.lignes.length > 0 && g.lignes.every(function (x) { return x.type === 'tox'; });
+    });
+    groupes.sort(function (x, y) {
+      var px = x.aCible ? 0 : (x.queTox ? 2 : 1), py = y.aCible ? 0 : (y.queTox ? 2 : 1);
+      return px - py || x.ordre - y.ordre;
+    });
+    groupes.forEach(function (g) {
+      if (g.titre) pile.appendChild(el('div', 'cp-entete', g.titre));
+      g.lignes.forEach(function (x) {
+        var d = el('div', x.type === 'tox' ? 'cp-val tox' : (x.type === 'aide' ? 'cp-aide' : 'cp-val'));
+        if (x.contexte) d.appendChild(el('span', 'ctx', x.contexte + ' : '));
+        d.appendChild(el('span', 'v', x.valeur));
+        pile.appendChild(d);
+      });
+    });
+    notesFin.forEach(function (t) { pile.appendChild(el('div', 'cp-note', t)); });
     bloc.appendChild(pile);
     return bloc;
   }
