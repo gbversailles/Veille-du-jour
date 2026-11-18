@@ -32,6 +32,12 @@ header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-be
 .date{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 h1{margin:6px 0;font-family:'Space Grotesk',sans-serif;font-size:clamp(36px,6vw,52px);line-height:1;font-weight:700;letter-spacing:-.02em}
 .now{display:flex;align-items:center;gap:16px;background:var(--card);border-radius:16px;padding:14px 20px}
+.ref-entete{position:relative;display:flex;flex-direction:column;gap:6px;background:var(--card);border-radius:16px;padding:12px 18px;min-width:220px;max-width:300px}
+.ref-entete-label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.ref-entete input{border:1px solid var(--rule);border-radius:10px;padding:8px 12px;font:inherit;font-size:14px;background:var(--ground);color:var(--ink)}
+.ref-entete .ref-resultats{position:absolute;top:100%;left:0;right:0;margin-top:6px;background:var(--card);border-radius:14px;padding:4px 14px;box-shadow:0 10px 30px rgba(0,0,0,.18);z-index:15;max-height:min(360px,70vh);overflow:auto}
+.ref-entete .ref-resultats:not(:empty){padding:8px 14px}
+.ref-liens{display:flex;flex-wrap:wrap;gap:10px 14px}
 .now-temp{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:600;line-height:1}
 .now-label{font-size:14px;color:var(--muted)}
 .cols{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
@@ -171,6 +177,11 @@ a.tile:hover{outline:1px solid var(--accent)}
 .tile-value{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:600;white-space:nowrap}
 .tile-chg{font-family:'IBM Plex Mono',monospace;font-size:13px}
 .tile-chg.up{color:var(--up)} .tile-chg.down{color:var(--down)} .tile-chg.flat{color:var(--muted);font-family:'IBM Plex Sans',sans-serif}
+[data-section="invest"] .tiles{gap:6px}
+[data-section="invest"] .tile{padding:8px 10px;gap:1px;border-radius:11px}
+[data-section="invest"] .tile-name{font-size:10.5px}
+[data-section="invest"] .tile-value{font-size:15px}
+[data-section="invest"] .tile-chg{font-size:11px}
 .row-name.wrap{white-space:normal;font-weight:400;font-size:14px;line-height:1.4}
 .zone{display:inline-block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--accent);margin-right:4px}
 .avis{display:flex;gap:6px;flex-wrap:wrap}
@@ -277,6 +288,15 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
       </div>
     </form>
   </div>
+  <div class="ref-entete">
+    <span class="ref-entete-label">Référentiel STP</span>
+    <input type="search" id="ref-recherche" placeholder="Rechercher une molécule…" aria-label="Rechercher une molécule dans le référentiel" autocomplete="off">
+    <div id="ref-resultats" class="ref-resultats" aria-live="polite"></div>
+    <div class="ref-liens">
+      <a class="ref-complet" href="referentiel.html">Référentiel complet ↗</a>
+      <a class="ref-complet" href="posologie.html">Adaptation de posologie ↗</a>
+    </div>
+  </div>
   <div class="now">
     <span class="now-icon" id="now-icon">{{{now_icon}}}</span>
     <div>
@@ -357,15 +377,6 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
         {{/veille_anciens}}
       </details>
       {{/has_suite}}
-    </section>
-    <section class="card" data-section="referentiel" data-open>
-      <div class="card-head"><h2>Référentiel STP</h2><button class="toggle" type="button">−</button></div>
-      <div class="biblio-outils">
-        <input type="search" id="ref-recherche" placeholder="Rechercher une molécule…" aria-label="Rechercher une molécule dans le référentiel" autocomplete="off">
-      </div>
-      <div id="ref-resultats" class="ref-resultats" aria-live="polite"></div>
-      <a class="ref-complet" href="referentiel.html">Ouvrir le référentiel complet ↗</a>
-      <a class="ref-complet" href="posologie.html">Adaptation de posologie ↗</a>
     </section>
     <section class="card" data-section="actu">
       <div class="card-head"><h2>Actualité</h2><button class="toggle" type="button">−</button></div>
@@ -482,7 +493,7 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
       <div class="subhead">Taux immobiliers · Île-de-France {{#has_taux}}<span class="hint">{{taux_mois}}</span>{{/has_taux}}</div>
       {{#has_taux}}
       <div class="tiles">
-        {{#taux}}<div class="tile"><span class="tile-name">{{profil}}</span><span class="tile-value">{{taux}}</span><span class="tile-chg flat">meilleurs profils</span></div>{{/taux}}
+        {{#taux}}<div class="tile"><span class="tile-name">{{profil}}</span><span class="tile-value">{{taux}}</span><span class="tile-chg flat">meilleur taux</span></div>{{/taux}}
         {{#has_moyenne}}<div class="tile"><span class="tile-name">Moyenne France</span><span class="tile-value">{{taux_moyenne}}</span><span class="tile-chg flat">sur 25 ans</span></div>{{/has_moyenne}}
       </div>
       {{/has_taux}}
@@ -552,12 +563,6 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
       <div class="rank"><span class="rank-n">{{pos}}</span><span class="rank-team">{{nom}}</span><span class="mono">{{pts}}</span></div>
       {{/f1_pilotes}}
       {{/has_f1_pilotes}}
-      {{#has_f1_ecuries}}
-      <div class="subhead">Championnat constructeurs</div>
-      {{#f1_ecuries}}
-      <div class="rank"><span class="rank-n">{{pos}}</span><span class="rank-team">{{nom}}</span><span class="mono">{{pts}}</span></div>
-      {{/f1_ecuries}}
-      {{/has_f1_ecuries}}
       {{#has_f1_calendrier}}
       <div class="subhead">Prochains Grands Prix</div>
       {{#f1_calendrier}}
@@ -570,6 +575,28 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
       {{/has_f1_calendrier}}
       {{^has_f1}}<div class="soon">Les données de Formule 1 n'ont pas pu être récupérées ce matin.</div>{{/has_f1}}
       <a class="card-link" href="https://www.lequipe.fr/Formule-1/" target="_blank" rel="noopener">Toute l'actualité de la F1 ↗</a></details>{{/sport_f1}}
+      {{#sport_mma}}<details class="sous"><summary><span class="sous-titre">MMA</span><span class="sous-resume">{{mma_resume}}</span></summary>
+      {{#has_mma_passes}}
+      <div class="subhead">Derniers combats</div>
+      {{#mma_passes}}
+      <div class="match">
+        <div class="match-comp">{{promotion}} · {{evenement}} · {{quand}}</div>
+        <div class="match-line"><span>{{affiche}}</span></div>
+        {{#has_resultat}}<div class="rank-side">{{resultat}}</div>{{/has_resultat}}
+      </div>
+      {{/mma_passes}}
+      {{/has_mma_passes}}
+      {{#has_mma_futurs}}
+      <div class="subhead">Prochains combats</div>
+      {{#mma_futurs}}
+      <div class="match next">
+        <div class="match-comp">{{promotion}} · {{evenement}} · {{quand}}</div>
+        <div class="match-line"><span>{{affiche}}</span></div>
+      </div>
+      {{/mma_futurs}}
+      {{/has_mma_futurs}}
+      {{^has_mma}}<div class="soon">Aucun combat des combattants français suivis (Doumbé, Gane, Baki, Saint-Denis…) trouvé en ce moment.</div>{{/has_mma}}
+      <a class="card-link" href="https://www.lequipe.fr/MMA/" target="_blank" rel="noopener">Toute l'actualité du MMA ↗</a></details>{{/sport_mma}}
       {{#sport_nba}}<details class="sous"><summary><span class="sous-titre">NBA</span><span class="sous-resume">{{nba_resume}}</span></summary>
       {{#nba}}<div class="match"><div class="match-comp">{{quand}}</div><div class="match-line"><span>{{affiche}}</span><span class="mono">{{score}}</span></div></div>{{/nba}}
       {{^has_nba}}<div class="soon">Pas de résultat ces derniers jours.</div>{{/has_nba}}</details>{{/sport_nba}}
@@ -947,7 +974,7 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
   var zoneFavs = document.getElementById('reg-favs');
   var statut = document.getElementById('reg-status');
   var champJeton = document.getElementById('reg-token');
-  var SPORTS = [{ code: 'foot', nom: 'Football' }, { code: 'f1', nom: 'Formule 1' }, { code: 'nba', nom: 'NBA' }, { code: 'rugby', nom: 'Rugby' }];
+  var SPORTS = [{ code: 'foot', nom: 'Football' }, { code: 'f1', nom: 'Formule 1' }, { code: 'mma', nom: 'MMA' }, { code: 'nba', nom: 'NBA' }, { code: 'rugby', nom: 'Rugby' }];
 
   function chips(zone, options, choisis) {
     zone.innerHTML = '';

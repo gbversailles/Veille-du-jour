@@ -149,7 +149,7 @@ lire_reglages <- function(fichier = "reglages.txt") {
             rubriques_actu = "france; ville; monde; sciences; economie",
             specialites = "pharmacologie; toxicologie; infectiologie; reanimation; orthopedie",
             mots_cles_veille = "", revues_veille = "",
-            sports = "foot; f1",
+            sports = "foot; f1; mma",
             carburant = "E10",
             modele_ia = "mistral-large-latest")
   if (!file.exists(fichier)) return(r)
@@ -513,11 +513,74 @@ f1_pilotes <- if (!"f1" %in% sports_choisis) list() else tryCatch({
     list(pos = x$position, nom = paste(x$Driver$givenName, x$Driver$familyName), pts = paste(x$points, "pts")))
 }, error = function(e) { message("Classement pilotes indisponible : ", conditionMessage(e)); list() })
 
-f1_ecuries <- if (!"f1" %in% sports_choisis) list() else tryCatch({
-  l <- get_json(paste0(f1_base, "/constructorStandings.json"))$MRData$StandingsTable$StandingsLists
-  if (!length(l)) list() else lapply(head(l[[1]]$ConstructorStandings, 3), function(x)
-    list(pos = x$position, nom = x$Constructor$name, pts = paste(x$points, "pts")))
-}, error = function(e) { message("Classement écuries indisponible : ", conditionMessage(e)); list() })
+# ---------- MMA (ESPN, combats des combattants français suivis) ----------
+# On ne garde que les combats impliquant un des combattants suivis (pas de classement
+# complet par organisation). Fenêtre large car ces combats sont peu fréquents.
+
+combattants_mma <- c("Doumbe", "Gane", "Chamsoudinov", "Saint Denis", "Imavov", "Ziam", "Charriere", "Gomis")
+promotions_mma <- c("ufc" = "UFC", "pfl" = "PFL")
+simplifier_nom <- function(x) tolower(gsub("[^a-z]", "", iconv(x, to = "ASCII//TRANSLIT", sub = "")))
+combattants_mma_s <- simplifier_nom(combattants_mma)
+
+nom_combattant <- function(c) si_null(c$athlete$displayName, si_null(c$athlete$shortName,
+                              si_null(c$team$displayName, si_null(c$team$shortDisplayName, "?"))))
+
+combats_mma <- list()
+if ("mma" %in% sports_choisis) {
+  demandes_mma <- list(); promos_demandes <- character()
+  for (prom in names(promotions_mma)) {
+    for (k in -60:75) {
+      demandes_mma[[length(demandes_mma) + 1]] <- preparer(
+        sprintf("https://site.api.espn.com/apis/site/v2/sports/mma/%s/scoreboard", prom),
+        list(dates = format(Sys.Date() + k, "%Y%m%d")))
+      promos_demandes <- c(promos_demandes, prom)
+    }
+  }
+  reponses_mma <- req_perform_parallel(demandes_mma, on_error = "continue", progress = FALSE)
+  erreurs_mma <- character()
+  for (i in seq_along(reponses_mma)) {
+    prom <- promos_demandes[i]
+    j <- tryCatch({
+      if (inherits(reponses_mma[[i]], "error")) stop(reponses_mma[[i]])
+      jsonlite::fromJSON(resp_body_string(reponses_mma[[i]]), simplifyVector = FALSE)
+    }, error = function(e) { erreurs_mma <<- c(erreurs_mma, conditionMessage(e)); NULL })
+    if (is.null(j)) next
+    for (ev in si_null(j$events, list())) {
+      for (comp in si_null(ev$competitions, list())) {
+        cs <- si_null(comp$competitors, list())
+        if (length(cs) < 2) next
+        a <- nom_combattant(cs[[1]]); b <- nom_combattant(cs[[2]])
+        as_ <- simplifier_nom(a); bs_ <- simplifier_nom(b)
+        suivi <- any(vapply(combattants_mma_s, function(m) grepl(m, as_, fixed = TRUE) || grepl(m, bs_, fixed = TRUE), FALSE))
+        if (!suivi) next
+        t <- tryCatch(as.POSIXct(substr(si_null(comp$date, ev$date), 1, 16), format = "%Y-%m-%dT%H:%M", tz = "UTC"),
+                      error = function(e) NA)
+        if (is.na(t)) next
+        gagnant <- Filter(function(x) isTRUE(x$winner), cs)
+        combats_mma[[paste0(prom, "-", si_null(comp$id, ev$id))]] <- list(
+          promotion = promotions_mma[[prom]],
+          evenement = si_null(ev$name, si_null(ev$shortName, promotions_mma[[prom]])),
+          t = t,
+          termine = isTRUE(comp$status$type$completed),
+          affiche = paste(a, "–", b),
+          resultat = if (length(gagnant)) paste0("Victoire de ", nom_combattant(gagnant[[1]])) else si_null(comp$status$type$shortDetail, "")
+        )
+      }
+    }
+  }
+  message(length(combats_mma), " combat(s) de combattants suivis trouvé(s) en MMA (UFC/PFL)")
+  if (length(erreurs_mma)) message("Erreurs MMA (", length(erreurs_mma), ") : ", paste(head(unique(erreurs_mma), 3), collapse = " || "))
+}
+
+mma_passes <- Filter(function(c) isTRUE(c$termine), combats_mma)
+mma_futurs <- Filter(function(c) !isTRUE(c$termine), combats_mma)
+if (length(mma_passes)) mma_passes <- mma_passes[order(-vapply(mma_passes, function(c) as.numeric(c$t), 0))]
+if (length(mma_futurs)) mma_futurs <- mma_futurs[order(vapply(mma_futurs, function(c) as.numeric(c$t), 0))]
+mma_passes <- unname(lapply(head(mma_passes, 3), function(c)
+  list(promotion = c$promotion, evenement = c$evenement, quand = date_courte(c$t), affiche = c$affiche,
+       resultat = c$resultat, has_resultat = nzchar(si_null(c$resultat, "")))))
+mma_futurs <- unname(lapply(head(mma_futurs, 3), function(c)
+  list(promotion = c$promotion, evenement = c$evenement, quand = paste(date_courte(c$t), "à", heure(c$t)), affiche = c$affiche)))
 
 # ---------- Autres sports (NBA, rugby) via ESPN ----------
 
@@ -1040,8 +1103,7 @@ for (k in 0:3) {
   moyenne <- if (length(nat) >= 2) tail(gsub("\\s+", " ", regmatches(nat[2], gregexpr("\\d,\\d{2}\\s*%", nat[2]))[[1]]), 1) else ""
   taux_idf <- list(
     mois = paste(mois[lt$mon + 1], lt$year + 1900), lien = url,
-    lignes = list(list(profil = "Sur 25 ans", taux = v[4]), list(profil = "Sur 20 ans", taux = v[3]),
-                  list(profil = "Sur 15 ans", taux = v[2])),
+    lignes = list(list(profil = "Sur 25 ans", taux = v[4])),
     moyenne = moyenne)
   message("Taux immobiliers trouvés : baromètre CAFPI de ", taux_idf$mois)
   break
@@ -1093,10 +1155,17 @@ donnees <- list(
   f1_podium = si_null(f1_dernier$podium, list()),
   has_f1_pilotes = length(f1_pilotes) > 0,
   f1_pilotes = f1_pilotes,
-  has_f1_ecuries = length(f1_ecuries) > 0,
-  f1_ecuries = f1_ecuries,
   has_f1_calendrier = length(f1_calendrier) > 0,
   f1_calendrier = f1_calendrier,
+  sport_mma = "mma" %in% sports_choisis,
+  has_mma = length(mma_passes) > 0 || length(mma_futurs) > 0,
+  has_mma_passes = length(mma_passes) > 0,
+  mma_passes = mma_passes,
+  has_mma_futurs = length(mma_futurs) > 0,
+  mma_futurs = mma_futurs,
+  mma_resume = if (length(mma_futurs)) paste0("Prochain : ", mma_futurs[[1]]$affiche, " (", mma_futurs[[1]]$quand, ")")
+               else if (length(mma_passes)) paste0(mma_passes[[1]]$affiche, " · ", mma_passes[[1]]$resultat)
+               else "Aucun combat suivi en vue",
   veille = veille_principal,
   veille_suite = veille_suite,
   veille_anciens = veille_anciens,
@@ -1121,7 +1190,11 @@ donnees <- list(
   air = air, has_air = nzchar(air),
   sport_foot = "foot" %in% sports_choisis,
   foot_resume = {
-    lignes <- unlist(lapply(foot, function(f) if (length(f$resultats)) paste0(f$equipe, " : ", f$resultats[[1]]$affiche, " ", f$resultats[[1]]$score) else NULL))
+    lignes <- unlist(lapply(foot, function(f) {
+      if (length(f$prochain)) paste0(f$equipe, " : prochain match ", f$prochain[[1]]$affiche, " (", f$prochain[[1]]$quand, ")")
+      else if (length(f$resultats)) paste0(f$equipe, " : ", f$resultats[[1]]$affiche, " ", f$resultats[[1]]$score)
+      else NULL
+    }))
     if (length(lignes)) paste(lignes, collapse = " · ") else "Aucun résultat récent"
   },
   f1_resume = if (!is.null(f1_dernier) && length(f1_dernier$podium)) paste0(f1_dernier$gp, " : victoire de ", f1_dernier$podium[[1]]$pilote) else "",
