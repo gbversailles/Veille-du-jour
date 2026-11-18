@@ -7,6 +7,8 @@ Pharmacien hospitalier, francophone : toujours répondre et commenter en frança
 Pas d'ordinateur personnel : il travaille depuis son téléphone ou un poste d'hôpital. Expliquer les manipulations GitHub pas à pas, simplement.
 Il ne veut aucun service payant : uniquement des sources gratuites et sans carte bancaire.
 Préférences de présentation : sobre, lisible, blocs repliables, peu d'informations affichées d'emblée.
+
+Accès GitHub : si la session Claude a un accès en écriture (push) à ce dépôt (clone + commit + push possibles), modifier et pousser les fichiers directement — y compris template.html, page_du_matin.R, referentiel.html, referentiel.json, posologie.html — plutôt que de donner le code au propriétaire pour qu'il le dépose lui-même via l'interface web GitHub (ce qui oblige à supprimer/réuploader un fichier à la main). Dans ce cas, le workflow peut aussi être déclenché directement (ex. `gh api repos/gbversailles/veille-du-jour/actions/workflows/page-du-matin.yml/dispatches -X POST -f ref=main`) plutôt que de demander au propriétaire de cliquer sur « Run workflow ». Si la session n'a pas cet accès (pas d'outil de push GitHub disponible), revenir à la méthode manuelle habituelle et l'expliquer pas à pas.
 Ce que fait le projet
 
 Une page d'accueil personnelle, régénérée automatiquement et publiée sur GitHub Pages (https://gbversailles.github.io/Veille-du-jour/).
