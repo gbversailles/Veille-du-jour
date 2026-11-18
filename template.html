@@ -31,32 +31,32 @@ body{margin:0;background:var(--ground);color:var(--ink);font-family:'IBM Plex Sa
 header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px;padding-bottom:24px;border-bottom:2px solid var(--ink)}
 .date{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 h1{margin:6px 0;font-family:'Space Grotesk',sans-serif;font-size:clamp(36px,6vw,52px);line-height:1;font-weight:700;letter-spacing:-.02em}
-.now{display:flex;align-items:center;gap:16px;background:var(--card);border-radius:16px;padding:14px 20px}
-.ref-entete{position:relative;display:flex;flex-direction:column;gap:6px;background:var(--card);border-radius:16px;padding:12px 18px;min-width:220px;max-width:300px}
+.now{display:flex;align-items:center;gap:20px;background:var(--card);border-radius:18px;padding:18px 28px}
+.ref-entete{position:relative;display:flex;flex-direction:column;gap:6px;background:var(--card);border-radius:18px;padding:16px 20px;min-width:220px;max-width:300px}
 .ref-entete-label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 .ref-entete input{border:1px solid var(--rule);border-radius:10px;padding:8px 12px;font:inherit;font-size:14px;background:var(--ground);color:var(--ink)}
 .ref-entete .ref-resultats{position:absolute;top:100%;left:0;right:0;margin-top:6px;background:var(--card);border-radius:14px;padding:4px 14px;box-shadow:0 10px 30px rgba(0,0,0,.18);z-index:15;max-height:min(360px,70vh);overflow:auto}
 .ref-entete .ref-resultats:not(:empty){padding:8px 14px}
 .ref-liens{display:flex;flex-wrap:wrap;gap:10px 14px}
-.now-temp{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:600;line-height:1}
-.now-label{font-size:14px;color:var(--muted)}
+.now-temp{font-family:'Space Grotesk',sans-serif;font-size:38px;font-weight:600;line-height:1}
+.now-label{font-size:15px;color:var(--muted)}
 .cols{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
 main{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:24px}
 aside{flex:1 1 340px;min-width:0;display:flex;flex-direction:column;gap:24px}
 .card{background:var(--card);border-radius:18px;padding:20px 24px;display:flex;flex-direction:column;gap:10px}
 h2{margin:0;font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700}
 .soon{font-size:15px;line-height:1.5;color:var(--muted);padding-top:12px;border-top:1px solid var(--rule)}
-.weather{background:var(--dark);color:#F2F3EF}
-.days{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
-.day{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 2px;border-radius:12px;background:var(--dark-2);text-align:center}
-.day-name{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--dark-muted);white-space:nowrap}
+.days{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.day{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 2px;border-radius:12px;background:var(--ground);text-align:center}
+.day-name{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);white-space:nowrap}
+.day-icon{color:var(--accent);display:flex;align-items:center;justify-content:center}
 .day-icon svg{width:24px;height:24px;display:block}
-.day-max{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600}
-.day-min{font-size:13px;color:var(--dark-muted)}
-.day-rain{font-size:11px;color:var(--dark-muted)}
+.day-max{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;color:var(--ink)}
+.day-min{font-size:13px;color:var(--muted)}
+.day-rain{font-size:11px;color:var(--muted)}
 .now-icon{color:var(--accent);display:flex}
-.now-icon svg{width:40px;height:40px}
-.advice{font-size:14px;line-height:1.5;color:var(--dark-muted)}
+.now-icon svg{width:46px;height:46px}
+.advice{font-size:14px;line-height:1.5;color:var(--muted)}
 .row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--rule)}
 .row-name{font-size:15px;font-weight:500;white-space:nowrap}
 .row-vals{display:flex;align-items:baseline;gap:12px}
@@ -80,7 +80,6 @@ h2{margin:0;font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:70
 .toggle{flex:none;width:32px;height:32px;border-radius:999px;border:1px solid var(--rule);background:transparent;color:inherit;font-family:'IBM Plex Mono',monospace;font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .toggle:hover{border-color:currentColor}
 .toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.weather .toggle{border-color:#3A3F4A}
 .card.collapsed{gap:0}
 .card.collapsed > :not(.card-head){display:none}
 .note{font-size:13px;color:var(--muted);padding-top:12px;border-top:1px solid var(--rule)}
@@ -137,7 +136,6 @@ a.row{color:inherit;text-decoration:none}
 a.row:hover .row-name{color:var(--accent)}
 .card-link{align-self:flex-start;font-size:14px;font-weight:500;color:var(--accent);text-decoration:none;margin-top:4px}
 .card-link:hover{text-decoration:underline}
-.weather .card-link{color:#C9D4FF}
 .as-btn{background:none;border:none;padding:0;cursor:pointer;font:inherit}
 .reg-form{display:flex;flex-direction:column;gap:8px;margin-top:16px}
 .reg-form label,.reg-l{font-size:13px;font-weight:600;color:var(--muted);margin-top:8px}
