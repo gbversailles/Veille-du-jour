@@ -60,16 +60,18 @@ nombre_fr <- function(x, decimales = 2) {
   formatC(x, format = "f", digits = decimales, big.mark = " ", decimal.mark = ",")
 }
 
-preparer <- function(url, query = list(), delai = 30) {
+# relance_reseau = TRUE : réessaie aussi après un délai dépassé ou une coupure réseau.
+# À réserver aux appels uniques (météo) : sur les appels en série (traductions), ça peut allonger énormément la génération.
+preparer <- function(url, query = list(), delai = 30, relance_reseau = FALSE) {
   request(url) |>
     req_url_query(!!!query) |>
     req_user_agent("Mozilla/5.0 (veille-du-jour)") |>
-    req_retry(max_tries = 3, retry_on_failure = TRUE) |>
+    req_retry(max_tries = 3, retry_on_failure = relance_reseau) |>
     req_timeout(delai)
 }
 
-get_json <- function(url, query = list()) {
-  preparer(url, query) |>
+get_json <- function(url, query = list(), relance_reseau = FALSE) {
+  preparer(url, query, relance_reseau = relance_reseau) |>
     req_perform() |>
     resp_body_string() |>
     jsonlite::fromJSON(simplifyVector = FALSE)
@@ -226,7 +228,7 @@ valeurs <- function(x) unlist(lapply(x, function(v) if (is.null(v)) NA else v))
 jours_courts <- c("dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam.")
 
 meteo <- tryCatch({
-  m <- get_json("https://api.open-meteo.com/v1/forecast", list(
+  m <- get_json("https://api.open-meteo.com/v1/forecast", relance_reseau = TRUE, query = list(
     latitude = as.numeric(reglages$latitude), longitude = as.numeric(reglages$longitude),
     current = "temperature_2m,weather_code",
     daily = "weather_code,temperature_2m_min,temperature_2m_max,precipitation_probability_max",
