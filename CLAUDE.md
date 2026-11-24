@@ -28,7 +28,7 @@ Blocs de la page et sources
 Bloc	Source	Remarque
 Veille scientifique	PubMed (E-utilities)	Bouton « Lu ✓ » : ajoute l'article à bibliotheque.csv et le masque (localStorage veille-du-jour:lus) ; à la génération suivante, tout article déjà dans la bibliothèque (lu ou gardé) est retiré de la veille. Tri par mots-clés selon les spécialités choisies, apprentissage à partir de avis.csv. Calculée une fois par jour puis mise en cache (cache/veille.rds, via actions/cache, clé = date + hash de reglages.txt).
 Traduction	Google Traduction (gtx), secours MyMemory	Google renvoie souvent 429 depuis GitHub : on bascule alors définitivement sur MyMemory pour le lancement. Quota MyMemory limité : seuls les 8 premiers résumés sont traduits sans MYMEMORY_EMAIL.
-Actualité	Google Actualités (RSS), Le Monde	Rubriques et thèmes choisis dans les réglages ; heure de publication affichée.
+Actualité	Google Actualités (RSS), flux RSS officiels de l'ANSM	Une rubrique repliable par sujet (actu_rubriques), la ville toujours en premier et ouverte : ville, politique, faits_divers, france, monde, economie, sante (actualité médicale générale, pas la veille), ansm, sciences, tech, culture, sport + thèmes libres. 5 articles par rubrique, sans doublon entre rubriques. ANSM : rss/informations_securite, rss/disponibilite_produits_sante et rss/actualites filtrés produitsSante=medicaments ; ces flux ne contiennent que les publications DU JOUR, d'où un historique de 21 jours gardé dans cache/ansm.rds.
 Météo, air, pollens	Open-Meteo	Recalculée côté navigateur selon la position si autorisée ; sinon (ou si la génération n'a pas eu Open-Meteo, timeouts ponctuels), le navigateur la recharge pour latitude/longitude de config_json. preparer() réessaie aussi sur échec réseau (retry_on_failure).
 Investissement	Yahoo Finance (cours), baromètre mensuel CAFPI (taux Île-de-France, lu dans la page HTML)	Taux IDF : seule la ligne « Sur 25 ans » est gardée (la page CAFPI n'expose que des durées par région, pas de paliers excellent/bon/correct). Tuiles réduites (CSS ciblé [data-section="invest"]).
 Trajet et carburant	api-adresse.data.gouv.fr, OSRM (sans trafic) ou TomTom (avec trafic, meilleure heure de départ), prix des carburants (data.economie.gouv.fr)	Adresse du domicile uniquement dans le secret TRAJET_DOMICILE.
@@ -37,6 +37,8 @@ MMA	Sherdog (fiches combattants, HTML lu par lire_sherdog() dans page_du_matin.R
 Secrets GitHub (Settings > Secrets and variables > Actions)
 
 TRAJET_DOMICILE, TOMTOM_KEY (facultatif), MYMEMORY_EMAIL (facultatif), MISTRAL_API_KEY / ANTHROPIC_API_KEY (facultatifs, non utilisés actuellement : pas d'offre gratuite accessible).
+
+Cache du workflow : clé unique par exécution (veille-<run_id>) avec restore-keys « veille- », donc chaque génération reprend le cache de la précédente (veille du jour, historique ANSM). La veille n'est réutilisée que si elle date du jour et que l'empreinte md5 de reglages.txt n'a pas changé. Job plafonné à 25 minutes (timeout-minutes).
 
 Pièges déjà rencontrés
 whisker : une liste R nommée est traitée comme un objet et non comme une liste à parcourir → lignes vides. Toujours passer des listes non nommées (unname()).
@@ -47,6 +49,7 @@ TomTom a renvoyé 401 Unauthorized : vérifier que la clé autorise la Routing A
 Vérifications avant de proposer une modification
 Rscript -e 'invisible(parse("page_du_matin.R"))'
 Équilibre des sections {{#…}} / {{/…}} de template.html, et node --check sur chaque script.
+Ne jamais activer retry_on_failure pour tous les appels : sur les ~100 traductions en série, les relances après délai dépassé ont bloqué une génération plus de 25 minutes. preparer()/get_json() ont un argument relance_reseau, à réserver aux appels uniques (météo).
 Le journal du job « Generer la page » contient des lignes de diagnostic (matchs trouvés, traductions, trajets, taux) : s'en servir pour déboguer.
 Idées évoquées mais non retenues (ne pas reproposer sans demande)
 
