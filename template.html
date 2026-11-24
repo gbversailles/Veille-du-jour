@@ -1005,7 +1005,7 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
       if (enCours) { message('Actualisation déjà en cours, la page se rechargera toute seule.', 5000); return; }
       var gh = window.veilleGitHub;
       if (!gh || !gh.depot()) { message("L'actualisation ne fonctionne que sur la page publiée.", 6000); return; }
-      if (!gh.jeton()) { message('Renseigne ton jeton GitHub dans Réglages pour pouvoir actualiser.', 8000); return; }
+      if (!gh.jeton()) { message('Ce navigateur ne connaît pas encore ton jeton GitHub : colle-le dans Réglages › Connexion à GitHub (il est gardé appareil par appareil).', 10000); return; }
       enCours = true;
       boutons.forEach(function (x) { x.classList.add('tourne'); });
       gh.relancer().then(function () {
@@ -1063,6 +1063,13 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
   var zoneFavs = document.getElementById('reg-favs');
   var statut = document.getElementById('reg-status');
   var champJeton = document.getElementById('reg-token');
+  // Le jeton est gardé dès qu'il est collé (sans attendre « Enregistrer »), uniquement dans ce navigateur
+  if (champJeton) ['input', 'change'].forEach(function (ev) {
+    champJeton.addEventListener(ev, function () {
+      var t = champJeton.value.trim();
+      if (t) { try { localStorage.setItem('veille-du-jour:jeton', t); } catch (e) {} }
+    });
+  });
   var SPORTS = [{ code: 'foot', nom: 'Football' }, { code: 'f1', nom: 'Formule 1' }, { code: 'mma', nom: 'MMA' }, { code: 'nba', nom: 'NBA' }, { code: 'rugby', nom: 'Rugby' }];
 
   function chips(zone, options, choisis) {
