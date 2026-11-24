@@ -146,7 +146,7 @@ lire_reglages <- function(fichier = "reglages.txt") {
   r <- list(ville = "Asnières-sur-Seine", latitude = "48.914", longitude = "2.285",
             ville_travail = "Versailles",
             equipes_foot = "Paris Saint-Germain; France", themes_actu = "",
-            rubriques_actu = "france; ville; monde; sciences; economie",
+            rubriques_actu = "ville; politique; faits_divers; monde; economie; sante; ansm",
             specialites = "pharmacologie; toxicologie; infectiologie; reanimation; orthopedie",
             mots_cles_veille = "", revues_veille = "",
             sports = "foot; f1; mma",
@@ -332,33 +332,67 @@ gn <- "https://news.google.com/rss"
 gn_fr <- list(hl = "fr", gl = "FR", ceid = "FR:fr")
 themes <- liste_reglage(reglages$themes_actu)
 
+ansm <- "https://ansm.sante.fr/rss/"
 rubriques_dispo <- list(
-  france     = list(nom = "France",      url = paste0(gn, "/headlines/section/topic/NATION"), q = NULL),
-  monde      = list(nom = "Monde",       url = paste0(gn, "/headlines/section/topic/WORLD"), q = NULL),
-  ville      = list(nom = reglages$ville, url = paste0(gn, "/search"), q = paste0("\"", reglages$ville, "\" when:3d")),
-  sciences   = list(nom = "Sciences",    url = paste0(gn, "/headlines/section/topic/SCIENCE"), q = NULL),
-  sante      = list(nom = "Santé",       url = paste0(gn, "/headlines/section/topic/HEALTH"), q = NULL),
-  tech       = list(nom = "Tech",        url = paste0(gn, "/headlines/section/topic/TECHNOLOGY"), q = NULL),
-  economie   = list(nom = "Économie",    url = paste0(gn, "/headlines/section/topic/BUSINESS"), q = NULL),
-  culture    = list(nom = "Culture",     url = paste0(gn, "/headlines/section/topic/ENTERTAINMENT"), q = NULL),
-  sport      = list(nom = "Sport",       url = paste0(gn, "/headlines/section/topic/SPORTS"), q = NULL)
+  ville        = list(nom = reglages$ville, url = paste0(gn, "/search"), q = paste0("\"", reglages$ville, "\" when:3d")),
+  politique    = list(nom = "Politique",    url = paste0(gn, "/search"), q = "politique gouvernement OR Assemblée OR Sénat OR élections when:1d"),
+  faits_divers = list(nom = "Faits divers", url = paste0(gn, "/search"), q = "\"faits divers\" OR interpellé OR enquête police when:1d"),
+  france       = list(nom = "France",       url = paste0(gn, "/headlines/section/topic/NATION"), q = NULL),
+  monde        = list(nom = "Monde",        url = paste0(gn, "/headlines/section/topic/WORLD"), q = NULL),
+  economie     = list(nom = "Économie",     url = paste0(gn, "/headlines/section/topic/BUSINESS"), q = NULL),
+  sante        = list(nom = "Santé",        url = paste0(gn, "/search"), q = "hôpital OR médicament OR pharmacie OR \"santé publique\" OR épidémie when:2d"),
+  ansm         = list(nom = "ANSM", ansm = TRUE),
+  sciences     = list(nom = "Sciences",     url = paste0(gn, "/headlines/section/topic/SCIENCE"), q = NULL),
+  tech         = list(nom = "Tech",         url = paste0(gn, "/headlines/section/topic/TECHNOLOGY"), q = NULL),
+  culture      = list(nom = "Culture",      url = paste0(gn, "/headlines/section/topic/ENTERTAINMENT"), q = NULL),
+  sport        = list(nom = "Sport",        url = paste0(gn, "/headlines/section/topic/SPORTS"), q = NULL)
 )
+# L'ANSM : trois flux officiels limités aux médicaments, fusionnés du plus récent au plus ancien
+flux_ansm <- function() {
+  l <- c(lire_rss(paste0(ansm, "informations_securite"), "Sécurité", 5, list(produitsSante = "medicaments")),
+         lire_rss(paste0(ansm, "disponibilite_produits_sante"), "Rupture / tension", 5, list(produitsSante = "medicaments")),
+         lire_rss(paste0(ansm, "actualites"), "Actualité", 5, list(produitsSante = "medicaments")))
+  l <- Filter(function(a) !is.null(a$title) && nzchar(a$title), l)
+  if (length(l)) l <- l[order(-vapply(l, function(a) suppressWarnings(as.numeric(si_null(a$ts, ""))), 0), na.last = TRUE)]
+  head(l, 6)
+}
 numeroter <- function(l) { for (i in seq_along(l)) l[[i]]$rang <- i; l }
 rubriques_choisies <- intersect(liste_reglage(reglages$rubriques_actu), names(rubriques_dispo))
-actus <- c(
-  unlist(lapply(rubriques_choisies, function(k) {
+# La ville reste toujours en premier et ouverte d'office
+if ("ville" %in% rubriques_choisies) rubriques_choisies <- c("ville", setdiff(rubriques_choisies, "ville"))
+vus_actu <- character()
+sans_doublon <- function(l) {
+  l <- Filter(function(a) !is.null(a$title) && nzchar(a$title) && !(a$title %in% vus_actu), si_null(l, list()))
+  l <- l[!duplicated(vapply(l, function(a) a$title, ""))]
+  vus_actu <<- c(vus_actu, vapply(l, function(a) a$title, ""))
+  l
+}
+actu_rubriques <- c(
+  lapply(rubriques_choisies, function(k) {
     rb <- rubriques_dispo[[k]]
-    q <- if (is.null(rb$q)) gn_fr else c(list(q = rb$q), gn_fr)
-    numeroter(lire_rss(rb$url, rb$nom, 4, q, google = TRUE))
-  }), recursive = FALSE),
-  unlist(lapply(themes, function(th)
-    numeroter(lire_rss(paste0(gn, "/search"), th, 3, c(list(q = paste(th, "when:2d")), gn_fr), google = TRUE))),
-    recursive = FALSE)
+    art <- if (isTRUE(rb$ansm)) flux_ansm() else {
+      q <- if (is.null(rb$q)) gn_fr else c(list(q = rb$q), gn_fr)
+      lire_rss(rb$url, rb$nom, 5, q, google = TRUE)
+    }
+    art <- sans_doublon(art)
+    if (!isTRUE(rb$ansm)) art <- lapply(art, function(a) { a$tag <- a$summary; a$summary <- ""; a })
+    list(code = k, nom = rb$nom, ouvert = identical(k, "ville"), articles = unname(art), has_articles = length(art) > 0,
+         resume = if (length(art)) art[[1]]$title else "Rien de nouveau")
+  }),
+  lapply(themes, function(th) {
+    art <- sans_doublon(lire_rss(paste0(gn, "/search"), th, 4, c(list(q = paste(th, "when:2d")), gn_fr), google = TRUE))
+    art <- lapply(art, function(a) { a$tag <- a$summary; a$summary <- ""; a })
+    list(code = "theme", nom = paste0(toupper(substr(th, 1, 1)), substr(th, 2, nchar(th))), ouvert = FALSE,
+         articles = unname(art), has_articles = length(art) > 0, resume = if (length(art)) art[[1]]$title else "Rien de nouveau")
+  })
 )
-actus <- Filter(function(a) !is.null(a$title) && nzchar(a$title), si_null(actus, list()))
-actus <- actus[!duplicated(vapply(actus, function(a) a$title, ""))]
-actus_principal <- Filter(function(a) identical(a$rang, 1L) || identical(a$rang, 1), actus)
-actus_suite <- Filter(function(a) !(identical(a$rang, 1L) || identical(a$rang, 1)), actus)
+actu_rubriques <- unname(actu_rubriques)
+actu_rubriques <- lapply(actu_rubriques, function(r) {
+  r$articles <- unname(lapply(r$articles, function(a) { a$has_summary <- nzchar(si_null(a$summary, "")); a }))
+  r
+})
+message("Actualité : ", paste(vapply(actu_rubriques, function(r) paste0(r$nom, " ", length(r$articles)), ""), collapse = ", "))
+actus <- unlist(lapply(actu_rubriques, function(r) r$articles), recursive = FALSE)
 
 # ---------- Football (données publiques d'ESPN) ----------
 
@@ -1221,10 +1255,8 @@ donnees <- list(
   favoris_groupes = favoris_groupes,
   markets = marches,
   cryptos = cryptos,
-  news = actus_principal,
-  news_suite = actus_suite,
-  has_news_suite = length(actus_suite) > 0,
-  n_news_suite = length(actus_suite),
+  actu_rubriques = actu_rubriques,
+  has_actu = length(actus) > 0,
   foot = foot,
   standings = classement,
   has_standings = length(classement) > 0,

@@ -265,6 +265,8 @@ a.tile:hover{outline:1px solid var(--accent)}
 .outlook.as-btn{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
 .reg-btn:disabled{opacity:.35;cursor:default}
 .news-heure{display:block;margin-top:4px;font-size:11px;letter-spacing:0;text-transform:none;color:var(--muted)}
+.rubrique-actu .news:first-of-type{border-top:none;padding-top:8px}
+.rubrique-actu .news-tag{font-size:11px;max-width:130px}
 a.moteur{text-decoration:none;display:inline-block}
 .sous{border-top:1px solid var(--rule)}
 .sous > summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:2px;padding:12px 28px 12px 0;position:relative}
@@ -396,30 +398,21 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
     </section>
     <section class="card" data-section="actu">
       <div class="card-head"><h2>Actualité</h2><button class="actualiser" type="button" data-actualiser title="Actualiser maintenant" aria-label="Actualiser maintenant">↻</button><button class="toggle" type="button">−</button></div>
-      {{#news}}
-      <a class="news" href="{{link}}" target="_blank" rel="noopener">
-        <span class="news-tag">{{tag}}<span class="news-heure" data-ts="{{ts}}">{{heure}}</span></span>
-        <div>
-          <div class="news-title">{{title}}</div>
-          <div class="news-sum">{{summary}}</div>
-        </div>
-      </a>
-      {{/news}}
-      {{#has_news_suite}}
-      <details class="more">
-        <summary>Afficher {{n_news_suite}} autres actualités</summary>
-        {{#news_suite}}
-      <a class="news" href="{{link}}" target="_blank" rel="noopener">
-        <span class="news-tag">{{tag}}<span class="news-heure" data-ts="{{ts}}">{{heure}}</span></span>
-        <div>
-          <div class="news-title">{{title}}</div>
-          <div class="news-sum">{{summary}}</div>
-        </div>
-      </a>
-      {{/news_suite}}
+      {{#actu_rubriques}}
+      <details class="sous rubrique-actu"{{#ouvert}} open{{/ouvert}}><summary><span class="sous-titre">{{nom}}</span><span class="sous-resume">{{resume}}</span></summary>
+        {{#articles}}
+        <a class="news" href="{{link}}" target="_blank" rel="noopener">
+          <span class="news-tag">{{tag}}<span class="news-heure" data-ts="{{ts}}">{{heure}}</span></span>
+          <div>
+            <div class="news-title">{{title}}</div>
+            {{#has_summary}}<div class="news-sum">{{summary}}</div>{{/has_summary}}
+          </div>
+        </a>
+        {{/articles}}
+        {{^has_articles}}<div class="soon">Rien de récupéré pour cette rubrique.</div>{{/has_articles}}
       </details>
-      {{/has_news_suite}}
-      {{^news}}<div class="soon">Les actualités n'ont pas pu être récupérées ce matin.</div>{{/news}}
+      {{/actu_rubriques}}
+      {{^has_actu}}<div class="soon">Les actualités n'ont pas pu être récupérées.</div>{{/has_actu}}
     </section>
 
     <section class="card" data-section="biblio">
