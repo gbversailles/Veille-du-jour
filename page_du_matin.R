@@ -359,8 +359,23 @@ flux_ansm <- function() {
     r
   }), recursive = FALSE)
   l <- Filter(function(a) !is.null(a$title) && nzchar(a$title), l)
-  if (length(l)) l <- l[order(-vapply(l, function(a) suppressWarnings(as.numeric(si_null(a$ts, ""))), 0), na.last = TRUE)]
-  head(l, 6)
+  # Les flux ANSM ne contiennent que les publications du jour : on garde un historique de 21 jours dans le cache
+  fichier_ansm <- "cache/ansm.rds"
+  histo <- tryCatch(if (file.exists(fichier_ansm)) readRDS(fichier_ansm) else list(), error = function(e) list())
+  tous <- c(l, histo)
+  tous <- tous[!duplicated(vapply(tous, function(a) paste(a$tag, a$title), ""))]
+  ts_num <- function(a) suppressWarnings(as.numeric(si_null(a$ts, "")))
+  limite <- (as.numeric(Sys.time()) - 21 * 86400) * 1000
+  tous <- Filter(function(a) { v <- ts_num(a); is.na(v) || v >= limite }, tous)
+  if (length(tous)) tous <- tous[order(-vapply(tous, function(a) { v <- ts_num(a); if (is.na(v)) 0 else v }, 0))]
+  dir.create("cache", showWarnings = FALSE)
+  tryCatch(saveRDS(head(tous, 40), fichier_ansm), error = function(e) message("Historique ANSM non sauvegardé : ", conditionMessage(e)))
+  message("ANSM : ", length(l), " nouveau(x) aujourd'hui, ", length(tous), " sur 21 jours")
+  lapply(head(tous, 8), function(a) {
+    v <- ts_num(a)
+    if (!is.na(v)) a$heure <- heure_actu(as.POSIXct(v / 1000, origin = "1970-01-01", tz = "UTC"))
+    a
+  })
 }
 numeroter <- function(l) { for (i in seq_along(l)) l[[i]]$rang <- i; l }
 rubriques_choisies <- intersect(liste_reglage(reglages$rubriques_actu), names(rubriques_dispo))
@@ -899,8 +914,11 @@ message("Spécialités de la veille : ", paste(specialites_choisies, collapse = 
 # de la journée reprennent celle du matin, gardée dans le dossier cache/.
 fichier_cache <- "cache/veille.rds"
 cache_veille <- tryCatch(if (file.exists(fichier_cache)) readRDS(fichier_cache) else NULL, error = function(e) NULL)
+# Le cache est repris de la mise à jour précédente : on ne réutilise la veille que si elle date d'aujourd'hui
+# et que les réglages n'ont pas changé depuis
+empreinte_reglages <- if (file.exists("reglages.txt")) unname(tools::md5sum("reglages.txt")) else ""
 reprendre_veille <- !is.null(cache_veille) && identical(cache_veille$jour, format(Sys.Date())) &&
-  identical(cache_veille$version, 2)
+  identical(cache_veille$version, 2) && identical(si_null(cache_veille$reglages, ""), empreinte_reglages)
 if (reprendre_veille) {
   for (nom in names(cache_veille$donnees)) assign(nom, cache_veille$donnees[[nom]])
   message("Veille reprise de la mise à jour de ", cache_veille$heure, " (calculée une fois par jour)")
@@ -1148,7 +1166,7 @@ if (reprendre_veille) {
   # au lieu d'afficher une veille vide toute la journée.
   if (pubmed_ok) {
     dir.create("cache", showWarnings = FALSE)
-    saveRDS(list(jour = format(Sys.Date()), version = 2, heure = format(Sys.time(), "%Hh%M", tz = "Europe/Paris"),
+    saveRDS(list(jour = format(Sys.Date()), version = 2, reglages = empreinte_reglages, heure = format(Sys.time(), "%Hh%M", tz = "Europe/Paris"),
                  donnees = list(veille_principal = veille_principal, veille_suite = veille_suite, veille_anciens = veille_anciens,
                                 veille_top = veille_top, veille_note = veille_note)), fichier_cache)
     message("Veille du jour calculée et mise en cache")
