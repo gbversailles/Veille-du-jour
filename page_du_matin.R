@@ -349,9 +349,15 @@ rubriques_dispo <- list(
 )
 # L'ANSM : trois flux officiels limités aux médicaments, fusionnés du plus récent au plus ancien
 flux_ansm <- function() {
-  l <- c(lire_rss(paste0(ansm, "informations_securite"), "Sécurité", 5, list(produitsSante = "medicaments")),
-         lire_rss(paste0(ansm, "disponibilite_produits_sante"), "Rupture / tension", 5, list(produitsSante = "medicaments")),
-         lire_rss(paste0(ansm, "actualites"), "Actualité", 5, list(produitsSante = "medicaments")))
+  flux <- list(c("informations_securite", "Sécurité"), c("disponibilite_produits_sante", "Rupture / tension"), c("actualites", "Actualité"))
+  l <- unlist(lapply(flux, function(f) {
+    r <- lire_rss(paste0(ansm, f[1]), f[2], 5, list(produitsSante = "medicaments"))
+    if (!length(r)) {
+      brut <- tryCatch(get_texte(paste0(ansm, f[1]), list(produitsSante = "medicaments")), error = function(e) paste("erreur :", conditionMessage(e)))
+      message("ANSM ", f[1], " : 0 élément ; début de la réponse : ", substr(gsub("\\s+", " ", brut), 1, 300))
+    } else message("ANSM ", f[1], " : ", length(r), " élément(s)")
+    r
+  }), recursive = FALSE)
   l <- Filter(function(a) !is.null(a$title) && nzchar(a$title), l)
   if (length(l)) l <- l[order(-vapply(l, function(a) suppressWarnings(as.numeric(si_null(a$ts, ""))), 0), na.last = TRUE)]
   head(l, 6)
