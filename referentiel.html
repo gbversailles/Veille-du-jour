@@ -138,6 +138,8 @@ details.classe > summary .nb{font-weight:500;margin-left:6px;letter-spacing:0}
 .adapter span{font-size:13px;opacity:.85}
 .adapter:hover{filter:brightness(1.08)}
 .adapter-groupe{display:flex;gap:12px;flex-wrap:wrap}.adapter-groupe .adapter{flex:1 1 240px}
+.adapter.externe{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.adapter.externe div div{color:var(--muted)}
 .regle.correspond{background:var(--info-bg);outline:2px solid var(--accent)} .regle.correspond .etat{color:var(--accent)}
 .fiche-tete .actions .bouton{font-size:13px;padding:6px 11px}
 </style>
@@ -177,6 +179,11 @@ details.classe > summary .nb{font-weight:500;margin-left:6px;letter-spacing:0}
   var complements = {};
   // Molécules disponibles dans l'appli d'adaptation de posologie : identifiant de fiche → [clé de l'appli, libellé]
   // (une fiche peut renvoyer vers plusieurs entrées, par exemple IV et per os). Même liste que dans template.html.
+  // Outils externes affichés en haut de certaines fiches : identifiant de fiche → [lien, titre, description]
+  var OUTILS_EXTERNES = {
+    paracetamol: [['https://www.hopitox.com/', 'Nomogramme de Rumack-Matthew (HopiTox)',
+      'Risque hépatotoxique selon l\'heure d\'ingestion, la concentration et les facteurs de risque']]
+  };
   var POSOLOGIE = {
     amoxicilline: [['amoxicilline', 'Amoxicilline']],
     cefazoline: [['cefazoline', 'Céfazoline']],
@@ -668,6 +675,15 @@ details.classe > summary .nb{font-weight:500;margin-left:6px;letter-spacing:0}
         lienPoso.appendChild(tx); groupe.appendChild(lienPoso);
       });
       f.appendChild(groupe);
+    }
+    if (OUTILS_EXTERNES[m.id]) {
+      var groupeExt = el('div', 'adapter-groupe');
+      OUTILS_EXTERNES[m.id].forEach(function (o) {
+        var lienExt = el('a', 'adapter externe'); lienExt.href = o[0]; lienExt.target = '_blank'; lienExt.rel = 'noopener';
+        var txe = el('div'); txe.appendChild(el('strong', null, o[1] + ' ↗')); txe.appendChild(el('div', null, o[2]));
+        lienExt.appendChild(txe); groupeExt.appendChild(lienExt);
+      });
+      f.appendChild(groupeExt);
     }
     if (m.tableau && m.tableau.length) {
       var tw = el('div', 'tableau'); var tb = el('table');

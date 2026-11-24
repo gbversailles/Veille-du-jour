@@ -80,6 +80,10 @@ h2{margin:0;font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:70
 .toggle{flex:none;width:32px;height:32px;border-radius:999px;border:1px solid var(--rule);background:transparent;color:inherit;font-family:'IBM Plex Mono',monospace;font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .toggle:hover{border-color:currentColor}
 .toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.actualiser{flex:none;margin-left:auto;margin-right:8px;width:32px;height:32px;border-radius:999px;border:1px solid var(--rule);background:transparent;color:var(--muted);font-size:17px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.actualiser:hover{color:var(--accent);border-color:var(--accent)}
+.actualiser.tourne{animation:tourne 1.2s linear infinite;color:var(--accent)}
+@keyframes tourne{to{transform:rotate(360deg)}}
 .card.collapsed{gap:0}
 .card.collapsed > :not(.card-head){display:none}
 .note{font-size:13px;color:var(--muted);padding-top:12px;border-top:1px solid var(--rule)}
@@ -187,6 +191,9 @@ a.tile:hover{outline:1px solid var(--accent)}
 .avis-btn:hover{border-color:currentColor}
 .avis-btn.choisi[data-avis="1"]{background:var(--up);border-color:var(--up);color:#fff}
 .avis-btn.choisi[data-avis="-1"]{background:var(--muted);border-color:var(--muted);color:var(--card)}
+.lu-btn{margin-left:auto;font:inherit;font-size:13px;border:1px solid var(--accent);color:var(--accent);background:transparent;border-radius:999px;padding:4px 12px;cursor:pointer}
+.lu-btn:hover{background:var(--accent);color:#fff}
+.paper.lu-sortie{opacity:0;transition:opacity .35s ease}
 .todo-add{display:flex;gap:6px}
 .todo-add input,.pane input,.pane select{width:100%;border:1px solid var(--rule);border-radius:10px;padding:9px 12px;font:inherit;font-size:15px;background:var(--ground);color:var(--ink)}
 .todo{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
@@ -219,6 +226,11 @@ a.tile:hover{outline:1px solid var(--accent)}
 .garder-btn{border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:999px;padding:4px 12px;font:inherit;font-size:12px;font-weight:600;cursor:pointer;margin-left:auto}
 .garder-btn.garde{background:var(--accent);color:var(--card)}
 .biblio-outils{display:flex;flex-wrap:wrap;gap:8px}
+.sites-utiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.sites-utiles a{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:1px solid var(--rule);border-radius:12px;text-decoration:none;color:var(--ink)}
+.sites-utiles a:hover{border-color:var(--accent)}
+.sites-utiles b{color:var(--accent);font-size:14px}
+.sites-utiles span{font-size:12.5px;color:var(--muted)}
 .biblio-outils input{flex:1 1 220px;border:1px solid var(--rule);border-radius:10px;padding:9px 12px;font:inherit;font-size:15px;background:var(--ground);color:var(--ink)}
 .biblio-item{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-top:1px solid var(--rule)}
 .biblio-texte{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
@@ -333,6 +345,7 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
             <button type="button" class="avis-btn" data-avis="1">Utile</button>
             <button type="button" class="avis-btn" data-avis="-1">Pas pour moi</button>
             <button type="button" class="garder-btn" data-pmid="{{pmid}}" data-titre="{{titre}}" data-source="{{source}}" data-lien="{{lien}}" data-theme="{{theme}}">À garder</button>
+            <button type="button" class="lu-btn" data-pmid="{{pmid}}" data-titre="{{titre}}" data-source="{{source}}" data-lien="{{lien}}" data-theme="{{theme}}" title="Marquer comme lu : l'article part dans la bibliothèque et disparaît de la veille">Lu ✓</button>
           </div>
         </article>
       {{/veille}}
@@ -355,6 +368,7 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
             <button type="button" class="avis-btn" data-avis="1">Utile</button>
             <button type="button" class="avis-btn" data-avis="-1">Pas pour moi</button>
             <button type="button" class="garder-btn" data-pmid="{{pmid}}" data-titre="{{titre}}" data-source="{{source}}" data-lien="{{lien}}" data-theme="{{theme}}">À garder</button>
+            <button type="button" class="lu-btn" data-pmid="{{pmid}}" data-titre="{{titre}}" data-source="{{source}}" data-lien="{{lien}}" data-theme="{{theme}}" title="Marquer comme lu : l'article part dans la bibliothèque et disparaît de la veille">Lu ✓</button>
           </div>
         </article>
         {{/veille_suite}}
@@ -373,6 +387,7 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
             <button type="button" class="avis-btn" data-avis="1">Utile</button>
             <button type="button" class="avis-btn" data-avis="-1">Pas pour moi</button>
             <button type="button" class="garder-btn" data-pmid="{{pmid}}" data-titre="{{titre}}" data-source="{{source}}" data-lien="{{lien}}" data-theme="{{theme}}">À garder</button>
+            <button type="button" class="lu-btn" data-pmid="{{pmid}}" data-titre="{{titre}}" data-source="{{source}}" data-lien="{{lien}}" data-theme="{{theme}}" title="Marquer comme lu : l'article part dans la bibliothèque et disparaît de la veille">Lu ✓</button>
           </div>
         </article>
         {{/veille_anciens}}
@@ -380,7 +395,7 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
       {{/has_suite}}
     </section>
     <section class="card" data-section="actu">
-      <div class="card-head"><h2>Actualité</h2><button class="toggle" type="button">−</button></div>
+      <div class="card-head"><h2>Actualité</h2><button class="actualiser" type="button" data-actualiser title="Actualiser maintenant" aria-label="Actualiser maintenant">↻</button><button class="toggle" type="button">−</button></div>
       {{#news}}
       <a class="news" href="{{link}}" target="_blank" rel="noopener">
         <span class="news-tag">{{tag}}<span class="news-heure" data-ts="{{ts}}">{{heure}}</span></span>
@@ -526,14 +541,14 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
       {{^carburant}}<div class="soon">Les prix n'ont pas pu être récupérés ce matin.</div>{{/carburant}}
     </section>
 <section class="card" data-section="sport">
-      <div class="card-head"><h2>Sport</h2><button class="toggle" type="button">−</button></div>
+      <div class="card-head"><h2>Sport</h2><button class="actualiser" type="button" data-actualiser title="Actualiser maintenant" aria-label="Actualiser maintenant">↻</button><button class="toggle" type="button">−</button></div>
       {{#sport_foot}}<details class="sous"><summary><span class="sous-titre">Football</span><span class="sous-resume">{{foot_resume}}</span></summary>
       {{#foot}}
       <div class="team">
         <div class="subhead">{{equipe}}</div>
         {{#resultats}}
         <div class="match">
-          <div class="match-comp">{{comp}} · {{quand}}</div>
+          <div class="match-comp">Dernier match · {{comp}} · {{quand}}</div>
           <div class="match-line"><span>{{affiche}}</span><span class="mono">{{score}}</span></div>
         </div>
         {{/resultats}}
@@ -546,10 +561,6 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
         {{#rien}}<div class="soon">Aucun match trouvé ces derniers jours ni dans les prochains.</div>{{/rien}}
       </div>
       {{/foot}}
-      {{#has_standings}}<div class="subhead">Classement Ligue des champions</div>{{/has_standings}}
-      {{#standings}}
-      <div class="rank{{#suivi}} is-suivi{{/suivi}}"><span class="rank-n">{{rank}}</span><span class="rank-team">{{team}}</span><span class="mono">{{pts}}</span></div>
-      {{/standings}}
       <a class="card-link" href="https://www.lequipe.fr/Football/" target="_blank" rel="noopener">Toute l'actualité du football ↗</a></details>{{/sport_foot}}
       {{#sport_f1}}<details class="sous"><summary><span class="sous-titre">Formule 1</span><span class="sous-resume">{{f1_resume}}</span></summary>
       {{#has_f1_dernier}}
@@ -578,10 +589,10 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
       <a class="card-link" href="https://www.lequipe.fr/Formule-1/" target="_blank" rel="noopener">Toute l'actualité de la F1 ↗</a></details>{{/sport_f1}}
       {{#sport_mma}}<details class="sous"><summary><span class="sous-titre">MMA</span><span class="sous-resume">{{mma_resume}}</span></summary>
       {{#has_mma_passes}}
-      <div class="subhead">Derniers combats</div>
+      <div class="subhead">Dernier combat</div>
       {{#mma_passes}}
       <div class="match">
-        <div class="match-comp">{{promotion}} · {{evenement}} · {{quand}}</div>
+        <div class="match-comp">{{promotion}} · {{quand}}</div>
         <div class="match-line"><span>{{affiche}}</span></div>
         {{#has_resultat}}<div class="rank-side">{{resultat}}</div>{{/has_resultat}}
       </div>
@@ -591,12 +602,12 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
       <div class="subhead">Prochains combats</div>
       {{#mma_futurs}}
       <div class="match next">
-        <div class="match-comp">{{promotion}} · {{evenement}} · {{quand}}</div>
+        <div class="match-comp">{{promotion}} · {{quand}}</div>
         <div class="match-line"><span>{{affiche}}</span></div>
       </div>
       {{/mma_futurs}}
       {{/has_mma_futurs}}
-      {{^has_mma}}<div class="soon">Aucun combat des combattants français suivis (Doumbé, Gane, Baki, Saint-Denis…) trouvé en ce moment.</div>{{/has_mma}}
+      {{^has_mma}}<div class="soon">Aucun combat trouvé pour Gane, Saint-Denis, Imavov, Doumbé, Baki et Paul Dena.</div>{{/has_mma}}
       <a class="card-link" href="https://www.lequipe.fr/MMA/" target="_blank" rel="noopener">Toute l'actualité du MMA ↗</a></details>{{/sport_mma}}
       {{#sport_nba}}<details class="sous"><summary><span class="sous-titre">NBA</span><span class="sous-resume">{{nba_resume}}</span></summary>
       {{#nba}}<div class="match"><div class="match-comp">{{quand}}</div><div class="match-line"><span>{{affiche}}</span><span class="mono">{{score}}</span></div></div>{{/nba}}
@@ -614,6 +625,19 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
         <button type="button" class="tab" data-onglet="conv">mg/L ↔ µmol/L</button>
         <button type="button" class="tab" data-onglet="demi">Demi-vie</button>
         <button type="button" class="tab" data-onglet="sc">Surface corporelle</button>
+        <button type="button" class="tab" data-onglet="sites">Sites utiles</button>
+      </div>
+      <div class="pane" data-pane="sites">
+        <div class="sites-utiles">
+          <a href="https://www.hopitox.com/" target="_blank" rel="noopener"><b>HopiTox ↗</b><span>Nomogramme dynamique de Rumack-Matthew (paracétamol)</span></a>
+          <a href="https://centres-antipoison.net/" target="_blank" rel="noopener"><b>Centres antipoison ↗</b><span>Coordonnées des CAP-TV et ressources</span></a>
+          <a href="https://sitegpr.com/" target="_blank" rel="noopener"><b>Site GPR ↗</b><span>Adaptation des doses à la fonction rénale</span></a>
+          <a href="https://www.lecrat.fr/" target="_blank" rel="noopener"><b>CRAT ↗</b><span>Médicaments, grossesse et allaitement</span></a>
+          <a href="https://www.ddi-predictor.org/" target="_blank" rel="noopener"><b>DDI-Predictor ↗</b><span>Prédiction des interactions médicamenteuses (CYP)</span></a>
+          <a href="https://www.hiv-druginteractions.org/" target="_blank" rel="noopener"><b>Liverpool VIH ↗</b><span>Interactions des antirétroviraux</span></a>
+          <a href="https://www.hep-druginteractions.org/" target="_blank" rel="noopener"><b>Liverpool hépatites ↗</b><span>Interactions des antiviraux VHC/VHB</span></a>
+          <a href="https://antibioclic.com/" target="_blank" rel="noopener"><b>Antibioclic ↗</b><span>Antibiothérapie raisonnée (soins primaires)</span></a>
+        </div>
       </div>
       <div class="pane actif" data-pane="calc">
         <input id="calc-expr" type="text" inputmode="decimal" placeholder="Exemple : (12,5 + 3) * 4 / 2" aria-label="Calcul">
@@ -812,7 +836,19 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
       ? base + ', risque de pluie jusqu\'à ' + p0 + ' % : prends un parapluie.'
       : base + ', faible risque de pluie.';
   }
-  if (!navigator.geolocation) return;
+  // Sans géolocalisation (refusée ou indisponible) : météo de la ville des réglages, chargée par le navigateur.
+  // Rattrape aussi les générations où Open-Meteo n'a pas répondu côté serveur.
+  function meteoParDefaut() {
+    var c = {};
+    try { c = JSON.parse(document.getElementById('config').textContent || '{}'); } catch (e) {}
+    if (!c.latitude || !c.longitude) return;
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=' + c.latitude + '&longitude=' + c.longitude +
+      '&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_min,temperature_2m_max,precipitation_probability_max&timezone=Europe%2FParis&forecast_days=5')
+      .then(function (r) { return r.json(); })
+      .then(function (m) { if (m && m.daily) afficher(m, c.ville || 'Ma ville'); })
+      .catch(function () {});
+  }
+  if (!navigator.geolocation) { meteoParDefaut(); return; }
   navigator.geolocation.getCurrentPosition(function (pos) {
     var lat = pos.coords.latitude.toFixed(3), lon = pos.coords.longitude.toFixed(3);
     var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon +
@@ -822,8 +858,8 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
         .then(function (r) { return r.json(); })
         .then(function (g) { afficher(m, g.city || g.locality || 'Ta position'); })
         .catch(function () { afficher(m, 'Ta position'); });
-    }).catch(function () {});
-  }, function () {}, { timeout: 8000, maximumAge: 600000 });
+    }).catch(meteoParDefaut);
+  }, meteoParDefaut, { timeout: 8000, maximumAge: 600000 });
 })();
 </script>
 <script>
@@ -930,6 +966,58 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:16px;ju
     await api(d.base + '/actions/workflows/page-du-matin.yml/dispatches', { method: 'POST', body: JSON.stringify({ ref: br }) });
   }
   window.veilleGitHub = { jeton: jeton, depot: depot, lire: lire, ecrire: ecrire, relancer: relancer };
+})();
+</script>
+<script>
+(function () {
+  // Bouton ↻ (Actualité, Sport) : relance la génération de la page, puis recharge dès que la nouvelle version est publiée
+  var boutons = document.querySelectorAll('[data-actualiser]');
+  if (!boutons.length) return;
+  var bandeau = document.getElementById('bandeau');
+  function message(txt, duree) {
+    if (!bandeau) return;
+    bandeau.textContent = txt; bandeau.hidden = false;
+    clearTimeout(message.t);
+    if (duree) message.t = setTimeout(function () { bandeau.hidden = true; }, duree);
+  }
+  function genereActuel() { var c = document.getElementById('config'); return c ? Number(c.getAttribute('data-genere')) || 0 : 0; }
+  var enCours = false;
+  function surveiller(depart) {
+    var actuelle = genereActuel();
+    var minuteur = setInterval(function () {
+      if (Date.now() - depart > 12 * 60000) {
+        clearInterval(minuteur); enCours = false;
+        boutons.forEach(function (b) { b.classList.remove('tourne'); });
+        message("L'actualisation prend plus de temps que prévu : recharge la page dans quelques minutes.", 10000);
+        return;
+      }
+      fetch(location.href.split('#')[0], { cache: 'reload' })
+        .then(function (r) { return r.ok ? r.text() : ''; })
+        .then(function (html) {
+          var m = html.match(/data-genere="(\d+)"/);
+          if (m && Number(m[1]) > actuelle) location.reload();
+        }).catch(function () {});
+    }, 20000);
+  }
+  boutons.forEach(function (b) {
+    b.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (enCours) { message('Actualisation déjà en cours, la page se rechargera toute seule.', 5000); return; }
+      var gh = window.veilleGitHub;
+      if (!gh || !gh.depot()) { message("L'actualisation ne fonctionne que sur la page publiée.", 6000); return; }
+      if (!gh.jeton()) { message('Renseigne ton jeton GitHub dans Réglages pour pouvoir actualiser.', 8000); return; }
+      enCours = true;
+      boutons.forEach(function (x) { x.classList.add('tourne'); });
+      gh.relancer().then(function () {
+        message('Actualisation lancée : la page se rechargera toute seule dans 2 à 3 minutes.', 10000);
+        surveiller(Date.now());
+      }).catch(function (err) {
+        enCours = false;
+        boutons.forEach(function (x) { x.classList.remove('tourne'); });
+        message("Impossible de lancer l'actualisation (" + (err && err.status ? 'erreur ' + err.status : 'réseau') + ').', 8000);
+      });
+    });
+  });
 })();
 </script>
 <script>
@@ -1382,7 +1470,40 @@ document.addEventListener('click', function (e) {
   function enFile(tache) {
     file = file.then(tache).catch(function (err) { alert('La bibliothèque n\'a pas pu être mise à jour (' + (err.status || err.message) + ').'); });
   }
+  // Articles marqués « Lu » : masqués tout de suite et à chaque ouverture (la génération suivante les retire aussi)
+  var CLE_LUS = 'veille-du-jour:lus';
+  var lus = {};
+  try { lus = JSON.parse(localStorage.getItem(CLE_LUS) || '{}'); } catch (e) {}
+  function masquerLus() {
+    document.querySelectorAll('.lu-btn').forEach(function (b) {
+      if (lus[b.getAttribute('data-pmid')]) { var p = b.closest('.paper'); if (p) p.hidden = true; }
+    });
+  }
+  masquerLus();
   document.addEventListener('click', function (e) {
+    var lu = e.target.closest('.lu-btn');
+    if (lu) {
+      var idLu = lu.getAttribute('data-pmid');
+      if (!gh.jeton() || !gh.depot()) { alert('Pour marquer un article comme lu, ajoute d\'abord ton jeton GitHub dans les Réglages.'); return; }
+      lus[idLu] = Date.now();
+      try { localStorage.setItem(CLE_LUS, JSON.stringify(lus)); } catch (err) {}
+      var art = lu.closest('.paper');
+      if (art) { art.classList.add('lu-sortie'); setTimeout(function () { art.hidden = true; }, 350); }
+      if (!gardes[idLu]) {
+        var dl = { pmid: idLu, titre: lu.getAttribute('data-titre'), source: lu.getAttribute('data-source'),
+                   lien: lu.getAttribute('data-lien'), theme: lu.getAttribute('data-theme'), ajoute: aujourdhui() };
+        gardes[idLu] = true; sauverLocal();
+        liste.insertBefore(element(dl), liste.firstChild); marquer();
+        enFile(async function () {
+          var f = await gh.lire('bibliotheque.csv');
+          var t = f.texte || 'pmid,titre,source,lien,theme,ajoute\n';
+          if (!/\n$/.test(t)) t += '\n';
+          t += [dl.pmid, dl.titre, dl.source, dl.lien, dl.theme, dl.ajoute].map(csv).join(',') + '\n';
+          await gh.ecrire('bibliotheque.csv', t, 'Article lu ajouté à la bibliothèque', f.sha);
+        });
+      }
+      return;
+    }
     var b = e.target.closest('.garder-btn');
     if (b) {
       var pmid = b.getAttribute('data-pmid');

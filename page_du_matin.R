@@ -64,7 +64,7 @@ preparer <- function(url, query = list(), delai = 30) {
   request(url) |>
     req_url_query(!!!query) |>
     req_user_agent("Mozilla/5.0 (veille-du-jour)") |>
-    req_retry(max_tries = 3) |>
+    req_retry(max_tries = 3, retry_on_failure = TRUE) |>
     req_timeout(delai)
 }
 
@@ -435,7 +435,7 @@ foot <- lapply(equipes, function(eq) {
   if (length(futurs)) futurs <- futurs[order(vapply(futurs, function(e) as.numeric(e$t), 0))]
   list(
     equipe = eq,
-    resultats = unname(lapply(head(passes, 3), function(e)
+    resultats = unname(lapply(head(passes, 1), function(e)
       list(comp = e$comp, quand = date_courte(e$t), affiche = e$affiche, score = e$score))),
     prochain = unname(lapply(head(futurs, 1), function(e)
       list(comp = e$comp, quand = paste(date_courte(e$t), "à", heure(e$t)), affiche = e$affiche))),
@@ -443,31 +443,8 @@ foot <- lapply(equipes, function(eq) {
   )
 })
 
-classement <- if (!"foot" %in% sports_choisis) list() else tryCatch({
-  j <- get_json("https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings")
-  entrees <- unlist(lapply(si_null(j$children, list()), function(ch) si_null(ch$standings$entries, list())),
-                    recursive = FALSE)
-  if (!length(entrees)) entrees <- si_null(j$standings$entries, list())
-  suivies <- tolower(equipes)
-  lignes <- lapply(entrees, function(en) {
-    stats <- si_null(en$stats, list())
-    noms <- vapply(stats, function(s) si_null(s$name, ""), "")
-    val <- function(n) { i <- match(n, noms); if (is.na(i)) NA else si_null(stats[[i]]$value, NA) }
-    noms_eq <- tolower(c(en$team$displayName, en$team$shortDisplayName, en$team$name))
-    list(rank = val("rank"), team = si_null(en$team$shortDisplayName, en$team$displayName),
-         pts = val("points"), suivi = any(suivies %in% noms_eq))
-  })
-  lignes <- lignes[order(vapply(lignes, function(l) as.numeric(si_null(l$rank, 99)), 0))]
-  idx <- which(vapply(lignes, function(l) isTRUE(l$suivi), FALSE))
-  garder <- if (length(idx)) {
-    sort(unique(unlist(lapply(idx, function(i) max(1, i - 2):min(length(lignes), i + 2)))))
-  } else seq_len(min(8, length(lignes)))
-  message("Classement Ligue des champions : ", length(lignes), " équipes, ", length(idx), " suivie(s) trouvée(s)")
-  lapply(lignes[garder], function(l) list(rank = l$rank, team = l$team, pts = paste(l$pts, "pts"), suivi = l$suivi))
-}, error = function(e) {
-  message("Classement indisponible : ", conditionMessage(e))
-  list()
-})
+# Classement Ligue des champions retiré à la demande du propriétaire (seuls dernier et prochain match comptent)
+classement <- list()
 
 # ---------- Formule 1 (API Jolpica, sans clé) ----------
 
@@ -517,9 +494,10 @@ f1_pilotes <- if (!"f1" %in% sports_choisis) list() else tryCatch({
 # On ne garde que les combats impliquant un des combattants suivis (pas de classement
 # complet par organisation). Fenêtre large car ces combats sont peu fréquents.
 
-combattants_mma <- c("Doumbe", "Gane", "Chamsoudinov", "Saint Denis", "Imavov", "Ziam", "Charriere", "Gomis")
+# Uniquement les gros noms français (demande du propriétaire) ; Baki = Chamsoudinov, Paul Dena = Paul Denis Navero
+combattants_mma <- c("Doumbe", "Gane", "Chamsoudinov", "Chamsudinov", "Saint Denis", "St Denis", "Imavov", "Denis Navero")
 promotions_mma <- c("ufc" = "UFC", "pfl" = "PFL")
-simplifier_nom <- function(x) tolower(gsub("[^a-z]", "", iconv(x, to = "ASCII//TRANSLIT", sub = "")))
+simplifier_nom <- function(x) gsub("[^a-z]", "", tolower(chartr("àâäáãéèêëíîïóôöõúùûüçñÀÂÄÁÃÉÈÊËÍÎÏÓÔÖÕÚÙÛÜÇÑ", "aaaaaeeeeiiiioooouuuucnAAAAAEEEEIIIOOOOUUUUCN", enc2utf8(as.character(x)))))
 combattants_mma_s <- simplifier_nom(combattants_mma)
 
 nom_combattant <- function(c) si_null(c$athlete$displayName, si_null(c$athlete$shortName,
@@ -572,15 +550,102 @@ if ("mma" %in% sports_choisis) {
   if (length(erreurs_mma)) message("Erreurs MMA (", length(erreurs_mma), ") : ", paste(head(unique(erreurs_mma), 3), collapse = " || "))
 }
 
+# Source principale : fiches Sherdog des combattants (toutes organisations : UFC, PFL, ARES, Hexagone…).
+# ESPN (ci-dessus, UFC/PFL seulement) ne sert qu'en secours si Sherdog ne répond pas.
+sherdog_mma <- list(
+  list(nom = "Ciryl Gane", id = 293973, cle = "gane"),
+  list(nom = "Benoît Saint-Denis", id = 317103, cle = "denis"),
+  list(nom = "Nassourdine Imavov", id = 217405, cle = "imavov"),
+  list(nom = "Cédric Doumbé", id = 396393, cle = "doumbe"),
+  list(nom = "Baki", id = 340851, cle = "chamsoudinov"),
+  list(nom = "Paul Dena", id = 408149, cle = "navero"))
+texte_html <- function(x) {
+  x <- gsub("<[^>]+>", " ", x)
+  x <- gsub("&nbsp;|&#160;", " ", x); x <- gsub("&amp;", "&", x, fixed = TRUE)
+  x <- gsub("&#0?39;|&apos;", "'", x); x <- gsub("&quot;", "\"", x, fixed = TRUE)
+  trimws(gsub("\\s+", " ", x))
+}
+lire_sherdog <- function(f, html) {
+  sortie <- list(); bas <- tolower(html)
+  i <- regexpr("fight history - pro", bas, fixed = TRUE)[1]
+  # Dernier combat : première ligne « win/loss/draw/nc » du tableau des combats pro
+  if (i > 0) {
+    reste <- substr(html, i, nchar(html))
+    fin <- regexpr("fight history - amateur|related news|pictures", tolower(reste))[1]
+    bloc <- if (fin > 0) substr(reste, 1, fin) else reste
+    for (l in strsplit(bloc, "<tr", fixed = TRUE)[[1]][-1]) {
+      cel <- strsplit(l, "<td", fixed = TRUE)[[1]][-1]
+      if (length(cel) < 4) next
+      txt <- vapply(cel, function(x) texte_html(sub("^[^>]*>", "", x)), "", USE.NAMES = FALSE)
+      r <- tolower(txt[1])
+      if (!grepl("^(win|loss|draw|nc)\\b", r)) next
+      d <- regmatches(txt[3], regexec("([A-Z][a-z]{2}) / (\\d{1,2}) / (\\d{4})", txt[3]))[[1]]
+      if (length(d) < 4 || is.na(match(d[2], month.abb))) next
+      t <- as.POSIXct(sprintf("%s-%02d-%02d 20:00", d[4], match(d[2], month.abb), as.integer(d[3])), tz = "UTC")
+      b <- regmatches(cel[4], regexpr("<b>.*?</b>", cel[4], perl = TRUE))
+      methode <- if (length(b)) texte_html(b) else txt[4]
+      issue <- c(win = "Victoire", loss = "Défaite", draw = "Match nul", nc = "Sans décision")[[sub("^(win|loss|draw|nc).*$", "\\1", r)]]
+      sortie[[length(sortie) + 1]] <- list(
+        promotion = "", evenement = trimws(sub("([A-Z][a-z]{2}) / \\d{1,2} / \\d{4}.*$", "", txt[3])), t = t, termine = TRUE,
+        affiche = paste(f$nom, "–", txt[2]), resultat = paste0(issue, " de ", f$nom, if (nzchar(methode)) paste0(" · ", methode) else ""))
+      break
+    }
+  }
+  # Prochain combat : bloc « Upcoming fight(s) » situé avant l'historique
+  j <- regexpr("upcoming fight", bas, fixed = TRUE)[1]
+  if (j > 0) {
+    bloc <- substr(html, j, if (i > j) i else min(nchar(html), j + 6000))
+    txt <- texte_html(bloc)
+    d <- regmatches(txt, regexec("([A-Z][a-z]+) (\\d{1,2}), (\\d{4})", txt))[[1]]
+    if (length(d) == 4 && !is.na(match(substr(d[2], 1, 3), month.abb))) {
+      t <- as.POSIXct(sprintf("%s-%02d-%02d 20:00", d[4], match(substr(d[2], 1, 3), month.abb), as.integer(d[3])), tz = "UTC")
+      evenement <- trimws(sub("^upcoming fights?:?\\s*", "", substr(txt, 1, regexpr(d[1], txt, fixed = TRUE)[1] - 1), ignore.case = TRUE))
+      liens <- regmatches(bloc, gregexpr("<a[^>]+href=\"[^\"]*/fighter/[^\"]*\"[^>]*>.*?</a>", bloc, perl = TRUE))[[1]]
+      noms <- texte_html(liens); noms <- noms[nzchar(noms)]
+      adv <- noms[!grepl(f$cle, simplifier_nom(noms), fixed = TRUE)]
+      if (!length(adv)) {
+        m <- regmatches(txt, regexec("vs\\.?\\s+([^0-9]+?)\\s+\\d+-\\d+-\\d+", txt))[[1]]
+        adv <- if (length(m) == 2 && !grepl(f$cle, simplifier_nom(m[2]), fixed = TRUE)) trimws(m[2]) else "adversaire à confirmer"
+      }
+      if (t > Sys.time() - 12 * 3600)
+        sortie[[length(sortie) + 1]] <- list(promotion = "", evenement = evenement, t = t, termine = FALSE,
+                                             affiche = paste(f$nom, "–", adv[1]), resultat = "")
+    }
+  }
+  sortie
+}
+combats_sherdog <- list()
+if ("mma" %in% sports_choisis) {
+  demandes_sd <- lapply(sherdog_mma, function(f)
+    request(paste0("https://www.sherdog.com/fighter/", f$id)) |>
+      req_user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36") |>
+      req_headers(`Accept-Language` = "en-US,en;q=0.9") |>
+      req_retry(max_tries = 2, retry_on_failure = TRUE) |> req_timeout(30))
+  rep_sd <- req_perform_parallel(demandes_sd, on_error = "continue", progress = FALSE)
+  for (k in seq_along(rep_sd)) {
+    f <- sherdog_mma[[k]]
+    html <- tryCatch({
+      if (inherits(rep_sd[[k]], "error")) stop(conditionMessage(rep_sd[[k]]))
+      resp_body_string(rep_sd[[k]])
+    }, error = function(e) { message("Sherdog ", f$nom, " indisponible : ", conditionMessage(e)); NULL })
+    if (is.null(html)) next
+    trouves <- tryCatch(lire_sherdog(f, html), error = function(e) { message("Sherdog ", f$nom, " illisible : ", conditionMessage(e)); list() })
+    message("Sherdog ", f$nom, " : ", paste(vapply(trouves, function(c) paste0(if (c$termine) "dernier " else "prochain ", c$affiche, " (", format(c$t, "%d/%m/%Y"), ", ", c$evenement, ")"), ""), collapse = " | "))
+    combats_sherdog <- c(combats_sherdog, trouves)
+  }
+}
+if (length(combats_sherdog)) combats_mma <- combats_sherdog else if (length(combats_mma)) message("MMA : Sherdog sans résultat, secours ESPN")
+
 mma_passes <- Filter(function(c) isTRUE(c$termine), combats_mma)
 mma_futurs <- Filter(function(c) !isTRUE(c$termine), combats_mma)
 if (length(mma_passes)) mma_passes <- mma_passes[order(-vapply(mma_passes, function(c) as.numeric(c$t), 0))]
 if (length(mma_futurs)) mma_futurs <- mma_futurs[order(vapply(mma_futurs, function(c) as.numeric(c$t), 0))]
-mma_passes <- unname(lapply(head(mma_passes, 3), function(c)
-  list(promotion = c$promotion, evenement = c$evenement, quand = date_courte(c$t), affiche = c$affiche,
+etiquette_mma <- function(c) paste(c(if (nzchar(si_null(c$promotion, ""))) c$promotion, if (nzchar(si_null(c$evenement, ""))) c$evenement), collapse = " · ")
+mma_passes <- unname(lapply(head(mma_passes, 1), function(c)
+  list(promotion = etiquette_mma(c), quand = date_courte(c$t), affiche = c$affiche,
        resultat = c$resultat, has_resultat = nzchar(si_null(c$resultat, "")))))
 mma_futurs <- unname(lapply(head(mma_futurs, 3), function(c)
-  list(promotion = c$promotion, evenement = c$evenement, quand = paste(date_courte(c$t), "à", heure(c$t)), affiche = c$affiche)))
+  list(promotion = etiquette_mma(c), quand = date_courte(c$t), affiche = c$affiche)))
 
 # ---------- Autres sports (NBA, rugby) via ESPN ----------
 
@@ -1082,6 +1147,19 @@ bibliotheque <- tryCatch({
   } else list()
 }, error = function(e) { message("Bibliothèque illisible : ", conditionMessage(e)); list() })
 
+# Articles déjà lus ou gardés (présents dans la bibliothèque) : retirés de la veille, la liste est recomposée
+pmids_biblio <- vapply(bibliotheque, function(b) as.character(si_null(b$pmid, "")), "")
+if (length(pmids_biblio)) {
+  tous_veille <- Filter(function(v) !(as.character(si_null(v$pmid, "")) %in% pmids_biblio),
+                        c(veille_principal, veille_suite, veille_anciens))
+  message(length(veille_principal) + length(veille_suite) + length(veille_anciens) - length(tous_veille),
+          " article(s) de la veille déjà dans la bibliothèque (lus ou gardés) : masqués")
+  veille_principal <- head(tous_veille, 5)
+  reste_veille <- if (length(tous_veille) > 5) tous_veille[-(1:5)] else list()
+  veille_suite <- Filter(function(v) isTRUE(v$nouveau), reste_veille)
+  veille_anciens <- Filter(function(v) !isTRUE(v$nouveau), reste_veille)
+}
+
 # ---------- Taux immobiliers en Île-de-France (baromètre mensuel CAFPI) ----------
 
 mois_slug <- c("janvier", "fevrier", "mars", "avril", "mai", "juin", "juillet", "aout",
@@ -1114,6 +1192,7 @@ if (is.null(taux_idf)) message("Taux immobiliers : baromètre CAFPI introuvable 
 
 config_json <- jsonlite::toJSON(list(
   ville = reglages$ville,
+  latitude = as.numeric(reglages$latitude), longitude = as.numeric(reglages$longitude),
   ville_travail = si_null(reglages$ville_travail, ""),
   equipes_foot = reglages$equipes_foot,
   themes_actu = reglages$themes_actu,
