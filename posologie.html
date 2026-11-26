@@ -250,7 +250,7 @@ details.avance summary{cursor:pointer;color:var(--bleu);font-weight:600;font-siz
       </div>
       <div class="carte">
         <div class="titre">Résultats</div>
-        <div class="corps"><div id="reco-stp"></div><div id="qualite-stp"></div><div id="schemas-stp"></div><div class="centre" style="margin-top:8px"><button class="btn petit contour" id="copier-stp" type="button" hidden>Copier le compte-rendu</button> <button class="btn petit contour" id="enregistrer-dossier-2" type="button" hidden>Enregistrer le dossier</button></div><div id="commentaires-stp"></div><details class="plie" id="plie-stp" hidden><summary>Détails de l’estimation</summary><div class="details" id="details-stp"></div></details></div>
+        <div class="corps"><div id="reco-stp"></div><div id="qualite-stp"></div><div id="schemas-stp"></div><div class="centre" style="margin-top:8px"><button class="btn petit contour" id="copier-stp" type="button" hidden>Copier le compte-rendu</button> <button class="btn petit contour" id="enregistrer-dossier-2" type="button" hidden>Enregistrer le dossier</button></div><details class="plie" id="plie-stp" hidden><summary>Détails de l’estimation</summary><div class="details" id="details-stp"></div></details></div>
       </div>
       </div>
     </div>
@@ -3209,7 +3209,7 @@ cloxa_CHV2025 <- list(
   function schemasStp() { schemasRendu('stp'); }
   // Contrôle des concentrations saisies : plausibilité (prédiction de population) et ajustement (prédiction individuelle)
   function qualiteStp() {
-    var R = etat.resultatsStp, z = $('qualite-stp'); commentairesStp(); if (!R || !R.d.obs.length) { z.innerHTML = ''; return; }
+    var R = etat.resultatsStp, z = $('qualite-stp'); if (!R || !R.d.obs.length) { z.innerHTML = ''; return; }
     var obs = R.d.obs, ipred = obs.map(function () { return 0; }), ppred = obs.map(function () { return 0; });
     R.res.forEach(function (r, j) {
       (r.residus || []).forEach(function (x, k) { ipred[k] += R.w[j] * x.pred; });
@@ -3233,62 +3233,6 @@ cloxa_CHV2025 <- list(
       (niv ? '<br><b>Ajustement du modèle : <span style="color:' + niv[1] + '">' + niv[0] + '</span></b> (écart maximal ' + Math.round(emax * 100) + ' %)' : '') + '<br>' +
       obs.map(function (o, k) { return '<span class="note">' + quand(o.t) + ' : observé ' + arr(o.c, 2) + ', prédit ' + arr(ipred[k], 2) + ' ' + U() + ' (' + (ecarts[k] >= 0 ? '+' : '') + Math.round(ecarts[k] * 100) + ' %)</span>'; }).join('<br>') + '</div>';
     z.innerHTML = h;
-  }
-  // ---------- Commentaires de validation (banque commentaires.json, aussi consultable sur commentaires.html) ----------
-  // Catégorie suggérée d'après la dernière concentration et la zone cible de la molécule ; un appui copie la phrase.
-  var COMMENTAIRES = null, choixCommentaire = null;
-  function commentairesStp() {
-    var z = $('commentaires-stp'), R = etat.resultatsStp;
-    if (!z) return;
-    if (!R || !R.d.obs.length) { z.innerHTML = ''; return; }
-    if (!COMMENTAIRES) {
-      COMMENTAIRES = 'chargement';
-      fetch('commentaires.json', { cache: 'no-cache' }).then(function (r) { return r.json(); })
-        .then(function (d) { COMMENTAIRES = d; commentairesStp(); })
-        .catch(function () { COMMENTAIRES = { categories: [] }; z.innerHTML = '<div class="note">Commentaires indisponibles (fichier commentaires.json non trouvé).</div>'; });
-      return;
-    }
-    if (COMMENTAIRES === 'chargement' || !COMMENTAIRES.categories) return;
-    var c = mol(), cats = COMMENTAIRES.categories, obs = R.d.obs, der = obs[obs.length - 1];
-    var sa = function (t) { return String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); };
-    var suggestion = null;
-    if (der && !c.ciblePic && c.ymin != null && c.ymax != null) {
-      var v = der.c, tox = c.tox && c.tox.res;
-      suggestion = v <= 0 ? 'Concentration indétectable' : (tox && v > tox) || v > c.ymax * 1.1 ? 'Concentration élevée' :
-        v > c.ymax * 0.9 ? 'Concentration à la limite supérieure' : v < c.ymin * 0.9 ? 'Concentration faible' :
-        v < c.ymin * 1.1 ? 'Concentration à la limite inférieure' : 'Concentration correcte';
-    }
-    var nomMol = sa(c.libelle || '');
-    var propre = cats.filter(function (k) { var t = sa(k.titre); return nomMol && (t.indexOf(nomMol) >= 0 || nomMol.indexOf(t) >= 0); })[0];
-    var ordre = [];
-    if (propre) ordre.push(propre.titre);
-    if (suggestion) ordre.push(suggestion);
-    // catégories générales seulement (les catégories propres à d'autres molécules restent sur commentaires.html)
-    cats.forEach(function (k) { if (ordre.indexOf(k.titre) < 0 && /^(concentration|ininterpr)/i.test(k.titre)) ordre.push(k.titre); });
-    if (!choixCommentaire || ordre.indexOf(choixCommentaire) < 0) choixCommentaire = ordre[0];
-    var echap = function (t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
-    var h = '<details class="plie" open style="margin-top:10px"><summary>Commentaire de validation' +
-      (suggestion ? ' <span class="note" style="font-weight:normal">· suggestion : ' + echap(suggestion.toLowerCase()) + '</span>' : '') + '</summary>' +
-      '<div style="display:flex;flex-wrap:wrap;gap:6px;margin:8px 0">' + ordre.map(function (t) {
-        var actif = t === choixCommentaire, sug = t === suggestion || (propre && t === propre.titre);
-        return '<button type="button" class="btn petit' + (actif ? '' : ' contour') + '" data-cat-com="' + echap(t) + '">' + echap(t) + (sug && !actif ? ' ★' : '') + '</button>';
-      }).join('') + '</div>';
-    var cat = cats.filter(function (k) { return k.titre === choixCommentaire; })[0];
-    h += (cat ? cat.phrases : []).map(function (p, i) {
-      return '<button type="button" data-phrase-com="' + i + '" style="display:block;width:100%;text-align:left;white-space:pre-line;font:inherit;font-size:13px;line-height:1.4;background:none;border:1px solid var(--bord);border-radius:6px;padding:6px 9px;margin-bottom:5px;cursor:pointer;color:inherit">' + echap(p) + '</button>';
-    }).join('') + '<div class="note">Un appui copie la phrase. <a href="commentaires.html" target="_blank" rel="noopener">Toutes les phrases ↗</a></div></details>';
-    z.innerHTML = h;
-    z.querySelectorAll('[data-cat-com]').forEach(function (b) {
-      b.addEventListener('click', function () { choixCommentaire = b.getAttribute('data-cat-com'); commentairesStp(); });
-    });
-    z.querySelectorAll('[data-phrase-com]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        var texte = cat.phrases[Number(b.getAttribute('data-phrase-com'))];
-        var ok = function () { var bg = b.style.background; b.style.background = '#d1e7dd'; b.textContent = '✓ Copié — ' + texte; setTimeout(function () { b.style.background = bg; b.textContent = texte; }, 1200); };
-        if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(texte).then(ok, function () {});
-        else { var t = document.createElement('textarea'); t.value = texte; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); ok(); } catch (e) {} document.body.removeChild(t); }
-      });
-    });
   }
   function schemasPriori() { schemasRendu('priori'); }
   // Tableau des schémas, commun à la STP (paramètres estimés) et à l'a priori (paramètres de population)
