@@ -148,7 +148,7 @@ details.classe > summary .nb{font-weight:500;margin-left:6px;letter-spacing:0}
 <div class="wrap">
   <header>
     <div>
-      <a class="retour" href="./">← Veille du jour</a>
+      <a class="retour" href="./">← Veille du jour</a> <a class="retour" href="commentaires.html" style="margin-left:14px">Commentaires de validation</a>
       <h1>Référentiel STP</h1>
       <div class="sous-titre" id="compte">Chargement…</div>
     </div>
@@ -272,7 +272,7 @@ details.classe > summary .nb{font-weight:500;margin-left:6px;letter-spacing:0}
     var q = sansAccent(recherche.value.trim());
     liste.innerHTML = '';
     var filtres = el('div', 'filtres');
-    [['tous', 'Toutes'], ['chv', 'Dosées au CHV'], ['non', 'Non dosées'], ['inconnu', 'À préciser'], ['arelire', 'Jamais relues']].forEach(function (f) {
+    [['tous', 'Toutes'], ['chv', 'Dosées au CHV'], ['non', 'Non dosées'], ['inconnu', 'À préciser']].forEach(function (f) {
       var b = el('button', 'filtre' + (filtreDose === f[0] ? ' actif' : ''), f[1]); b.type = 'button';
       b.addEventListener('click', function () { filtreDose = f[0]; afficherListe(); });
       filtres.appendChild(b);
@@ -283,7 +283,7 @@ details.classe > summary .nb{font-weight:500;margin-left:6px;letter-spacing:0}
     var total = 0;
     classes.forEach(function (c) {
       var mols = donnees.molecules.filter(function (m) {
-        return m.classe === c && (!q || texteRecherche(m).indexOf(q) >= 0) && (filtreDose === 'tous' || (filtreDose === 'arelire' ? !m.maj : statutDosage(m) === filtreDose));
+        return m.classe === c && (!q || texteRecherche(m).indexOf(q) >= 0) && (filtreDose === 'tous' || statutDosage(m) === filtreDose);
       });
       if (!mols.length) return;
       total += mols.length;
@@ -652,18 +652,16 @@ details.classe > summary .nb{font-weight:500;margin-left:6px;letter-spacing:0}
     gauche.appendChild(badges);
     gauche.appendChild(el('h2', null, m.nom));
     if (m.marques && m.marques.length) gauche.appendChild(el('div', 'marques', m.marques.join(' · ')));
-    gauche.appendChild(el('div', 'note', m.maj ? 'Dernière mise à jour : ' + new Date(m.maj + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) + (m.maj_type === 'relecture' ? ' (relue, sans modification)' : '') : 'Jamais relue depuis l’import du classeur'));
+    var dateFr = function (j) { return new Date(j + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }); };
+    var dates = [];
+    if (m.cree) dates.push('Créée le ' + dateFr(m.cree));
+    dates.push('Dernière mise à jour le ' + dateFr(m.maj || m.cree || new Date().toISOString().slice(0, 10)));
+    gauche.appendChild(el('div', 'note', dates.join(' · ')));
     tete.appendChild(gauche);
     var actionsTete = el('div', 'actions');
-    var relu = el('button', 'bouton'); relu.type = 'button'; relu.textContent = 'Relue aujourd’hui';
-    relu.addEventListener('click', function () {
-      m.maj = new Date().toISOString().slice(0, 10); m.maj_type = 'relecture';
-      var st = el('span', 'statut'); actionsTete.appendChild(st);
-      sauvegarder(st, 'Fiche relue : ' + m.nom, function () { afficherFiche(); });
-    });
     var b = el('button', 'bouton'); b.type = 'button'; b.textContent = 'Modifier';
     b.addEventListener('click', function () { enEdition = true; afficherFiche(); });
-    actionsTete.appendChild(relu); actionsTete.appendChild(b);
+    actionsTete.appendChild(b);
     tete.appendChild(actionsTete);
     f.appendChild(tete);
     if (POSOLOGIE[m.id]) {
@@ -794,7 +792,8 @@ details.classe > summary .nb{font-weight:500;margin-left:6px;letter-spacing:0}
         var v = champs[t].value.split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
         if (v.length) m.sections[t] = v;
       });
-      m.maj = new Date().toISOString().slice(0, 10); m.maj_type = 'modification';
+      m.maj = new Date().toISOString().slice(0, 10); delete m.maj_type;
+      if (!m.cree) m.cree = m.maj;
       if (!m.id) m.id = sansAccent(nom).replace(/[^a-z0-9]+/g, '-') + '-' + Date.now().toString(36);
       delete m._nouvelle;
       sauvegarder(statut, 'Fiche modifiée : ' + m.nom, function () { enEdition = false; afficherListe(); afficherFiche(); location.hash = m.id; });

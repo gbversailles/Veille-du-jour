@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commentaires de validation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#F2F3EF; --card:#FFFFFF; --ink:#16181D; --muted:#4A4F59; --rule:#DADDD6; --accent:#2D4FC4; --ok:#1F6F4A; --ok-bg:#E3F2EA;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --ground:#121419; --card:#1B1E25; --ink:#ECEDE8; --muted:#A9AEB8; --rule:#2C313B; --accent:#8EA6FF; --ok:#6FCF9B; --ok-bg:#16301F; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:15px;line-height:1.5}
+.wrap{max-width:900px;margin:0 auto;padding:24px 18px 60px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;padding-bottom:18px;border-bottom:2px solid var(--ink);margin-bottom:18px}
+.liens a{font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);text-decoration:none;margin-right:14px}
+h1{margin:6px 0 0;font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,5vw,40px);line-height:1.05;letter-spacing:-.02em}
+.sous-titre{color:var(--muted);font-size:14px;margin-top:6px}
+.recherche{flex:1 1 280px;max-width:420px}
+.recherche input{width:100%;border:1px solid var(--rule);border-radius:12px;padding:12px 14px;font:inherit;font-size:16px;background:var(--card);color:var(--ink)}
+.puces{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.puce{border:1px solid var(--rule);background:var(--card);color:var(--ink);border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer}
+.puce.actif{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.categorie{background:var(--card);border-radius:16px;padding:14px 16px;margin-bottom:12px}
+.categorie h2{margin:0 0 8px;font-family:'Space Grotesk',sans-serif;font-size:18px}
+.phrase{display:block;width:100%;text-align:left;border:1px solid transparent;border-top-color:var(--rule);background:none;color:var(--ink);font:inherit;padding:10px 8px;cursor:pointer;white-space:pre-line;border-radius:10px}
+.phrase:first-of-type{border-top-color:transparent}
+.phrase:hover{border-color:var(--accent);background:var(--ground)}
+.phrase.copie{border-color:var(--ok);background:var(--ok-bg)}
+.phrase mark{background:none;color:var(--accent);font-weight:600}
+.vide{color:var(--muted);padding:20px 4px}
+.aide{color:var(--muted);font-size:13px;margin:-6px 0 14px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--card);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
+#toast.visible{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="liens"><a href="./">← Veille du jour</a><a href="referentiel.html">Référentiel</a></div>
+      <h1>Commentaires de validation</h1>
+      <div class="sous-titre" id="compte">Chargement…</div>
+    </div>
+    <div class="recherche">
+      <input type="search" id="recherche" placeholder="Rechercher : élevée, mi-intervalle, observance, DPD…" aria-label="Rechercher un commentaire" autocomplete="off">
+    </div>
+  </header>
+  <div class="aide">Touche une phrase pour la copier. Pense à adapter les éléments variables (heure de prélèvement, posologie, date).</div>
+  <div class="puces" id="puces"></div>
+  <div id="liste"></div>
+</div>
+<div id="toast" role="status" aria-live="polite">Copié</div>
+<script>
+(function () {
+  var donnees = { categories: [] };
+  var filtre = null;
+  var champ = document.getElementById('recherche');
+  var liste = document.getElementById('liste');
+  var puces = document.getElementById('puces');
+  var toast = document.getElementById('toast');
+  function sansAccent(t) { return String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
+  function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  // Met en évidence les éléments à adapter : T=…h, [date], posologies chiffrées
+  function remplir(b, texte) {
+    var re = /(T\s*[=+]\s*\d+(?:[.,]\d+)?\s*[hH](?:\s*\d+\s*m+i*n*)?|\[date\]|\d+\s*mg\s*x\s*\d+)/g, i = 0, m;
+    while ((m = re.exec(texte))) {
+      if (m.index > i) b.appendChild(document.createTextNode(texte.slice(i, m.index)));
+      b.appendChild(el('mark', null, m[0])); i = m.index + m[0].length;
+    }
+    if (i < texte.length) b.appendChild(document.createTextNode(texte.slice(i)));
+  }
+  function copier(texte, bouton) {
+    function ok() {
+      bouton.classList.add('copie'); setTimeout(function () { bouton.classList.remove('copie'); }, 1200);
+      toast.classList.add('visible'); clearTimeout(copier.t); copier.t = setTimeout(function () { toast.classList.remove('visible'); }, 1400);
+    }
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(texte).then(ok, secours); else secours();
+    function secours() {
+      var z = document.createElement('textarea'); z.value = texte; z.style.position = 'fixed'; z.style.opacity = '0';
+      document.body.appendChild(z); z.select();
+      try { document.execCommand('copy'); ok(); } catch (e) {}
+      document.body.removeChild(z);
+    }
+  }
+  function afficher() {
+    var q = sansAccent(champ.value.trim());
+    var mots = q ? q.split(/\s+/) : [];
+    liste.innerHTML = '';
+    var total = 0;
+    donnees.categories.forEach(function (c) {
+      if (filtre && c.titre !== filtre) return;
+      var phrases = c.phrases.filter(function (p) {
+        var t = sansAccent(c.titre + ' ' + p);
+        return mots.every(function (m) { return t.indexOf(m) >= 0; });
+      });
+      if (!phrases.length) return;
+      total += phrases.length;
+      var bloc = el('section', 'categorie');
+      bloc.appendChild(el('h2', null, c.titre));
+      phrases.forEach(function (p) {
+        var b = el('button', 'phrase'); b.type = 'button'; b.title = 'Copier';
+        remplir(b, p);
+        b.addEventListener('click', function () { copier(p, b); });
+        bloc.appendChild(b);
+      });
+      liste.appendChild(bloc);
+    });
+    if (!total) liste.appendChild(el('div', 'vide', 'Aucune phrase ne correspond.'));
+  }
+  function afficherPuces() {
+    puces.innerHTML = '';
+    [null].concat(donnees.categories.map(function (c) { return c.titre; })).forEach(function (t) {
+      var b = el('button', 'puce' + (filtre === t ? ' actif' : ''), t || 'Toutes'); b.type = 'button';
+      b.addEventListener('click', function () { filtre = t; afficherPuces(); afficher(); });
+      puces.appendChild(b);
+    });
+  }
+  champ.addEventListener('input', afficher);
+  fetch('commentaires.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (d) {
+    donnees = d;
+    var n = d.categories.reduce(function (s, c) { return s + c.phrases.length; }, 0);
+    document.getElementById('compte').textContent = n + ' phrases · ' + d.categories.length + ' catégories';
+    afficherPuces(); afficher();
+  }).catch(function () {
+    document.getElementById('compte').textContent = 'Impossible de charger les commentaires.';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+{
+ "version": 1,
+ "source": "Phrases de validation du propriétaire",
+ "categories": [
+  {
+   "titre": "Concentration correcte",
+   "phrases": [
+    "Concentration résiduelle correcte, à confronter à la réponse clinique et à la tolérance.",
+    "Concentrations résiduelles correctes, à confronter à la réponse clinique et à la tolérance.",
+    "Concentration résiduelle correcte et stable, à confronter à la réponse clinique et à la tolérance.",
+    "Concentrations résiduelles correctes et stables, à confronter à la réponse clinique et à la tolérance.",
+    "Concentration moyenne correcte, à confronter à la réponse clinique et à la tolérance.",
+    "Concentration moyenne correcte et stable, à confronter à la réponse clinique et à la tolérance.",
+    "Concentration à T=1h en faveur d'une concentration résiduelle correcte, recontrôler en résiduel avant la prochaine administration pour interpréter le résultat sans extrapoler.",
+    "Concentrations à T=1h en faveur de concentrations résiduelles correctes, recontrôler en résiduel avant la prochaine administration pour interpréter le résultat sans extrapoler.",
+    "Concentration résiduelle correcte, à confronter aux germes et CMI.",
+    "Concentration résiduelle correcte et stable, à confronter aux germes et CMI.",
+    "Concentration moyenne correcte, à confronter aux germes et CMI.",
+    "Concentration moyenne correcte et stable, à confronter aux germes et CMI.",
+    "Concentration à T=10h en faveur d'une concentration résiduelle correcte, à confronter à la réponse clinique et à la tolérance.",
+    "Concentration résiduelle correcte mais prélèvement avant l'état d'équilibre (atteint au bout d'une semaine), recontrôler en résiduelle après une semaine de traitement."
+   ]
+  },
+  {
+   "titre": "Concentration faible",
+   "phrases": [
+    "Concentration résiduelle inférieure aux marges thérapeutiques. En fonction de la réponse clinique et de la tolérance une augmentation de la posologie peut être envisagée.",
+    "Concentrations résiduelles inférieures aux seuils thérapeutiques, en fonction de la réponse clinique et de la tolérance une augmentation de la posologie peut être envisagée.",
+    "Concentration moyenne inférieure aux marges thérapeutiques. En fonction de la réponse clinique et de la tolérance une augmentation de la posologie peut être envisagée.",
+    "Concentration résiduelle inférieure aux marges thérapeutiques, en fonction de la réponse clinique et de la tolérance une augmentation de la posologie à 1000mg x 3 peut être envisagée.",
+    "Concentration moyenne inférieure aux marges thérapeutiques, en fonction de la réponse clinique et de la tolérance une augmentation de la posologie à 1000mg x 3 peut être envisagée.",
+    "Concentration à T= 22h en faveur d'une concentration résiduelle inférieure aux marges thérapeutiques. En fonction de la réponse clinique et de la tolérance une augmentation de la posologie peut être envisagée.",
+    "Concentration résiduelle toujours inférieure aux marges thérapeutiques mais stable. Surveiller.",
+    "Concentration résiduelle faible mais cohérente avec la posologie à confronter au contexte clinique et thérapeutique.",
+    "Concentrations résiduelles faibles mais prélèvement avant l'état d'équilibre (atteint au bout de 2 semaines après changement de posologie), recontrôler en résiduelle après deux semaines de changement de posologie.",
+    "Concentration à T= 21h15min en faveur d'une concentration résiduelle toujours inférieure aux marges thérapeutiques mais prélèvement avant l'état d'équilibre (atteint au bout de 4 jours après changement de posologie), recontrôler en résiduelle avant d'augmenter une nouvelle fois la posologie.",
+    "Concentration résiduelle inférieure aux seuil thérapeutique, en fonction de la réponse clinique et de la tolérance une augmentation de la posologie peut être envisagée."
+   ]
+  },
+  {
+   "titre": "Concentration élevée",
+   "phrases": [
+    "Concentration résiduelle supérieure aux marges thérapeutiques. En fonction de la réponse clinique et de la tolérance une diminution de la posologie peut être envisagée",
+    "Concentrations résiduelles supérieures aux seuils thérapeutiques, en fonction de la réponse clinique et de la tolérance une diminution de la posologie peut être envisagée.",
+    "Concentration moyenne supérieure aux marges thérapeutiques. En fonction de la réponse clinique et de la tolérance une diminution de la posologie peut être envisagée",
+    "Concentration résiduelle supérieure aux marges thérapeutiques, en fonction de la réponse clinique et de la tolérance une diminution de la posologie à 1000mg x 3 peut être envisagée.",
+    "Concentration moyenne supérieure aux marges thérapeutiques, en fonction de la réponse clinique et de la tolérance une diminution de la posologie à 1000mg x 3 peut être envisagée.",
+    "Concentration résiduelle supérieure aux marges thérapeutiques, fonction rénale altérée, En fonction de la réponse clinique et de la tolérance une diminution de la posologie peut être envisagée.",
+    "Concentration moyenne supérieure aux marges thérapeutiques, fonction rénale altérée, en fonction de la réponse clinique et de la tolérance une diminution de la posologie à 1000mg x 3 peut être envisagée.",
+    "Concentration à T= 22h en faveur d'une concentration résiduelle supérieure aux marges thérapeutiques. En fonction de la réponse clinique et de la tolérance une diminution de la posologie à 1000mg x 3 peut être envisagée.",
+    "Concentration résiduelle toujours supérieure aux marges thérapeutiques, fonction rénale altérée. Envisager une nouvelle diminution de la posologie et recontrôler.",
+    "Concentration résiduelle toujours supérieure aux marges thérapeutiques. Surveiller l'élimination avant réadministration.",
+    "Concentration à T=36h15mmin élevée, fonction rénale altérée. Surveiller l'élimination avant réadministration.",
+    "Concentration résiduelle très élevée, vérifier si le prélèvement a bien été réalisé avant la prise.",
+    "Concentration trop élevée, effectuer un prélèvement de contrôle dans le bras opposé à la perfusion.",
+    "Concentration résiduelle très élevée. Surveiller l'élimination avant réadministration.",
+    "Concentration résiduelle très élevée, fonction rénale altérée. Surveiller l'élimination avant réadministration.",
+    "Concentration à T= 36h toujours élevée, fonction rénale altérée. Surveiller l'élimination avant réadministration.",
+    "Concentrations élevées, en fonction de la tolérance, une diminution de la posologie peut être envisagée."
+   ]
+  },
+  {
+   "titre": "Concentration en baisse",
+   "phrases": [
+    "Concentration résiduelle en baisse, surveiller.",
+    "Concentration résiduelle en baisse malgré l'augmentation de la posologie, surveiller.",
+    "Concentration résiduelle en baisse suite à la diminution de la posologie, à confronter à la réponse clinique et à la tolérance."
+   ]
+  },
+  {
+   "titre": "Concentration en hausse",
+   "phrases": [
+    "Concentration résiduelle en hausse, surveiller.",
+    "Concentration résiduelle en hausse, fonction rénale altérée, surveiller.",
+    "Concentration résiduelle en hausse suite à l'augmentation de la posologie, fonction rénale altérée, surveiller.",
+    "Concentration résiduelle en hausse malgré la diminution de la posologie, fonction rénale altérée, surveiller.",
+    "Concentration résiduelle en forte hausse, fonction rénale altérée. Surveiller l'élimination avant réadministration."
+   ]
+  },
+  {
+   "titre": "Concentration à la limite inférieure",
+   "phrases": [
+    "Concentration résiduelle à la limite inférieure de la marge thérapeutique. Une augmentation de la posologie peut être envisagée en fonction de la réponse clinique et de la tolérance.",
+    "Concentration à T= 19h15min en faveur d'une concentration résiduelle à la limite inférieure de la marge thérapeutique. Une augmentation de la posologie peut être envisagée en fonction de la réponse clinique et de la tolérance.",
+    "Concentration résiduelle à la limite inférieure de la zone thérapeutique, à confronter aux germes et CMI."
+   ]
+  },
+  {
+   "titre": "Concentration à la limite supérieure",
+   "phrases": [
+    "Concentration résiduelle à la limite supérieure de la marge thérapeutique. Une diminution de la posologie peut être envisagée en fonction de la réponse clinique et de la tolérance.",
+    "Concentration légèrement supérieure à la marge thérapeutique si prélèvement en résiduelle. Recontrôler en résiduel avant la prochaine administration",
+    "Concentration à T= 8h15min en faveur d'une concentration résiduelle à la limite supérieure de la marge thérapeutique. En fonction de la réponse clinique et de la tolérance une diminution de la posologie peut être envisagée",
+    "Concentration moyenne à la limite haute, fonction rénale altérée, surveiller."
+   ]
+  },
+  {
+   "titre": "Concentration indétectable",
+   "phrases": [
+    "Concentration indétectable.",
+    "Concentration résiduelle indétectable, vérifier l’observance.",
+    "Concentration résiduelle toujours indétectable. Envisager une augmentation de la posologie et recontrôler.",
+    "Concentrations résiduelles indétectables, vérifier l'observance et recontrôler."
+   ]
+  },
+  {
+   "titre": "Ininterprétable",
+   "phrases": [
+    "Concentration à T= 1H non interprétable, recontrôler en résiduelle.",
+    "Posologie ? Date et heure de dernière prise ? Mode d'administration ? En l'absence de ces renseignements, concentration non interprétable.",
+    "Le délai entre la dernière prise et le prélèvement n'étant pas communiqué, ce résultat ne peut être utilisé dans le cadre d'un suivi thérapeutique avec ajustement de dose."
+   ]
+  },
+  {
+   "titre": "Screening",
+   "phrases": [
+    "Faux-positifs possibles en cas d'administration de phénothiazine, de cyamémazine, d’hydroxyzine, de cétirizine, de quétiapine ou de loxapine. Contacter le laboratoire si une analyse complémentaire est souhaitée.",
+    "Faux-positifs possibles en cas d'administration de venlafaxine.",
+    "Technique dégradée effectuée sur moins de paramètres. En cas de besoin, sur appel de votre part, une recherche élargie en spectrométrie de masse pourra être effectué a posteriori."
+   ]
+  },
+  {
+   "titre": "Lithium",
+   "phrases": [
+    "Concentration à mi-intervalle correcte, à confronter à la réponse clinique et à la tolérance.",
+    "Concentration à T= 14h en faveur d'une concentration résiduelle inférieure aux marges thérapeutiques. Envisager une augmentation de la posologie et recontrôler.",
+    "Concentration à mi-intervalle supérieure aux seuils thérapeutiques. En fonction de la réponse clinique et de la tolérance une diminution de la posologie peut être envisagée.",
+    "Concentration à mi-intervalle inférieure aux seuils thérapeutiques. En fonction de la réponse clinique et de la tolérance une augmentation de la posologie peut être envisagée."
+   ]
+  },
+  {
+   "titre": "Amikacine",
+   "phrases": [
+    "Concentration maximale correcte, maintenir la posologie.",
+    "Concentration maximale à la limite supérieure de la marge thérapeutique, surveiller la résiduelle.",
+    "Concentration au pic faible. Augmenter la posologie. Recontrôler en résiduelle avant réinjection.",
+    "Concentration maximale élevée, diminuer la dose quotidienne et surveiller la résiduelle.",
+    "Concentration résiduelle élevée. Attendre avant de réinjecter. Recontrôler avant réadministration.",
+    "Concentration résiduelle indétectable. Réadministration possible."
+   ]
+  },
+  {
+   "titre": "Paracétamol",
+   "phrases": [
+    "Concentration à T = 4h associée à un possible risque toxique si le patient présente des facteurs de risque d'hépatotoxicité (alcoolisme, cirrhose), le seuil de traitement peut alors être abaissé.",
+    "Concentration à T+ 6.5 h associée à un risque faible de toxicité.",
+    "Concentration à T= 4h45min associée faible risque de toxicité.",
+    "Concentration à T+ 6.5 h associée à un possible risque de toxicité.",
+    "Concentration à T = 4h associée à un risque faible de toxicité si la patiente ne présente pas des facteurs de risque d'hépatotoxicité (alcoolisme, cirrhose). Valeurs critiques: > 150 mg/l à la 4ème Heure > 70 mg/l à la 4ème Heure en intoxication chronique (5 à 8g pendant plusieurs jours)",
+    "Concentration à T = 13h13min associée à un risque important de toxicité. Administrer l'antidote et suivre la décroissance du paracétamol."
+   ]
+  },
+  {
+   "titre": "DPD",
+   "phrases": [
+    "Uracilémie en faveur d'un phénotype normal. Possibilité d'administrer 100% de la dose.",
+    "Phénotypage intermédiaire, le traitement peut être débuté à 100% de la dose en surveillance clinique accrue vis à vis des toxicités. Si nécessaire réduire à 75% de la dose.",
+    "Uracilémie en faveur d'un phénotype intermédiaire. Diminuer la dose administrée de 25%.",
+    "Concentration d'uracile élevée, vérifier la fonction rénale, la concentration en uracile pouvant être augmentée par une fonction rénale dégradée, le traitement peut être débuté à 50% de la dose et augmenté à 75% de la dose si la tolérance de la 1ère cure est bonne."
+   ]
+  },
+  {
+   "titre": "Imatinib",
+   "phrases": [
+    "Concentration résiduelle inférieure au seuil thérapeutique et en forte baisse, vérifier l'observance et recontrôler.",
+    "Résiduelle recommandée :\n- en cas de LMC : 1000 - 3000 ng/mL\n- en cas de GIST : > 1100 ng/mL"
+   ]
+  },
+  {
+   "titre": "Pipéracilline-tazobactam (Tazocilline)",
+   "phrases": [
+    "Concentration résiduelle en pipéracilline en l'absence de CMI:\n- pour couvrir un staphylocoque ou streptocoque sensibles: 20-40 mg/L\n- pour couvrir une entérobactérie ou un entérotocoque sensibles: 40-80 mg/L\n- pour couvrir un Pseudomonas ou autres BG- non fermentaires ou en absence d'identification microbiologique: 80-160 mg/L"
+   ]
+  },
+  {
+   "titre": "Rifampicine",
+   "phrases": [
+    "Concentration au pic 3h après la prise correcte et efficace, mais prélèvement réalisé avant l'état d'équilibre suite à l'introduction du traitement (atteint en 5 jours de traitement du fait du caractère auto-inductible de la rifampicine), recontrôler à partir du [date]."
+   ]
+  },
+  {
+   "titre": "Ofloxacine",
+   "phrases": [
+    "Concentration résiduelle correcte et non toxique, pour vérifier l'efficacité recontrôler au pic 1h après la prise."
+   ]
+  },
+  {
+   "titre": "Lamotrigine",
+   "phrases": [
+    "A confronter au contexte clinique.",
+    "Résiduelle recommandée :\n- en cas de stabilisation de l’humeur : 1 – 6 mg/L\n- en cas de dépression résistante: > 3.25 mg/L\n- en cas d’épilepsie : 3 - 14 mg/L"
+   ]
+  },
+  {
+   "titre": "Non conformité",
+   "phrases": [
+    "Coché résiduel mais administration en continu"
+   ]
+  }
+ ]
+}

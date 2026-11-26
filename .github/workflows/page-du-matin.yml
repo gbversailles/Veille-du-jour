@@ -58,6 +58,8 @@ jobs:
           if [ -f referentiel.html ]; then cp referentiel.html public/; fi
           if [ -f referentiel.json ]; then cp referentiel.json public/; fi
           if [ -f posologie.html ]; then cp posologie.html public/; fi
+          if [ -f commentaires.html ]; then cp commentaires.html public/; fi
+          if [ -f commentaires.json ]; then cp commentaires.json public/; fi
 
       - uses: actions/upload-pages-artifact@v3
         with:
